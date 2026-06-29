@@ -2148,4 +2148,89 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  // --- Hero Slider Logic ---
+  const sliderSection = document.querySelector('.slider-section');
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots = document.querySelectorAll('.dot');
+  const prevBtn = document.querySelector('.prev-slide');
+  const nextBtn = document.querySelector('.next-slide');
+  
+  if (slides.length > 0 && sliderSection) {
+    let currentSlide = 0;
+    let slideInterval;
+    
+    function showSlide(index) {
+      // Handle index wrapping
+      if (index >= slides.length) index = 0;
+      if (index < 0) index = slides.length - 1;
+      
+      // Update slides active state
+      slides.forEach((slide, i) => {
+        if (i === index) {
+          slide.classList.add('active');
+        } else {
+          slide.classList.remove('active');
+        }
+      });
+      
+      // Update dots active state
+      dots.forEach((dot, i) => {
+        if (i === index) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+      
+      // Update slider section classes for theme styling of controls
+      sliderSection.className = `hero-section slider-section slide-${index + 1}-active`;
+      
+      currentSlide = index;
+    }
+    
+    function startSlideShow() {
+      stopSlideShow();
+      slideInterval = setInterval(() => {
+        showSlide(currentSlide + 1);
+      }, 6000); // Change slide every 6 seconds
+    }
+    
+    function stopSlideShow() {
+      if (slideInterval) {
+        clearInterval(slideInterval);
+      }
+    }
+    
+    // Add event listeners for dots
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        showSlide(i);
+        startSlideShow(); // Reset interval on manual click
+      });
+    });
+    
+    // Add event listeners for arrows
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        showSlide(currentSlide - 1);
+        startSlideShow();
+      });
+    }
+    
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        showSlide(currentSlide + 1);
+        startSlideShow();
+      });
+    }
+    
+    // Pause slide-show on mouse hover over the slider section
+    sliderSection.addEventListener('mouseenter', stopSlideShow);
+    sliderSection.addEventListener('mouseleave', startSlideShow);
+    
+    // Initialize first slide and start slideshow
+    showSlide(0);
+    startSlideShow();
+  }
+
 });
