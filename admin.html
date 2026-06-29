@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>라이프모아 - 관리자 센터</title>
+  
+  <!-- Noto Sans KR Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+  
+  <!-- Admin Stylesheet -->
+  <link rel="stylesheet" href="admin.css">
+  
+  <!-- Chart.js CDN for Statistics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Daum Postcode API -->
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+</head>
+<body>
+
+  <!-- 1. Login Container (Shown by default when not logged in) -->
+  <div class="login-wrapper" id="login-wrapper">
+    <div class="login-card">
+      <div class="login-logo">
+        <span class="brand-name">라이프<span class="logo-accent">모아</span></span>
+        <span class="logo-subtitle">관리자 파트너 센터</span>
+      </div>
+      
+      <form id="admin-login-form">
+        <div class="form-group">
+          <label for="login-username">아이디</label>
+          <input type="text" id="login-username" placeholder="아이디를 입력하세요" required autocomplete="username">
+        </div>
+        
+        <div class="form-group">
+          <label for="login-password">비밀번호</label>
+          <input type="password" id="login-password" placeholder="비밀번호를 입력하세요" required autocomplete="current-password">
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-block">로그인</button>
+      </form>
+      
+      <div class="login-footer">
+        <p>본사 관리자 및 승인 완료된 셀러만 로그인 가능합니다.</p>
+        <p class="links"><a href="index.html">메인 홈페이지로 이동</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Admin Workspace (Hidden by default, shown after auth) -->
+  <div class="admin-workspace" id="admin-workspace" style="display: none;">
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-name">라이프<span class="logo-accent">모아</span></span>
+        <span class="sidebar-role-badge" id="role-badge">본사 관리자</span>
+      </div>
+      
+      <div class="sidebar-user">
+        <div class="user-avatar">AD</div>
+        <div class="user-info">
+          <span class="user-name" id="display-user-name">관리자</span>
+          <span class="user-sub" id="display-user-sub">admin@lifemoa</span>
+        </div>
+      </div>
+      
+      <!-- Dynamic Sidebar Menu (HQ or Seller) -->
+      <nav class="sidebar-nav" id="sidebar-nav-menu">
+        <!-- Will be populated dynamically via JavaScript -->
+      </nav>
+      
+      <div class="sidebar-footer">
+        <button class="btn-logout" id="btn-logout">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          로그아웃
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Panels -->
+    <main class="admin-content">
+      <header class="content-header">
+        <h2 class="panel-title" id="panel-title-text">대시보드 통계</h2>
+        <div class="header-actions">
+          <span class="date-today" id="current-date-text">2026-06-25</span>
+        </div>
+      </header>
+      
+      <div class="content-body">
+        
+        <!-- ==================== TABS CONTENT ==================== -->
+        
+        <!-- [TAB] Dashboard / Statistics -->
+        <section class="tab-panel active" id="panel-stats">
+          <!-- Summary Cards Grid -->
+          <div class="stats-cards-grid" id="stats-summary-grid">
+            <!-- Dynamically generated cards -->
+          </div>
+          
+          <!-- Charts Section -->
+          <div class="stats-charts-row">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>상담 유치 추이 (최근 7일)</h3>
+              </div>
+              <div class="chart-body">
+                <canvas id="chart-daily-leads"></canvas>
+              </div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>인기 희망 가전 점유율</h3>
+              </div>
+              <div class="chart-body">
+                <canvas id="chart-appliance-pie"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- [TAB] Seller Management (HQ Only) -->
+        <section class="tab-panel" id="panel-sellers">
+          <div class="table-toolbar">
+            <div class="search-box">
+              <input type="text" id="seller-search" placeholder="셀러 이름 또는 ID 검색...">
+            </div>
+            <div class="filter-box" style="display: flex; gap: 8px;">
+              <select id="seller-status-filter">
+                <option value="">전체 상태</option>
+                <option value="보류">보류 (신청)</option>
+                <option value="승인">승인 (활동중)</option>
+                <option value="취소">취소 (제한)</option>
+              </select>
+              <button type="button" class="btn btn-accent btn-sm" id="btn-add-seller-toggle">+ 셀러 직접 등록</button>
+            </div>
+          </div>
+          
+          <div class="responsive-table-card">
+            <table>
+              <thead>
+                <tr>
+                  <th>셀러 ID</th>
+                  <th>이름</th>
+                  <th>연락처</th>
+                  <th>서브도메인</th>
+                  <th>가입 주소</th>
+                  <th>신청일</th>
+                  <th>상태</th>
+                  <th>상태 조율</th>
+                </tr>
+              </thead>
+              <tbody id="sellers-table-body">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- [TAB] Customer Consultations (HQ & Seller) -->
+        <section class="tab-panel" id="panel-customers">
+          <div class="table-toolbar">
+            <div class="search-box">
+              <input type="text" id="customer-search" placeholder="고객 이름 또는 연락처 검색...">
+            </div>
+            <div class="filter-box" style="display: flex; gap: 8px;">
+              <select id="customer-status-filter">
+                <option value="">전체 진행상태</option>
+                <option value="신규 접수">신규 접수</option>
+                <option value="상담 진행중">상담 진행중</option>
+                <option value="계약 완료">계약 완료</option>
+                <option value="부재/취소">부재/취소</option>
+              </select>
+              <select id="customer-seller-filter">
+                <option value="">전체 유치구분</option>
+                <option value="본사">본사 직유치</option>
+                <option value="셀러">셀러 유치</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="responsive-table-card">
+            <table>
+              <thead>
+                <tr>
+                  <th>신청고객</th>
+                  <th>연락처</th>
+                  <th>희망 가전</th>
+                  <th>희망 상조사</th>
+                  <th>유치자 (셀러ID)</th>
+                  <th>신청일</th>
+                  <th>진행 상태</th>
+                  <th>관리</th>
+                </tr>
+              </thead>
+              <tbody id="customers-table-body">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- [TAB] Settlement Management (HQ & Seller) -->
+        <section class="tab-panel" id="panel-settlements">
+          <div class="table-toolbar">
+            <div class="list-title-badge">정산 대상 및 수수료 지급 현황</div>
+            <div class="filter-box" style="display: flex; gap: 8px;">
+              <select id="settlement-status-filter">
+                <option value="">전체 정산 상태</option>
+                <option value="미정산">미지급 (정산 대기)</option>
+                <option value="지급완료">지급 완료</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="responsive-table-card">
+            <table>
+              <thead>
+                <tr>
+                  <th>주문 ID</th>
+                  <th>유치 셀러</th>
+                  <th>고객명</th>
+                  <th>상품 구분 (가전)</th>
+                  <th>가입 상조사</th>
+                  <th>셀러 수수료</th>
+                  <th>정산 상태</th>
+                  <th>액션</th>
+                </tr>
+              </thead>
+              <tbody id="settlements-table-body">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- [TAB] Product Management (HQ Only) -->
+        <section class="tab-panel" id="panel-products">
+          <!-- 플랜 탭 바 -->
+          <div class="product-plan-tabs-wrapper" style="margin-bottom: 20px;">
+            <div class="product-plan-tabs" id="product-plan-tabs-bar" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; border-bottom: 2px solid var(--border-color);">
+              <!-- Dynamically populated plan tabs -->
+            </div>
+          </div>
+
+          <div class="product-management-layout">
+            <!-- Left: Product List -->
+            <div class="product-list-card">
+              <div class="card-header-row">
+                <h3 id="current-plan-list-title">가전 제품 목록</h3>
+                <button type="button" class="btn btn-accent btn-sm" id="btn-add-product-toggle">+ 제품 등록</button>
+              </div>
+              
+              <div class="product-search-box" style="margin-bottom: 12px;">
+                <input type="text" id="product-search-input" placeholder="제품명, 모델명 또는 카테고리 검색...">
+              </div>
+              
+              <div class="product-batch-toolbar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; background-color: var(--bg-light); padding: 8px 12px; border-radius: var(--radius-sm); border: 1px dashed var(--border-color);">
+                <label style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; cursor: pointer; margin-bottom: 0; font-size: 0.85rem; user-select: none;">
+                  <input type="checkbox" id="product-select-all" style="width: auto; margin-bottom: 0; cursor: pointer;"> 전체 선택
+                </label>
+                <button type="button" class="btn btn-cancelled btn-xs" id="btn-delete-selected" style="padding: 6px 12px; font-weight: 700;" disabled>선택 삭제</button>
+              </div>
+              
+              <div class="product-mini-list" id="products-mini-list">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+            
+            <!-- Right: Product Add/Edit Form -->
+            <div class="product-form-card" id="product-form-container" style="display: none; max-height: 80vh; overflow-y: auto;">
+              <h3 id="product-form-title">새 가전제품 등록</h3>
+              
+              <!-- URL 동기화 기능 -->
+              <div class="form-group sync-url-group" style="background-color: var(--bg-light); padding: 16px; border-radius: var(--radius-sm); border: 1px dashed var(--primary-color); margin-bottom: 20px;">
+                <label for="prod-sync-url" style="color: var(--primary-color); font-weight: 700; display: block; margin-bottom: 6px;">제품 정보 자동 동기화 (URL)</label>
+                <div style="display: flex; gap: 8px;">
+                  <input type="text" id="prod-sync-url" placeholder="네이버쇼핑, 비즈인노 상품 URL 입력" style="margin-bottom: 0; flex-grow: 1;">
+                  <button type="button" class="btn btn-primary btn-sm" id="btn-prod-sync" style="white-space: nowrap; margin-bottom: 0; padding: 10px 16px;">가져오기</button>
+                </div>
+                <span class="small-text text-muted" style="display: block; margin-top: 6px; font-size: 0.75rem;">URL 입력 후 가져오기를 누르면 해당 리스트 페이지 내 제품 목록이 수집됩니다.</span>
+              </div>
+
+              <form id="product-edit-form">
+                <input type="hidden" id="edit-prod-id">
+                
+                <div class="form-group">
+                  <label for="prod-name">제품명 *</label>
+                  <input type="text" id="prod-name" placeholder="예) LG gram 17인치 프리미엄" required>
+                </div>
+                
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="prod-category">카테고리 *</label>
+                    <select id="prod-category" required>
+                      <option value="tv">TV</option>
+                      <option value="fridge">냉장고</option>
+                      <option value="washer">세탁기</option>
+                      <option value="dryer">건조기</option>
+                      <option value="aircon">에어컨</option>
+                      <option value="airpurifier">공기청정기</option>
+                      <option value="cleaner">청소기</option>
+                      <option value="styler">의류관리기</option>
+                      <option value="furniture">가구</option>
+                      <option value="laptop">노트북</option>
+                      <option value="water">정수기</option>
+                      <option value="massage">안마의자</option>
+                      <option value="general">일반가전</option>
+                    </select>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="prod-model">모델명 *</label>
+                    <input type="text" id="prod-model" placeholder="예) 17Z90S-GA56K" required>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label for="prod-desc">제품 요약설명 *</label>
+                  <input type="text" id="prod-desc" placeholder="카드의 모델명 아래에 들어갈 설명문구" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="prod-thumb">썸네일 이미지 URL (1:1 비율) *</label>
+                  <input type="url" id="prod-thumb" placeholder="https://..." required>
+                </div>
+                
+                <!-- 연동 상조 플랜 및 가격 설정 -->
+                <div class="form-group" style="border-top: 1px solid var(--border-color); padding-top: 16px;">
+                  <label style="font-weight: 700; color: var(--primary-color); display: block; margin-bottom: 10px;">연동 상조 상품 플랜 설정 *</label>
+                  <div class="form-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 12px;">
+                    <div class="form-group">
+                      <label for="prod-plan-id">연동 상조 상품 플랜 *</label>
+                      <select id="prod-plan-id" required>
+                        <!-- Dynamically loaded plans option list -->
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                    <div class="form-group">
+                      <label for="prod-price-monthly">월 납입금 *</label>
+                      <div class="input-wrap" style="position: relative;">
+                        <input type="text" id="prod-price-monthly" class="price-input" placeholder="예) 39,000" required style="padding-right: 25px; width: 100%; box-sizing: border-box;">
+                        <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 0.85rem; color: var(--text-muted);">원</span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="prod-price-card">제휴카드 최대 혜택가 *</label>
+                      <div class="input-wrap" style="position: relative;">
+                        <input type="text" id="prod-price-card" class="price-input" placeholder="예) 19,000" required style="padding-right: 25px; width: 100%; box-sizing: border-box;">
+                        <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 0.85rem; color: var(--text-muted);">원</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="form-actions-row">
+                  <button type="button" class="btn btn-outline" id="btn-product-form-cancel">취소</button>
+                  <button type="submit" class="btn btn-primary" id="btn-product-form-save">저장하기</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- [TAB] Mutual Aid Company Management (HQ Only) -->
+        <section class="tab-panel" id="panel-brands">
+          <!-- 제휴 상조회사 브랜드 관리 섹션 추가 -->
+          <div class="brand-management-header" style="margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+            <div>
+              <h3>제휴 상조회사 정보 관리</h3>
+              <p>각 제휴 상조회사의 기본 명칭, 로고 이미지 및 지급 수수료를 편집합니다.</p>
+            </div>
+          </div>
+          
+          <div class="brand-cards-grid" id="admin-brands-cards-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px;">
+            <!-- Dynamically populated brand cards with logo editing -->
+          </div>
+
+          <!-- 상품 플랜 관리 섹션 추가 -->
+          <div class="brand-management-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h3>상조 상품 플랜 설정</h3>
+              <p>각 상조사별 상품 플랜, 다단 납입금 구조, 제휴카드 할인 조건, 만기 요율 등을 정의합니다.</p>
+            </div>
+            <button type="button" class="btn btn-accent btn-sm" id="btn-add-plan-toggle">+ 상품 플랜 등록</button>
+          </div>
+
+          <div class="responsive-table-card">
+            <table>
+              <thead>
+                <tr>
+                  <th>플랜 ID</th>
+                  <th>상조회사</th>
+                  <th>상품 플랜명</th>
+                  <th>만기 회차</th>
+                  <th>납입 구조 요약</th>
+                  <th>관리</th>
+                </tr>
+              </thead>
+              <tbody id="plans-table-body">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- [TAB] Settings / Account Management (HQ & Seller) -->
+        <section class="tab-panel" id="panel-settings">
+          <div class="settings-grid">
+            <div class="settings-card">
+              <h3>로그인 계정 설정</h3>
+              <form id="settings-password-form">
+                <div class="form-group">
+                  <label for="settings-current-pw">현재 비밀번호</label>
+                  <input type="password" id="settings-current-pw" required placeholder="본인 확인용 현재 비번">
+                </div>
+                <div class="form-group">
+                  <label for="settings-new-pw">새 비밀번호</label>
+                  <input type="password" id="settings-new-pw" required placeholder="변경할 새 비번">
+                </div>
+                <div class="form-group">
+                  <label for="settings-confirm-pw">새 비밀번호 확인</label>
+                  <input type="password" id="settings-confirm-pw" required placeholder="새 비번 재입력">
+                </div>
+                <button type="submit" class="btn btn-primary">비밀번호 변경하기</button>
+              </form>
+            </div>
+
+            <div class="settings-card" id="seller-info-settings-card" style="display: none;">
+              <h3>나의 셀러 파트너 정보</h3>
+              <div class="seller-profile-view">
+                <div class="profile-row">
+                  <span class="label">셀러 이름:</span>
+                  <span class="val" id="profile-name">이름</span>
+                </div>
+                <div class="profile-row">
+                  <span class="label">연락처:</span>
+                  <span class="val" id="profile-phone">010-0000-0000</span>
+                </div>
+                <div class="profile-row">
+                  <span class="label">서브도메인 주소:</span>
+                  <span class="val bold" id="profile-subdomain">sub.lifemoa.co.kr</span>
+                </div>
+                <div class="profile-row">
+                  <span class="label">가입 주소:</span>
+                  <span class="val" id="profile-address">도로명 주소</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+      </div>
+    </main>
+  </div>
+
+  <!-- 3. Seller Detail / Registration Modal -->
+  <div class="modal-overlay" id="seller-modal">
+    <div class="modal-content">
+      <button class="modal-close-btn" id="seller-modal-close" aria-label="모달 닫기">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      
+      <h3 class="modal-title" id="seller-modal-title">셀러 상세 정보</h3>
+      
+      <form id="seller-modal-form">
+        <input type="hidden" id="modal-seller-action" value="edit"> <!-- 'edit' or 'add' -->
+        <input type="hidden" id="modal-seller-id">
+        
+        <div class="modal-form-grid">
+          <!-- ID (Username) -->
+          <div class="form-group">
+            <label for="modal-seller-username">로그인 ID <span class="required">*</span></label>
+            <input type="text" id="modal-seller-username" required placeholder="영문 및 숫자 조합">
+          </div>
+          
+          <!-- Password -->
+          <div class="form-group">
+            <label for="modal-seller-password">로그인 비밀번호 <span class="required">*</span></label>
+            <input type="password" id="modal-seller-password" required placeholder="비밀번호 입력">
+          </div>
+          
+          <!-- Name -->
+          <div class="form-group">
+            <label for="modal-seller-name">셀러 이름 <span class="required">*</span></label>
+            <input type="text" id="modal-seller-name" required placeholder="이름 입력">
+          </div>
+          
+          <!-- Phone -->
+          <div class="form-group">
+            <label for="modal-seller-phone">연락처 <span class="required">*</span></label>
+            <input type="tel" id="modal-seller-phone" required placeholder="010-0000-0000">
+          </div>
+          
+          <!-- Subdomain -->
+          <div class="form-group span-2">
+            <label for="modal-seller-subdomain">서브도메인 명 <span class="required">*</span></label>
+            <div class="subdomain-input-wrapper" style="display: flex; align-items: center; gap: 4px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0 12px; background-color: #ffffff;">
+              <input type="text" id="modal-seller-subdomain" required placeholder="ex) mybiz" style="flex-grow: 1; border: none; padding: 12px 0; margin-bottom: 0; outline: none; box-shadow: none;">
+              <span style="font-weight: 700; color: var(--primary-color); font-size: 0.9rem; white-space: nowrap;">.lifemoa.co.kr</span>
+            </div>
+          </div>
+          
+          <!-- Address -->
+          <div class="form-group span-2">
+            <label>도로명 주소 <span class="required">*</span></label>
+            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+              <input type="text" id="modal-seller-zipcode" placeholder="우편번호" readonly required style="width: 120px; flex-grow: 0; margin-bottom: 0;">
+              <button type="button" class="btn btn-outline btn-sm" id="modal-seller-address-btn" style="padding: 10px 16px; font-size: 0.85rem; white-space: nowrap; margin-bottom: 0;">우편번호 검색</button>
+            </div>
+            <input type="text" id="modal-seller-address" placeholder="기본 주소" readonly required style="margin-bottom: 8px;">
+            <input type="text" id="modal-seller-address-detail" placeholder="상세 주소를 입력해주세요" required style="margin-bottom: 0;">
+          </div>
+          
+          <!-- Status -->
+          <div class="form-group span-2">
+            <label for="modal-seller-status">계정 상태 <span class="required">*</span></label>
+            <select id="modal-seller-status" required>
+              <option value="보류">보류 (가입신청)</option>
+              <option value="승인">승인 (활동중)</option>
+              <option value="취소">취소 (계정제한)</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" id="modal-seller-cancel">취소</button>
+          <button type="submit" class="btn btn-primary" id="modal-seller-save">저장하기</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Customer Detail Modal -->
+  <div class="modal-overlay" id="customer-modal">
+    <div class="modal-content">
+      <button class="modal-close-btn" id="customer-modal-close" aria-label="모달 닫기">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      
+      <h3 class="modal-title">고객 상담 상세 정보</h3>
+      
+      <form id="customer-modal-form">
+        <input type="hidden" id="modal-customer-id">
+        
+        <div class="modal-form-grid">
+          <!-- Customer Name -->
+          <div class="form-group">
+            <label for="modal-customer-name">고객명 *</label>
+            <input type="text" id="modal-customer-name" required placeholder="고객 이름">
+          </div>
+          
+          <!-- Contact -->
+          <div class="form-group">
+            <label for="modal-customer-phone">연락처 *</label>
+            <input type="tel" id="modal-customer-phone" required placeholder="010-0000-0000">
+          </div>
+          
+          <!-- Hope Item -->
+          <div class="form-group">
+            <label for="modal-customer-item">희망 가전 *</label>
+            <input type="text" id="modal-customer-item" required placeholder="희망 가전제품">
+          </div>
+          
+          <!-- Hope Brand -->
+          <div class="form-group">
+            <label for="modal-customer-brand">희망 상조사 *</label>
+            <select id="modal-customer-brand" required>
+              <option value="상관없음/추천받기">상관없음 / 추천받기</option>
+              <option value="대명아임레디">대명아임레디</option>
+              <option value="보람상조">보람상조</option>
+              <option value="프리드라이프">프리드라이프</option>
+              <option value="교원라이프">교원라이프</option>
+            </select>
+          </div>
+          
+          <!-- Purpose -->
+          <div class="form-group">
+            <label for="modal-customer-purpose">사용 목적 *</label>
+            <select id="modal-customer-purpose" required>
+              <option value="신혼가구/신규입주">신혼가구 / 신규입주</option>
+              <option value="노후가전교체">노후 가전제품 교체</option>
+              <option value="부모님효도선물">부모님 효도 선물</option>
+              <option value="자영업/사무실">자영업 / 개인 사무실</option>
+              <option value="여행/라이프케어">여행 및 레저 라이프케어</option>
+            </select>
+          </div>
+          
+          <!-- Budget -->
+          <div class="form-group">
+            <label for="modal-customer-budget">월 납입 가능 금액 *</label>
+            <select id="modal-customer-budget" required>
+              <option value="3만원이하">월 3만원 이하</option>
+              <option value="3~5만원">월 3만원 ~ 5만원</option>
+              <option value="5~7만원">월 5만원 ~ 7만원</option>
+              <option value="7만원이상">월 7만원 이상</option>
+            </select>
+          </div>
+          
+          <!-- Consult Time -->
+          <div class="form-group">
+            <label for="modal-customer-time">상담 희망 시간 *</label>
+            <select id="modal-customer-time" required>
+              <option value="빠른상담">빠른 상담 원함</option>
+              <option value="오전">오전 (09:00 ~ 12:00)</option>
+              <option value="오후">오후 (12:00 ~ 18:00)</option>
+              <option value="저녁">저녁 (18:00 ~ 20:00)</option>
+            </select>
+          </div>
+          
+          <!-- Attractor / Seller ID -->
+          <div class="form-group">
+            <label for="modal-customer-seller">유치 셀러 (선택)</label>
+            <select id="modal-customer-seller">
+              <option value="">본사 직유치 (없음)</option>
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+          
+          <!-- Register Date -->
+          <div class="form-group span-2">
+            <label for="modal-customer-date">상담 신청 일시 *</label>
+            <input type="datetime-local" id="modal-customer-date" required>
+          </div>
+          
+          <!-- Status -->
+          <div class="form-group span-2">
+            <label for="modal-customer-status">진행 상태 *</label>
+            <select id="modal-customer-status" required>
+              <option value="신규 접수">신규 접수</option>
+              <option value="상담 진행중">상담 진행중</option>
+              <option value="계약 완료">계약 완료</option>
+              <option value="부재/취소">부재/취소</option>
+            </select>
+          </div>
+          
+          <!-- User Message / Memo -->
+          <div class="form-group span-2">
+            <label for="modal-customer-message">상담 메모 및 문의내용</label>
+            <textarea id="modal-customer-message" rows="4" placeholder="추가 전달사항이나 상담 기록을 적어주세요."></textarea>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" id="modal-customer-cancel">닫기</button>
+          <button type="submit" class="btn btn-primary" id="modal-customer-save">저장하기</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. Mutual Aid Plan Detail / Registration Modal -->
+  <div class="modal-overlay" id="plan-modal">
+    <div class="modal-content" style="max-width: 800px; width: 95%; max-height: 90vh; overflow-y: auto;">
+      <button class="modal-close-btn" id="plan-modal-close" aria-label="모달 닫기">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      
+      <h3 class="modal-title" id="plan-modal-title">상조 상품 플랜 등록/수정</h3>
+      
+      <form id="plan-modal-form">
+        <input type="hidden" id="modal-plan-action" value="add"> <!-- 'edit' or 'add' -->
+        <input type="hidden" id="modal-plan-id">
+        
+        <div class="modal-form-grid">
+          <!-- Brand Select -->
+          <div class="form-group">
+            <label for="modal-plan-brand">제휴 상조회사 *</label>
+            <select id="modal-plan-brand" required>
+              <option value="daemyung">대명아임레디</option>
+              <option value="boram">보람상조</option>
+              <option value="preed">프리드라이프</option>
+              <option value="kyowon">교원라이프</option>
+            </select>
+          </div>
+          
+          <!-- Plan Name -->
+          <div class="form-group">
+            <label for="modal-plan-name">상품 플랜명 *</label>
+            <input type="text" id="modal-plan-name" required placeholder="예) 대명 스마트 라이프 429">
+          </div>
+          
+          <!-- Maturity Round -->
+          <div class="form-group">
+            <label for="modal-plan-maturity">만기 회차 *</label>
+            <input type="number" id="modal-plan-maturity" required min="1" placeholder="예) 150">
+          </div>
+          
+          <!-- Refund Rate -->
+          <div class="form-group">
+            <label for="modal-plan-refund">만기 환급율 *</label>
+            <input type="text" id="modal-plan-refund" required placeholder="예) 100% 전액 환급">
+          </div>
+          
+          <!-- Deposit Org -->
+          <div class="form-group span-2">
+            <label for="modal-plan-deposit">선수금 예치 기관 *</label>
+            <input type="text" id="modal-plan-deposit" required placeholder="예) 상조보증공제조합 / 신한은행">
+          </div>
+          
+          <!-- Funeral Service Specs -->
+          <div class="form-group span-2" style="border-top: 1px solid var(--border-color); padding-top: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <label style="margin-bottom: 0; font-weight: 700; color: var(--primary-color);">장례서비스 구성 (리스트 입력) *</label>
+              <button type="button" class="btn btn-outline btn-xs" id="btn-add-plan-funeral">+ 장례서비스 항목 추가</button>
+            </div>
+            <div id="modal-plan-funeral-container" style="display: flex; flex-direction: column; gap: 8px;">
+              <!-- Dynamic Input Lines -->
+            </div>
+          </div>
+          
+          <!-- Conversion Services -->
+          <div class="form-group span-2" style="border-top: 1px solid var(--border-color); padding-top: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <label style="margin-bottom: 0; font-weight: 700; color: var(--primary-color);">전환서비스 구성 (리스트 입력) *</label>
+              <button type="button" class="btn btn-outline btn-xs" id="btn-add-plan-convert">+ 전환서비스 항목 추가</button>
+            </div>
+            <div id="modal-plan-convert-container" style="display: flex; flex-direction: column; gap: 8px;">
+              <!-- Dynamic Input Lines -->
+            </div>
+          </div>
+          
+          <!-- Membership Services -->
+          <div class="form-group span-2" style="border-top: 1px solid var(--border-color); padding-top: 16px; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <label style="margin-bottom: 0; font-weight: 700; color: var(--primary-color);">멤버십 혜택 구성 (리스트 입력) *</label>
+              <button type="button" class="btn btn-outline btn-xs" id="btn-add-plan-membership">+ 멤버십 항목 추가</button>
+            </div>
+            <div id="modal-plan-membership-container" style="display: flex; flex-direction: column; gap: 8px;">
+              <!-- Dynamic Input Lines -->
+            </div>
+          </div>
+
+          <!-- paymentSections (구좌별 납입금 구성 구간 관리) -->
+          <div class="form-group span-2" style="border-top: 1px solid var(--border-color); padding-top: 16px; margin-top: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <label style="margin-bottom: 0; font-weight: 700; color: var(--primary-color);">구좌별/구간별 납입금 구조 설정 *</label>
+              <button type="button" class="btn btn-outline btn-xs" id="btn-add-payment-section">+ 구간 추가</button>
+            </div>
+            
+            <div class="responsive-table-card" style="margin-bottom: 0;">
+              <table style="width: 100%; font-size: 0.85rem;">
+                <thead>
+                  <tr style="background-color: var(--bg-light);">
+                    <th style="padding: 8px;">시작 회차</th>
+                    <th style="padding: 8px;">종료 회차</th>
+                    <th style="padding: 8px;">상조부금 (원)</th>
+                    <th style="padding: 8px;">가전대금 (원)</th>
+                    <th style="padding: 8px; width: 60px;">관리</th>
+                  </tr>
+                </thead>
+                <tbody id="modal-plan-payment-body">
+                  <!-- Dynamic rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Cards List (제휴카드 안내 관리) -->
+          <div class="form-group span-2" style="border-top: 1px solid var(--border-color); padding-top: 16px;">
+            <label style="font-weight: 700; color: var(--primary-color);">제휴카드 구성</label>
+            <div id="modal-plan-cards-container" style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 8px;">
+              <!-- Dynamic Card Layout Forms -->
+            </div>
+            <button type="button" class="btn btn-outline btn-sm" id="btn-add-plan-card" style="width: 100%;">+ 제휴카드 추가</button>
+          </div>
+
+          <!-- Notices List (메모 입력) -->
+          <div class="form-group span-2" style="border-top: 1px solid var(--border-color); padding-top: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <label style="margin-bottom: 0; font-weight: 700; color: var(--primary-color);">주요 안내사항 (메모 리스트, 쩜쩜쩜 자동 생성)</label>
+              <button type="button" class="btn btn-outline btn-xs" id="btn-add-plan-notice">+ 안내사항 추가</button>
+            </div>
+            <div id="modal-plan-notices-container" style="display: flex; flex-direction: column; gap: 8px;">
+              <!-- Dynamic Notice Input Lines -->
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" id="modal-plan-cancel">취소</button>
+          <button type="submit" class="btn btn-primary" id="modal-plan-save">저장하기</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Bulk Product Import Modal (Scraped List from URL) -->
+  <div class="modal-overlay" id="bulk-product-modal">
+    <div class="modal-content" style="max-width: 900px; width: 95%; max-height: 90vh; overflow-y: auto;">
+      <button class="modal-close-btn" id="bulk-product-modal-close" aria-label="모달 닫기">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      
+      <div class="modal-header">
+        <h3 class="font-navy" style="font-weight: 800; font-size: 1.25rem;">가져온 상품 리스트 가져오기 (전체 수집 목록)</h3>
+        <p class="text-muted small-text" style="margin-top: 4px;">입력하신 URL 리스트 페이지에서 수집한 상품들입니다. 추가할 가전제품들을 선택 후 등록하세요.</p>
+      </div>
+
+      <div style="margin: 16px 0; background-color: var(--primary-light); padding: 12px; border-radius: var(--radius-sm); font-size: 0.82rem; color: var(--primary-color); display: flex; justify-content: space-between; align-items: center;">
+        <span>수집된 상품 총 <strong id="bulk-scraped-count">0</strong>개</span>
+        <label style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; cursor: pointer; margin-bottom: 0;">
+          <input type="checkbox" id="bulk-select-all" checked style="width: auto; margin-bottom: 0;"> 전체 선택
+        </label>
+      </div>
+
+      <div id="bulk-products-list-body" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; max-height: 50vh; overflow-y: auto; padding-right: 4px;">
+        <!-- Scraped products list items will be injected here -->
+      </div>
+
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+        <button type="button" class="btn btn-outline" id="bulk-product-modal-cancel">취소</button>
+        <button type="button" class="btn btn-primary" id="btn-bulk-import-save">선택 상품 일괄 등록하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Mutual Aid Brand Edit Modal -->
+  <div class="modal-overlay" id="brand-edit-modal">
+    <div class="modal-content" style="max-width: 500px; width: 90%;">
+      <button class="modal-close-btn" id="brand-edit-modal-close" aria-label="모달 닫기">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      
+      <h3 class="modal-title">제휴 상조사 정보 수정</h3>
+      
+      <form id="brand-edit-modal-form">
+        <input type="hidden" id="modal-brand-id">
+        
+        <div class="modal-form-grid" style="grid-template-columns: 1fr;">
+          <!-- Brand Name -->
+          <div class="form-group">
+            <label for="modal-brand-name">상조사명 *</label>
+            <input type="text" id="modal-brand-name" required placeholder="예) 대명아임레디" readonly style="background-color: var(--bg-light); cursor: not-allowed;">
+          </div>
+          
+          <!-- Brand Description -->
+          <div class="form-group">
+            <label for="modal-brand-desc">설명 *</label>
+            <textarea id="modal-brand-desc" required rows="3" placeholder="상조사에 대한 요약 설명을 입력해 주세요."></textarea>
+          </div>
+
+          <!-- Commission -->
+          <div class="form-group">
+            <label for="modal-brand-fee">기본 지급 수수료 (원) *</label>
+            <input type="text" id="modal-brand-fee" class="price-input" required placeholder="예) 150,000">
+          </div>
+          
+          <!-- Brand Logo Upload or URL -->
+          <div class="form-group" style="border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 8px;">
+            <label>상조사 로고 이미지 *</label>
+            <input type="text" id="modal-brand-logo-url" placeholder="https://... 이미지 URL 입력" style="margin-bottom: 8px;">
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <input type="file" id="modal-brand-logo-file" accept="image/*" style="font-size: 0.8rem; margin-bottom: 0;">
+            </div>
+            <div style="margin-top: 12px; display: flex; align-items: center; justify-content: center; background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 6px; padding: 12px; height: 100px;">
+              <img id="modal-brand-logo-preview" src="https://placehold.co/200x80?text=No+Logo" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-footer" style="margin-top: 20px;">
+          <button type="button" class="btn btn-outline" id="modal-brand-edit-cancel">취소</button>
+          <button type="submit" class="btn btn-primary" id="modal-brand-edit-save">저장하기</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin logic script -->
+  <script type="module" src="admin.js"></script>
+</body>
+</html>

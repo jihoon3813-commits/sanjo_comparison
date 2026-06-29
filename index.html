@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>라이프모아 - 스마트케어 상조가전 결합상품 비교</title>
+  <meta name="description" content="최신 가전 렌탈금 전액 지원 혜택부터 미래를 위한 상조 서비스 및 다양한 라이프케어 혜택까지, 한눈에 비교하고 스마트하게 설계하세요.">
+  
+  <!-- Noto Sans KR & Inter Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="style.css?v=1.0.2">
+  <!-- Daum Postcode API -->
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+</head>
+<body>
+
+  <!-- Header / GNB (Bizinno Style Navy Concept) -->
+  <header class="main-header">
+    <div class="header-container">
+      <a href="#" class="logo text-logo">
+        <span class="brand-name">라이프<span class="logo-accent">모아</span></span>
+        <span class="brand-divider">|</span>
+        <span class="brand-sub">상조가전비교센터</span>
+      </a>
+      
+      <!-- Mobile Menu Toggle -->
+      <button class="mobile-nav-toggle" aria-label="메뉴 열기">
+        <span class="hamburger"></span>
+      </button>
+
+      <nav class="nav-menu">
+        <ul>
+          <li><a href="#structure" class="nav-link">상조가전이란?</a></li>
+          <li><a href="#select-appliance" class="nav-link">비교 가능 가전</a></li>
+          <li><a href="#compare-brands" class="nav-link">브랜드 비교</a></li>
+          <li><a href="#compare-criteria" class="nav-link">비교 기준</a></li>
+          <li><a href="#consultation-form" class="nav-link">상담 신청</a></li>
+          <li><a href="#" id="seller-apply-trigger" class="nav-link nav-seller-apply">셀러신청</a></li>
+        </ul>
+      </nav>
+      
+      <div class="header-cta">
+        <a href="#consultation-form" id="btn-header-consult" class="btn btn-primary btn-sm">무료 비교상담</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section (Expanded Space) -->
+  <section class="hero-section">
+    <div class="hero-container">
+      <div class="hero-text-content">
+        <div class="hero-badge animate-up">가전렌탈 + 상조 결합 시 최대 혜택</div>
+        <h1 class="hero-title animate-up">
+          가전렌탈만 비교하지 마세요.<br>
+          <span class="highlight">상조가전 결합혜택</span>까지 함께 비교하세요.
+        </h1>
+        <p class="hero-subtitle animate-up delay-1">
+          노트북, 안마의자, 정수기, 대형가전, 소파까지<br>
+          월 납입금 · 만기환급 · 사은품 · 해지조건을<br>
+          한눈에 비교해드립니다.
+        </p>
+        <div class="hero-actions animate-up delay-2">
+          <a href="#consultation-form" class="btn btn-accent btn-lg btn-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            30초 무료 비교상담 <span class="arrow-icon">&gt;</span>
+          </a>
+          <a href="#select-appliance" class="btn btn-outline btn-lg">
+            희망 가전으로 확인하기 <span class="arrow-icon">&gt;</span>
+          </a>
+        </div>
+        
+        <!-- Hero Features underneath buttons -->
+        <div class="hero-features animate-up delay-3">
+          <div class="feature-item">
+            <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>브랜드별 비교</span>
+          </div>
+          <div class="feature-item">
+            <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>조건별 맞춤 상담</span>
+          </div>
+          <div class="feature-item">
+            <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>간편 신청</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right Side Mockup Image from Cloudinary -->
+      <div class="hero-image-wrapper animate-fade">
+        <img src="https://res.cloudinary.com/dfkntvpmv/image/upload/v1782697081/ChatGPT_Image_2026%EB%85%84_6%EC%9B%94_29%EC%9D%BC_%EC%98%A4%EC%A0%84_10_36_14_n3ztak.png" alt="스마트케어 상조가전 결합상품 맞춤 비교 리포트 및 가전 매칭" class="hero-mockup-img">
+      </div>
+    </div>
+  </section>
+
+  <!-- Pain Point Section -->
+  <section class="painpoint-section">
+    <div class="container">
+      <div class="text-center">
+        <span class="section-badge">혹시 지금</span>
+        <h2 class="section-title">가전렌탈 고민 중이신가요?</h2>
+      </div>
+      <div class="painpoint-grid">
+        <div class="painpoint-card scroll-reveal">
+          <div class="painpoint-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="blue-icon"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="9" y1="22" x2="15" y2="22"></line><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg>
+          </div>
+          <h3 class="painpoint-title">1. 월 렌탈료는 부담 없나요?</h3>
+          <p class="painpoint-desc">매달 나가는 비용, 총 납입금까지 꼼꼼히 확인하세요.</p>
+        </div>
+        <div class="painpoint-card scroll-reveal">
+          <div class="painpoint-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="blue-icon"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          </div>
+          <h3 class="painpoint-title">2. 만기 후 환급은 되나요?</h3>
+          <p class="painpoint-desc">계약 종료 시 돌려받을 수 있는 금액이 있는지 확인하세요.</p>
+        </div>
+        <div class="painpoint-card scroll-reveal">
+          <div class="painpoint-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="blue-icon"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          </div>
+          <h3 class="painpoint-title">3. 중도해지 부담은 없나요?</h3>
+          <p class="painpoint-desc">예상치 못한 해지 상황까지 미리 비교해야 합니다.</p>
+        </div>
+        <div class="painpoint-card scroll-reveal">
+          <div class="painpoint-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="blue-icon"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          </div>
+          <h3 class="painpoint-title">4. 원하는 가전 선택이 가능한가요?</h3>
+          <p class="painpoint-desc">TV, 냉장고, 세탁기 등 필요한 제품 구성이 가능한지 확인하세요.</p>
+        </div>
+        <div class="painpoint-card scroll-reveal">
+          <div class="painpoint-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="blue-icon"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
+          </div>
+          <h3 class="painpoint-title">5. 사은품·멤버십 혜택은 충분한가요?</h3>
+          <p class="painpoint-desc">가전 외 추가 혜택까지 비교하면 선택 기준이 달라집니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Venn Diagram & Structure Explanation Section -->
+  <section id="structure" class="structure-section scroll-reveal">
+    <div class="container">
+      <div class="text-center mb-16">
+        <span class="section-badge">더 스마트하게</span>
+        <h2 class="section-title">최신가전 렌탈금 전액 지원과 함께</h2>
+        <p class="section-subtitle">상조·라이프서비스 또는 100% 전액 환급까지 선택 가능한 스마트케어 결합상품</p>
+      </div>
+
+      <div class="structure-layout">
+        <!-- Left: Venn Diagram Visual -->
+        <div class="venn-diagram-wrapper">
+          <div class="venn-diagram">
+            <!-- Circle 1: 가전렌탈 -->
+            <div class="venn-circle circle-rental">
+              <span class="venn-text">가전렌탈</span>
+            </div>
+            <!-- Circle 2: 상조서비스 -->
+            <div class="venn-circle circle-funeral">
+              <span class="venn-text">상조서비스</span>
+            </div>
+            <!-- Circle 3: 라이프 혜택 -->
+            <div class="venn-circle circle-benefit">
+              <span class="venn-text">라이프 혜택</span>
+            </div>
+            <!-- Center Badge -->
+            <div class="venn-center">
+              <span class="venn-center-text">스마트케어</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: VS Comparison & Concept Info -->
+        <div class="structure-info">
+          <div class="vs-table-container">
+            <div class="vs-header">
+              <div class="vs-col">일반 가전 렌탈</div>
+              <div class="vs-badge">VS</div>
+              <div class="vs-col highlight-navy">상조가전 결합</div>
+            </div>
+            <div class="vs-body">
+              <div class="vs-row">
+                <div class="vs-col">매월 소멸성 렌탈료 납부</div>
+                <div class="vs-label">비용 방식</div>
+                <div class="vs-col bold">매월 적립식 회비 납부</div>
+              </div>
+              <div class="vs-row">
+                <div class="vs-col">계약 완료 시 전액 소멸</div>
+                <div class="vs-label">만기 환급</div>
+                <div class="vs-col bold">만기 시 납입금 100% 전액 환급</div>
+              </div>
+              <div class="vs-row">
+                <div class="vs-col">해지 시 일방적 위약금 발생</div>
+                <div class="vs-label">해지 정산</div>
+                <div class="vs-col bold">중도 해약 조건 투명성 보장</div>
+              </div>
+              <div class="vs-row">
+                <div class="vs-col">가전 단일 렌탈로 소멸</div>
+                <div class="vs-label">최종 혜택</div>
+                <div class="vs-col bold">가전 렌탈 지원 + 라이프케어/상조</div>
+              </div>
+            </div>
+          </div>
+          <p class="structure-notice">* 만기(200회) 납입 완료 후 익월 해약 시 또는 라이프 서비스 사용 시 100% 원금 보장</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Appliance & Brand Selection Section (Dual Choice Flow) -->
+  <section id="select-appliance" class="comparison-intro-section bg-light">
+    <div class="container">
+      <div class="text-center mb-8">
+        <span class="section-badge">가전·상조 매칭비교</span>
+        <h2 class="section-title">원하는 매칭 방식을 선택하세요</h2>
+        <p class="section-subtitle">영화 예매하듯 편리하게! 가전을 먼저 선택하거나 상조사를 먼저 선택해 비교해 보세요.</p>
+      </div>
+
+      <!-- Flow Selector Tabs -->
+      <div class="flow-tabs-wrapper">
+        <button class="flow-tab-btn active" id="flow-tab-appliance" data-flow="appliance">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flow-icon"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="2" y1="20" x2="22" y2="20"></line><line x1="12" y1="17" x2="12" y2="20"></line></svg>
+          가전제품 먼저 고르기
+        </button>
+        <button class="flow-tab-btn" id="flow-tab-brand" data-flow="brand">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flow-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+          상조회사 먼저 고르기
+        </button>
+      </div>
+
+      <!-- Flow 1: Appliance First Container -->
+      <div class="flow-view-container active" id="flow-appliance-view">
+        <!-- Smart Filter Panel for Appliance View -->
+        <div class="smart-filter-container" id="appliance-smart-filter" style="margin-bottom: 30px;">
+          <div class="filter-header">
+            <div class="filter-title">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="filter-title-icon"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+              스마트필터
+            </div>
+            <button type="button" class="btn-filter-reset" id="btn-appliance-filter-reset">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+              선택초기화
+            </button>
+          </div>
+          
+          <div class="filter-body">
+            <!-- 1. Mutual Aid Row -->
+            <div class="filter-row">
+              <div class="filter-label">상조사</div>
+              <div class="filter-chips" id="filter-chips-mutual">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- 2. Category Row -->
+            <div class="filter-row">
+              <div class="filter-label">카테고리</div>
+              <div class="filter-chips" id="filter-chips-category">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- 3. Brand Row -->
+            <div class="filter-row">
+              <div class="filter-label">브랜드</div>
+              <div class="filter-chips" id="filter-chips-brand">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- 4. Price Row -->
+            <div class="filter-row">
+              <div class="filter-label">렌탈료(납입금)</div>
+              <div class="filter-chips" id="filter-chips-price">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Layout Controls -->
+        <div class="products-list-header">
+          <div class="list-title-badge">비교 가전 상품</div>
+          <div class="layout-selector">
+            <button type="button" class="layout-btn btn-cols-1" data-layout="1" title="1열 보기">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+              1열
+            </button>
+            <button type="button" class="layout-btn btn-cols-2" data-layout="2" title="2열 보기">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18"></rect><rect x="14" y="3" width="7" height="18"></rect></svg>
+              2열
+            </button>
+            <button type="button" class="layout-btn btn-cols-3 active" data-layout="3" title="3열 보기">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="5" height="18"></rect><rect x="9.5" y="3" width="5" height="18"></rect><rect x="17" y="3" width="5" height="18"></rect></svg>
+              3열
+            </button>
+            <button type="button" class="layout-btn btn-cols-4" data-layout="4" title="4열 보기">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="3.5" height="18"></rect><rect x="7.5" y="3" width="3.5" height="18"></rect><rect x="13" y="3" width="3.5" height="18"></rect><rect x="18.5" y="3" width="3.5" height="18"></rect></svg>
+              4열
+            </button>
+          </div>
+        </div>
+        
+        <!-- Products Grid -->
+        <div class="products-grid-wrapper">
+          <div class="products-grid cols-3" id="appliance-product-grid">
+            <!-- Dynamically populated product cards -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Flow 2: Brand First Container (Hidden initially) -->
+      <div class="flow-view-container" id="flow-brand-view">
+        <!-- Brand Grid -->
+        <div class="brands-grid" id="brands-selector-grid">
+          <!-- Dynamically populated brand cards -->
+        </div>
+
+        <!-- Dynamic Brand Products List -->
+        <div class="brand-products-section" id="brand-products-container" style="display: none;">
+          <div class="brand-products-header">
+            <h3 class="brand-products-title">
+              <span class="highlight" id="selected-brand-name-display">대명아임레디</span>의 제공 가전 리스트
+            </h3>
+            <p class="brand-products-subtitle">해당 상조회사 결합 시 지원되는 전용 가전 모델 및 상세 월 납입금 정보입니다.</p>
+          </div>
+
+          <!-- Smart Filter Panel for Brand View -->
+          <div class="smart-filter-container" id="brand-smart-filter" style="margin-bottom: 30px;">
+            <div class="filter-header">
+              <div class="filter-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="filter-title-icon"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+                스마트필터
+              </div>
+              <button type="button" class="btn-filter-reset" id="btn-brand-filter-reset">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+                선택초기화
+              </button>
+            </div>
+            
+            <div class="filter-body">
+              <!-- 1. Category Row -->
+              <div class="filter-row">
+                <div class="filter-label">카테고리</div>
+                <div class="filter-chips" id="filter-chips-brand-category">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+
+              <!-- 2. Brand Row -->
+              <div class="filter-row">
+                <div class="filter-label">브랜드</div>
+                <div class="filter-chips" id="filter-chips-brand-brand">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+
+              <!-- 3. Price Row -->
+              <div class="filter-row">
+                <div class="filter-label">렌탈료(납입금)</div>
+                <div class="filter-chips" id="filter-chips-brand-price">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Layout Controls for Flow 2 -->
+          <div class="products-list-header">
+            <div class="list-title-badge">지원 가전 상품</div>
+            <div class="layout-selector">
+              <button type="button" class="layout-btn btn-cols-1" data-layout="1" title="1열 보기">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                1열
+              </button>
+              <button type="button" class="layout-btn btn-cols-2" data-layout="2" title="2열 보기">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18"></rect><rect x="14" y="3" width="7" height="18"></rect></svg>
+                2열
+              </button>
+              <button type="button" class="layout-btn btn-cols-3 active" data-layout="3" title="3열 보기">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="5" height="18"></rect><rect x="9.5" y="3" width="5" height="18"></rect><rect x="17" y="3" width="5" height="18"></rect></svg>
+                3열
+              </button>
+              <button type="button" class="layout-btn btn-cols-4" data-layout="4" title="4열 보기">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="3.5" height="18"></rect><rect x="7.5" y="3" width="3.5" height="18"></rect><rect x="13" y="3" width="3.5" height="18"></rect><rect x="18.5" y="3" width="3.5" height="18"></rect></svg>
+                4열
+              </button>
+            </div>
+          </div>
+          
+          <div class="products-grid cols-3" id="brand-product-grid">
+            <!-- Dynamically populated products for the selected brand -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- Recommendation Target Tab Section -->
+  <section class="recommend-target-section bg-light">
+    <div class="container">
+      <div class="text-center mb-10">
+        <span class="section-badge">적극 추천해요!</span>
+        <h2 class="section-title">이런 분들은 꼭 비교해보세요.</h2>
+      </div>
+      
+      <!-- Tabs Layout -->
+      <div class="tabs-wrapper scroll-reveal">
+        <div class="tabs-header">
+          <button class="tab-button active" data-tab="newlywed">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tab-icon"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            신혼·입주 예정자
+          </button>
+          <button class="tab-button" data-tab="laptop">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tab-icon"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="2" y1="20" x2="22" y2="20"></line><line x1="12" y1="17" x2="12" y2="20"></line></svg>
+            노트북 교체 고객
+          </button>
+          <button class="tab-button" data-tab="parents">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tab-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            부모님 선물 고객
+          </button>
+          <button class="tab-button" data-tab="business">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tab-icon"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            자영업자
+          </button>
+          <button class="tab-button" data-tab="travel">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tab-icon"><path d="M22 2L11 13"></path><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            가족여행 관심 고객
+          </button>
+        </div>
+
+        <div class="tabs-content">
+          <div class="tab-panel active" id="newlywed">
+            <div class="panel-layout">
+              <div class="panel-text">
+                <h3>새로운 시작을 합리적이고 실속있게</h3>
+                <p>결혼 및 신축 아파트 입주 예정으로 한 번에 많은 가전을 준비해야 해서 목돈 지출이 걱정되시는 분들께 적극 추천합니다.</p>
+                <ul class="panel-bullets">
+                  <li>냉장고, 세탁기 등 대형 가전을 초기 비용 전혀 없이 월 납입 방식으로 마련 가능</li>
+                  <li>만기 유지 시 상조 납입원금이 100% 안전하게 전액 환급되므로 장기 자산 저축 효과</li>
+                  <li>기본 할인 혜택에 더해 입주 프리미엄 가전 패키지로 풍성한 사은품 제공</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <div class="tab-panel" id="laptop">
+            <div class="panel-layout">
+              <div class="panel-text">
+                <h3>최신 고성능 노트북을 통신비 수준의 부담 없는 납입으로</h3>
+                <p>재택근무나 자녀 학업용으로 최신 고성능 노트북 교체가 필요하지만, 비싼 일시불 결제가 고민이신 분들에게 딱 맞습니다.</p>
+                <ul class="panel-bullets">
+                  <li>LG gram, 삼성 갤럭시 북 등 프리미엄 브랜드의 최신형 노트북 라인업 구비</li>
+                  <li>월 1~2만원대의 소액 납입 구조로 부담 없이 매월 가전 혜택 이용 가능</li>
+                  <li>상조 서비스는 추후 자녀의 웨딩이나 크루즈 여행 등 라이프케어로 자유롭게 전환 가능</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="parents">
+            <div class="panel-layout">
+              <div class="panel-text">
+                <h3>부모님께 건강과 효도를, 우리 가족에겐 미래의 안심을</h3>
+                <p>연로하신 부모님을 위해 든든한 상조를 준비해 드림과 동시에 일상생활을 풍요롭게 할 건강 안마의자까지 선물해 드릴 수 있는 최고의 기회입니다.</p>
+                <ul class="panel-bullets">
+                  <li>코지마, 바디프랜드 등 검증된 명품 안마의자 결합 상품 즉시 비교</li>
+                  <li>월 납입은 자녀가 부담하고, 안마의자는 부모님 댁으로 직접 무료 설치</li>
+                  <li>향후 상조 서비스 발생 시 전문 장례 지도사 밀착 관리로 부모님을 최고 품격으로 안심 케어</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="business">
+            <div class="panel-layout">
+              <div class="panel-text">
+                <h3>초기 개업 비용 세이브와 사업자 맞춤 렌탈 케어</h3>
+                <p>식당, 카페, 헤어숍, 개인 사무실을 창업하거나 리모델링하면서 시스템 에어컨, 정수기, 공기청정기 도입 비용을 줄이려는 사장님께 유용합니다.</p>
+                <ul class="panel-bullets">
+                  <li>정수기, 얼음 메이커, 대형 TV 등 사업자 필수 비즈니스 가전 지원</li>
+                  <li>초기 매장 구축 자본을 다른 사업 운용 비용으로 보존 가능</li>
+                  <li>만기 납입 완료 시 목돈을 다시 100% 회수하여 사업 자금으로 유용하게 환원</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="travel">
+            <div class="panel-layout">
+              <div class="panel-text">
+                <h3>럭셔리 패밀리 여행 멤버십과 생활 가전을 동시에</h3>
+                <p>평소 가족들과 함께하는 국내외 여행을 계획 중이면서 소파나 주방 가전 교체를 검토하고 계신 가족 중심 고객에게 추천합니다.</p>
+                <ul class="panel-bullets">
+                  <li>브랜드 결합 상조 가입 즉시 전국 주요 5성급 리조트/호텔 우대 혜택 적용</li>
+                  <li>크루즈 여행, 리조트 숙박 등 가족들과의 특별한 라이프 케어로 서비스 전환 가능</li>
+                  <li>고급 친환경 소파, 다이닝 식탁 세트 등을 결합하여 거실 인테리어까지 동시에 업그레이드</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Detailed Comparison Table Section (Separated full-width Section 1) -->
+  <section id="compare-brands" class="comparison-table-section scroll-reveal">
+    <div class="container">
+      <div class="text-center mb-12">
+        <span class="section-badge">브랜드 플랜 비교</span>
+        <h2 class="section-title">상조사별 상품 플랜 한눈에 비교하기</h2>
+        <p class="section-subtitle">월 납입금 구조부터 제휴카드 혜택, 라이프케어 전환 서비스까지 꼼꼼하게 비교해보세요.</p>
+      </div>
+      
+      <div class="responsive-table" id="dynamic-comparison-wrapper">
+        <!-- JavaScript가 동적으로 상조사별 비교 표를 생성합니다. -->
+      </div>
+      <p class="table-notice">* 위 정보는 로컬 데이터베이스의 실시간 설정 기준이며, 상세 조건 및 카드 혜택은 가입 조건 및 카드사 사정에 따라 변동될 수 있습니다.</p>
+    </div>
+  </section>
+
+  <!-- Criteria Grid Section (Separated full-width Section 2) -->
+  <section id="compare-criteria" class="compare-criteria-section bg-light scroll-reveal">
+    <div class="container">
+      <div class="text-center mb-12">
+        <span class="section-badge">비교 기준</span>
+        <h2 class="section-title">상조가전은 이 기준으로 비교해야 합니다</h2>
+        <p class="section-subtitle">단순 가전 종류를 넘어, 계약 전체의 신뢰도와 중도해지 리스크까지 꼼꼼히 체크하세요.</p>
+      </div>
+
+      <div class="criteria-grid-full">
+        <!-- Card 1 -->
+        <div class="criteria-card">
+          <div class="criteria-header-box">
+            <div class="criteria-circle-check">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-svg"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <h3>월 납입금</h3>
+          </div>
+          <p class="criteria-desc">매월 불입 가능한 최적의 합리적인 예산 대별 가이드 제공</p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="criteria-card">
+          <div class="criteria-header-box">
+            <div class="criteria-circle-check">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-svg"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <h3>총 납입금</h3>
+          </div>
+          <p class="criteria-desc">제휴 할인 및 사은 혜택을 더한 최종 누적 불입액 비교</p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="criteria-card">
+          <div class="criteria-header-box">
+            <div class="criteria-circle-check">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-svg"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <h3>제공 가전</h3>
+          </div>
+          <p class="criteria-desc">제조사 정식 출고 최신 가전 모델명 및 상세 스펙 대조</p>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="criteria-card">
+          <div class="criteria-header-box">
+            <div class="criteria-circle-check">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-svg"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <h3>만기환급 조건</h3>
+          </div>
+          <p class="criteria-desc">원금 100% 안전 보장 여부 및 만기 후 즉시 환급 시점 확인</p>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="criteria-card">
+          <div class="criteria-header-box">
+            <div class="criteria-circle-check">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-svg"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <h3>중도해지 부담</h3>
+          </div>
+          <p class="criteria-desc">개인 사정 해약 시 적용되는 해지환급금 및 잔여 가전가액 산정율</p>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="criteria-card">
+          <div class="criteria-header-box">
+            <div class="criteria-circle-check">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-svg"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <h3>부가혜택</h3>
+          </div>
+          <p class="criteria-desc">전국 호텔/리조트 우대, 골프, 멤버십 레저 연계 서비스의 범위</p>
+        </div>
+
+        <!-- Card 7 -->
+        <div class="criteria-card">
+          <div class="criteria-header-box">
+            <div class="criteria-circle-check">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-svg"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <h3>서비스 구성</h3>
+          </div>
+          <p class="criteria-desc">의전 인력, 차량 제공 여부 및 웨딩/크루즈 등 하이브리드 서비스 유연성</p>
+        </div>
+
+        <!-- Card 8 -->
+        <div class="criteria-card">
+          <div class="criteria-header-box">
+            <div class="criteria-circle-check">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-svg"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <h3>브랜드 신뢰도</h3>
+          </div>
+          <p class="criteria-desc">상조회사 자산 건전성 및 공제조합 계약 보증금 예치율</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Section -->
+  <section class="process-section">
+    <div class="container">
+      <div class="text-center mb-10">
+        <span class="section-badge">가입 절차</span>
+        <h2 class="section-title">상담부터 가입까지, 간단한 5단계 프로세스</h2>
+      </div>
+      
+      <div class="process-flow">
+        <div class="process-step scroll-reveal">
+          <div class="process-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+          </div>
+          <span class="process-num">STEP 1</span>
+          <h4>희망 가전 선택</h4>
+        </div>
+        <div class="process-arrow">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+        <div class="process-step scroll-reveal delay-1">
+          <div class="process-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          </div>
+          <span class="process-num">STEP 2</span>
+          <h4>납입 조건 확인</h4>
+        </div>
+        <div class="process-arrow">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+        <div class="process-step scroll-reveal delay-2">
+          <div class="process-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          </div>
+          <span class="process-num">STEP 3</span>
+          <h4>상품 비교</h4>
+        </div>
+        <div class="process-arrow">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+        <div class="process-step scroll-reveal delay-3">
+          <div class="process-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+          <span class="process-num">STEP 4</span>
+          <h4>추천 안내</h4>
+        </div>
+        <div class="process-arrow">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+        <div class="process-step scroll-reveal delay-4">
+          <div class="process-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          </div>
+          <span class="process-num">STEP 5</span>
+          <h4>가입 여부 결정</h4>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Consultation Form & FAQ Section -->
+  <section id="consultation-form" class="form-faq-section">
+    <div class="container grid-form-faq">
+      
+      <!-- Consultation Form (Left) -->
+      <div class="form-wrapper scroll-reveal">
+        <div class="form-ribbon">빠르고 간편한 신청</div>
+        <h2 class="section-title"><span class="text-accent">30초 무료</span> 비교상담 신청</h2>
+        <p class="section-subtitle">현재 희망하시는 조건과 가전을 바탕으로, 전문 상담사가 맞춤 비교 안내를 제공합니다.</p>
+        
+        <form class="consultation-form-el" id="main-consult-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="user-name">이름 <span class="required">*</span></label>
+              <input type="text" id="user-name" name="userName" placeholder="이름을 입력해주세요" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="user-phone">연락처 <span class="required">*</span></label>
+              <input type="tel" id="user-phone" name="userPhone" placeholder="010-0000-0000" pattern="[0-9]{3}-[0-9]{3,4}-[0-9]{4}" required>
+            </div>
+
+            <div class="form-group">
+              <label for="select-item">희망 가전 <span class="required">*</span></label>
+              <select id="select-item" name="hopeItem" required>
+                <option value="" disabled selected>선택하세요</option>
+                <option value="노트북">노트북</option>
+                <option value="안마의자·건강가전">안마의자·건강가전</option>
+                <option value="정수기·생활가전">정수기·생활가전</option>
+                <option value="대형가전">대형가전</option>
+                <option value="소파·리빙가구">소파·리빙가구</option>
+                <option value="입주가전 패키지">입주가전 패키지</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="select-brand">희망 상조사 <span class="required">*</span></label>
+              <select id="select-brand" name="hopeBrand" required>
+                <option value="" disabled selected>선택하세요</option>
+                <option value="상관없음/추천받기">상관없음 / 추천받기</option>
+                <option value="대명아임레디">대명아임레디</option>
+                <option value="보람상조">보람상조</option>
+                <option value="프리드라이프">프리드라이프</option>
+                <option value="교원라이프">교원라이프</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="select-purpose">사용 목적 <span class="required">*</span></label>
+              <select id="select-purpose" name="purpose" required>
+                <option value="" disabled selected>선택하세요</option>
+                <option value="신혼가구/신규입주">신혼가구 / 신규입주</option>
+                <option value="노후가전교체">노후 가전제품 교체</option>
+                <option value="부모님효도선물">부모님 효도 선물</option>
+                <option value="자영업/사무실">자영업 / 개인 사무실</option>
+                <option value="여행/라이프케어">여행 및 레저 라이프케어</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="select-budget">월납입 가능 금액 <span class="required">*</span></label>
+              <select id="select-budget" name="budget" required>
+                <option value="" disabled selected>선택하세요</option>
+                <option value="3만원이하">월 3만원 이하</option>
+                <option value="3~5만원">월 3만원 ~ 5만원</option>
+                <option value="5~7만원">월 5만원 ~ 7만원</option>
+                <option value="7만원이상">월 7만원 이상</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="select-time">상담 희망 시간 <span class="required">*</span></label>
+              <select id="select-time" name="consultTime" required>
+                <option value="" disabled selected>선택하세요</option>
+                <option value="빠른상담">빠른 상담 원함</option>
+                <option value="오전">오전 (09:00 ~ 12:00)</option>
+                <option value="오후">오후 (12:00 ~ 18:00)</option>
+                <option value="저녁">저녁 (18:00 ~ 20:00)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group textarea-group">
+            <label for="user-message">문의 내용 (선택)</label>
+            <textarea id="user-message" name="userMessage" rows="3" placeholder="추가적으로 궁금하신 가전 모델명이나 문의사항을 입력해주세요."></textarea>
+          </div>
+
+          <div class="form-checkbox-group">
+            <label class="checkbox-container">
+              <input type="checkbox" id="privacy-agree" required>
+              <span class="checkmark"></span>
+              개인정보 수집 및 이용에 동의합니다. <a href="#" class="link-btn" id="privacy-policy-open">(자세히보기)</a>
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-accent btn-block btn-lg btn-pulse">무료 비교상담 신청하기</button>
+        </form>
+      </div>
+
+      <!-- FAQ Section (Right) -->
+      <div class="faq-wrapper scroll-reveal delay-1">
+        <h2 class="section-title">자주 묻는 질문</h2>
+        <p class="section-subtitle">상조가전 결합상품 가입 전에 고객님들이 가장 자주 궁금해하시는 질문들을 정리했습니다.</p>
+        
+        <div class="accordion">
+          <div class="accordion-item">
+            <button class="accordion-header">
+              <span>상조가전 결합상품은 어떤 상품인가요?</span>
+              <span class="accordion-arrow"></span>
+            </button>
+            <div class="accordion-body">
+              <p>상조가전 결합상품은 선불식 상조 서비스의 적립금과 가전제품 렌탈 혜택이 융합된 복합 상품입니다. 고객님께서는 매월 일정한 회비를 성실히 납부하는 조건으로 필요로 하는 대형 가전이나 디지털 기기를 사은품 또는 파격 할인 혜택으로 바로 수령하고, 납입 완료 시(만기)에는 장례 서비스를 이용하시거나 서비스를 전혀 이용하지 않았다면 불입액 전액을 100% 안전하게 돌려받으실 수 있습니다.</p>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-header">
+              <span>일반 렌탈과 어떤 차이가 있나요?</span>
+              <span class="accordion-arrow"></span>
+            </button>
+            <div class="accordion-body">
+              <p>가장 큰 차이는 <strong>'만기 환급금의 존재 여부'</strong>입니다. 일반 가전 렌탈은 계약 기간이 끝나면 소유권은 이전되지만 그동안 지불한 렌탈료는 소멸합니다. 반면 상조가전 결합상품은 가전제품의 혜택을 온전히 받으면서도 만기 납부 완료 시 납입금 총액 100%를 고스란히 환급받아 저축처럼 환수할 수 있어 재정적으로 훨씬 유리합니다.</p>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-header">
+              <span>만기 환급은 어떻게 이루어지나요?</span>
+              <span class="accordion-arrow"></span>
+            </button>
+            <div class="accordion-body">
+              <p>약정된 납입 기간(예: 120회, 150회 등) 동안 월 납입금을 연체 없이 전액 불입하고 상조 서비스를 이용하지 않은 상태에서 만기가 도래하면, 가입하신 상조 회사의 청구 절차에 따라 납입 원금의 100% 전액을 고객님의 계좌로 안전하게 환급받으실 수 있습니다.</p>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-header">
+              <span>중도해지 시 위약금은 어떻게 되나요?</span>
+              <span class="accordion-arrow"></span>
+            </button>
+            <div class="accordion-body">
+              <p>만기 전 중도해지 시에는 고객님이 수령하신 가전제품의 잔여 가치 분담금과 상조 가입 해지 수수료가 발생할 수 있습니다. 라이프모아에서는 각 브랜드별 중도해지 정산 조건을 미리 상세히 분석하여, 고객님의 예상 가입 유지 기간에 따라 리스크가 가장 적은 최적의 상품을 컨설팅해 드립니다.</p>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-header">
+              <span>원하는 가전이 없으면 변경 가능한가요?</span>
+              <span class="accordion-arrow"></span>
+            </button>
+            <div class="accordion-body">
+              <p>네, 가능합니다. 기획된 기본 모델 외에도 삼성, LG 등 제조사 및 카테고리별로 매우 다양한 상세 모델 및 가전 패키지가 준비되어 있습니다. 30초 비교상담 신청서에 원하시는 가전 종류나 세부 사양을 기입해주시면, 1:1 전담 매니저가 제휴 브랜드들과 연계하여 맞춤형 매칭 가능 여부와 추가 혜택 조건을 직접 파악하여 상세하게 안내해 드립니다.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="more-faq-btn-wrapper text-right">
+          <a href="#" class="more-faq-link" id="load-more-faqs-btn">
+            더 많은 질문 보기
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" class="small-arrow-icon"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modals -->
+  <!-- 1. Consultation Submission Success Modal -->
+  <div class="modal-overlay" id="success-modal">
+    <div class="modal-content text-center">
+      <div class="modal-icon-wrapper success">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="green-check"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      </div>
+      <h3 class="modal-title">상담 신청 완료</h3>
+      <p class="modal-desc">비교상담 신청이 성공적으로 접수되었습니다.<br>입력하신 연락처로 담당 컨설턴트가 신속히 연락드리겠습니다.</p>
+      <button class="btn btn-primary" id="success-modal-close">확인</button>
+    </div>
+  </div>
+
+  <!-- 2. Privacy Policy Modal -->
+  <div class="modal-overlay" id="privacy-modal">
+    <div class="modal-content">
+      <h3 class="modal-title">개인정보 수집 및 이용 동의</h3>
+      <div class="modal-scroll-body">
+        <p><strong>라이프모아</strong>는 고객님의 무료 비교상담 신청과 관련하여 아래와 같이 개인정보를 수집 및 이용합니다.</p>
+        <ol>
+          <li><strong>수집 및 이용 목적</strong>: 상조가전 결합상품 관련 1:1 비교 컨설팅 및 상담 전화/문자 발송</li>
+          <li><strong>수집하는 개인정보 항목</strong>: 이름, 연락처, 희망가전, 사용목적, 납입가능금액, 희망시간</li>
+          <li><strong>보유 및 이용 기간</strong>: 상담 완료 후 1년 또는 고객님의 삭제 요청 시까지 (관계 법령에 의한 보존이 필요한 경우 관련 법에 따름)</li>
+          <li><strong>동의 거부 권리</strong>: 귀하가 본 동의를 거부할 권리가 있으나, 거부 시 무료 상담 및 맞춤 상품 추천 서비스 이용이 제한됩니다.</li>
+        </ol>
+      </div>
+      <button class="btn btn-outline btn-block" id="privacy-modal-close">닫기</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="footer-container">
+      <div class="footer-brand-info">
+        <div class="footer-logo text-logo">
+          <span class="brand-name">라이프<span class="logo-accent">모아</span></span>
+          <span class="brand-divider">|</span>
+          <span class="brand-sub">상조가전비교센터</span>
+        </div>
+        <p class="footer-tagline">상조 서비스와 가전을 합리적으로 비교하고 최적의 상품을 제안해 드립니다.</p>
+
+      </div>
+      
+      <div class="footer-meta-info">
+        <p>
+          <span>(주)라이프앤조이 | 대표 : 김지훈</span>
+        </p>
+        <p>
+          <span>경기도 하남시 미사대로 510, 624호(아이에스비즈타워)</span>
+        </p>
+        <p>
+          <span>사업자등록번호: 388-86-02921 | 통신판매신고번호: 2024-경기하남-1853호</span>
+        </p>
+        <p>
+          <span>E-mail: <a href="mailto:lifenjoy0296@gmail.com">lifenjoy0296@gmail.com</a> | 개인정보보호책임자: 김지훈(lifenjoy0296@gmail.co.kr)</span>
+        </p>
+        <div class="footer-bottom-row">
+          <p class="copyright">Copyright(c)2026 LIFE&JOY Co.,Ltd. All Right Reserved.</p>
+          <a href="admin.html" class="footer-admin-link" target="_blank">어드민 바로가기</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 3. Product Detail & Brand Comparison Modal -->
+  <div class="modal-overlay" id="product-detail-modal">
+    <div class="modal-content product-modal-content">
+      <button class="modal-close-btn" id="product-modal-close" aria-label="모달 닫기">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      
+      <div class="product-modal-single-col">
+        <!-- 1. Header Information -->
+        <div class="product-modal-header text-center">
+          <span class="badge badge-accent" id="modal-product-category">카테고리</span>
+          <h3 class="modal-product-title" id="modal-product-name">제품명</h3>
+          <p class="modal-product-desc" id="modal-product-description">제품 설명</p>
+        </div>
+
+        <!-- 2. Image Container (Thumbnail only, 1:1, full-width) -->
+        <div class="modal-images-container single-image">
+          <div class="modal-thumb-wrapper">
+            <img id="modal-product-thumb" src="" alt="제품 썸네일" class="modal-product-img-thumb">
+          </div>
+        </div>
+        
+        <!-- 3. Model Name Box (Specs and title word removed) -->
+        <div class="product-model-box">
+          <div class="modal-product-model-small" id="modal-product-model-name">모델명 로딩중...</div>
+        </div>
+
+        <!-- 3.5 Refer to Product Details Button -->
+        <div class="modal-reference-btn-wrapper">
+          <button type="button" class="btn-product-reference" id="modal-product-reference-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="ref-btn-icon"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            <span>제품 상세 참고하기</span>
+          </button>
+        </div>
+
+        <!-- 4. Brand Comparison & Pricing -->
+        <div class="product-modal-pricing">
+          <h4 class="pricing-title">제휴 상조회사별 비교안내</h4>
+          <p class="pricing-subtitle">아래 상조사 결합 시 가전제품 렌탈료가 전액 지원(실납입금 0원)됩니다.</p>
+          
+          <div class="pricing-cards-container" id="modal-pricing-cards-body">
+            <!-- Dynamically populated pricing cards -->
+          </div>
+          <p class="pricing-notice">* 만기 납입 완료 후 상조 서비스 미사용 시 불입금 100% 원금이 안전하게 보장되며 전액 환급됩니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Consultation Form Modal -->
+  <div class="modal-overlay" id="consult-form-modal">
+    <div class="modal-content consult-modal-content">
+      <button class="modal-close-btn" id="consult-modal-close" aria-label="모달 닫기">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      
+      <div class="form-wrapper modal-form-wrapper">
+        <h2 class="section-title">30초 무료 비교상담 신청</h2>
+        <p class="section-subtitle">현재 희망하시는 조건과 가전을 바탕으로, 전문 상담사가 맞춤 비교 안내를 제공합니다.</p>
+        
+        <form class="consultation-form-el" id="modal-consult-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="modal-user-name">이름 <span class="required">*</span></label>
+              <input type="text" id="modal-user-name" name="userName" placeholder="이름을 입력해주세요" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="modal-user-phone">연락처 <span class="required">*</span></label>
+              <input type="tel" id="modal-user-phone" name="userPhone" placeholder="010-0000-0000" pattern="[0-9]{3}-[0-9]{3,4}-[0-9]{4}" required>
+            </div>
+
+            <div class="form-group">
+              <label for="modal-select-item">희망 가전 <span class="required">*</span></label>
+              <select id="modal-select-item" name="hopeItem" required>
+                <option value="" disabled selected>선택하세요</option>
+                <option value="노트북">노트북</option>
+                <option value="안마의자·건강가전">안마의자·건강가전</option>
+                <option value="정수기·생활가전">정수기·생활가전</option>
+                <option value="대형가전">대형가전</option>
+                <option value="소파·리빙가구">소파·리빙가구</option>
+                <option value="입주가전 패키지">입주가전 패키지</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="modal-select-brand">희망 상조사 <span class="required">*</span></label>
+              <select id="modal-select-brand" name="hopeBrand" required>
+                <option value="" disabled selected>선택하세요</option>
+                <option value="상관없음/추천받기">상관없음 / 추천받기</option>
+                <option value="대명아임레디">대명아임레디</option>
+                <option value="보람상조">보람상조</option>
+                <option value="프리드라이프">프리드라이프</option>
+                <option value="교원라이프">교원라이프</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="modal-select-purpose">사용 목적 <span class="required">*</span></label>
+              <select id="modal-select-purpose" name="purpose" required>
+                <option value="" disabled selected>선택하세요</option>
+                <option value="신혼가구/신규입주">신혼가구 / 신규입주</option>
+                <option value="노후가전교체">노후 가전제품 교체</option>
+                <option value="부모님효도선물">부모님 효도 선물</option>
+                <option value="자영업/사무실">자영업 / 개인 사무실</option>
+                <option value="여행/라이프케어">여행 및 레저 라이프케어</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="modal-select-budget">월납입 가능 금액 <span class="required">*</span></label>
+              <select id="modal-select-budget" name="budget" required>
+                <option value="" disabled selected>선택하세요</option>
+                <option value="3만원이하">월 3만원 이하</option>
+                <option value="3~5만원">월 3만원 ~ 5만원</option>
+                <option value="5~7만원">월 5만원 ~ 7만원</option>
+                <option value="7만원이상">월 7만원 이상</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="modal-select-time">상담 희망 시간 <span class="required">*</span></label>
+              <select id="modal-select-time" name="consultTime" required>
+                <option value="" disabled selected>선택하세요</option>
+                <option value="빠른상담">빠른 상담 원함</option>
+                <option value="오전">오전 (09:00 ~ 12:00)</option>
+                <option value="오후">오후 (12:00 ~ 18:00)</option>
+                <option value="저녁">저녁 (18:00 ~ 20:00)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group textarea-group">
+            <label for="modal-user-message">문의 내용 (선택)</label>
+            <textarea id="modal-user-message" name="userMessage" rows="2" placeholder="추가적으로 궁금하신 가전 모델명이나 문의사항을 입력해주세요."></textarea>
+          </div>
+
+          <div class="form-checkbox-group">
+            <label class="checkbox-container">
+              <input type="checkbox" id="modal-privacy-agree" required>
+              <span class="checkmark"></span>
+              개인정보 수집 및 이용에 동의합니다. <a href="#" class="link-btn" id="modal-privacy-policy-open">(자세히보기)</a>
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-accent btn-block btn-lg">무료 비교상담 신청하기</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Seller Application Modal -->
+  <div class="modal-overlay" id="seller-apply-modal">
+    <div class="modal-content consult-modal-content">
+      <button class="modal-close-btn" id="seller-modal-close" aria-label="모달 닫기">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      
+      <div class="form-wrapper modal-form-wrapper">
+        <h2 class="section-title">분양몰 파트너(셀러) 신청</h2>
+        <p class="section-subtitle">나만의 홍보 도메인을 개설하고 가전 렌탈 결합 상담 유치 수익을 정산받으세요.</p>
+        
+        <form class="consultation-form-el" id="seller-apply-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="seller-name">이름 <span class="required">*</span></label>
+              <input type="text" id="seller-name" name="sellerName" placeholder="이름을 입력해주세요" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="seller-phone">연락처 <span class="required">*</span></label>
+              <input type="tel" id="seller-phone" name="sellerPhone" placeholder="010-0000-0000" pattern="[0-9]{3}-[0-9]{3,4}-[0-9]{4}" required>
+            </div>
+
+            <div class="form-group span-2">
+              <label>도로명 주소 <span class="required">*</span></label>
+              <div class="address-input-group" style="display: flex; gap: 8px;">
+                <input type="text" id="seller-zipcode" placeholder="우편번호" readonly required style="width: 120px; flex-grow: 0; margin-bottom: 0;">
+                <button type="button" class="btn btn-outline btn-sm" id="seller-address-btn" style="padding: 10px 16px; font-size: 0.85rem; white-space: nowrap; margin-bottom: 0;">우편번호 검색</button>
+              </div>
+              <input type="text" id="seller-address" placeholder="기본 주소" readonly required style="margin-top: 8px; margin-bottom: 0;">
+              <input type="text" id="seller-address-detail" placeholder="상세 주소를 입력해주세요" required style="margin-top: 8px; margin-bottom: 0;">
+            </div>
+
+            <div class="form-group">
+              <label for="seller-username">희망 로그인 ID <span class="required">*</span></label>
+              <input type="text" id="seller-username" name="sellerUsername" placeholder="아이디를 입력해주세요" required>
+            </div>
+
+            <div class="form-group">
+              <label for="seller-password">로그인 비밀번호 <span class="required">*</span></label>
+              <input type="password" id="seller-password" name="sellerPassword" placeholder="비밀번호를 입력해주세요" required>
+            </div>
+
+            <div class="form-group span-2">
+              <label for="seller-subdomain">희망 서브도메인 명 <span class="required">*</span></label>
+              <div class="subdomain-input-wrapper" style="display: flex; align-items: center; gap: 4px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0 12px; background-color: #ffffff;">
+                <input type="text" id="seller-subdomain" name="sellerSubdomain" placeholder="ex) mybiz" required style="flex-grow: 1; border: none; padding: 12px 0; margin-bottom: 0; outline: none; box-shadow: none;">
+                <span class="subdomain-suffix" style="font-weight: 700; color: var(--primary-color); font-size: 0.9rem;">.lifemoa.co.kr</span>
+              </div>
+              <p class="subdomain-tip" style="font-size: 0.8rem; color: var(--text-light); margin-top: 6px;">해당 명칭으로 나만의 홍보 비교 플랫폼 사이트 주소가 개설됩니다.</p>
+            </div>
+          </div>
+
+          <div class="form-checkbox-group" style="margin-top: 20px;">
+            <label class="checkbox-container">
+              <input type="checkbox" id="seller-privacy-agree" required>
+              <span class="checkmark"></span>
+              파트너 약관 동의 및 개인정보 처리방침에 동의합니다.
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-accent btn-block btn-lg" style="margin-top: 20px;">셀러 파트너 신청하기</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sticky Bottom Inquiry Bar -->
+  <div class="sticky-inquiry-bar">
+    <!-- Collapse/Minimize button for mobile -->
+    <button type="button" class="inquiry-toggle-btn" id="inquiry-toggle-btn" aria-label="상담바 접기">
+      <span class="toggle-icon">▼</span>
+    </button>
+    
+    <div class="inquiry-bar-container">
+      <div class="inquiry-models">
+        <img src="https://res.cloudinary.com/dfkntvpmv/image/upload/v1782699139/%EC%A0%9C%EB%AA%A9_%EC%97%86%EC%9D%8C-1_jxgyex.png" id="appliances-img" class="model-img" alt="비교 가능 가전">
+      </div>
+      
+      <form class="inquiry-form" id="quick-inquiry-form">
+        <div class="inquiry-title-group">
+          <span class="inquiry-label">빠른 상담문의</span>
+          <span class="inquiry-phone">1644-8399</span>
+          <span class="inquiry-collapsed-tip" style="display: none;">빠른 상담문의 1644-8399 (클릭 시 열기 ▲)</span>
+        </div>
+        
+        <div class="inquiry-inputs-group">
+          <select id="quick-hope-item" class="inquiry-select" required>
+            <option value="" disabled selected>희망 가전 선택</option>
+            <option value="노트북">노트북</option>
+            <option value="안마의자">안마의자</option>
+            <option value="정수기">정수기</option>
+            <option value="소파">소파</option>
+            <option value="대형가전">대형가전</option>
+            <option value="기타">기타 가전</option>
+          </select>
+          
+          <input type="text" id="quick-name" class="inquiry-input" placeholder="이름" required>
+          
+          <input type="text" id="quick-phone" class="inquiry-input" placeholder="연락처" required>
+          
+          <button type="submit" class="inquiry-submit-btn">빠른 상담 신청</button>
+        </div>
+        <button type="button" class="mobile-cta-btn" id="mobile-quick-cta-btn">빠른 상담 신청</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- JavaScript File -->
+  <script type="module" src="script.js"></script>
+</body>
+</html>
