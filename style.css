@@ -4527,36 +4527,54 @@ body {
 
 /* --- Ribbon Banner Responsive Overrides --- */
 @media (max-width: 1100px) {
+  .ribbon-banner-section {
+    padding: 32px 0;
+  }
+
   .ribbon-container {
-    grid-template-columns: 1fr;
-    gap: 30px;
-    padding: 30px 24px;
-    text-align: center;
-  }
-
-  .ribbon-left {
-    align-items: center;
-  }
-
-  .ribbon-middle {
-    border-left: none;
-    border-right: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 25px 0;
     flex-direction: column;
+    text-align: center;
+    padding: 24px 20px;
+    gap: 24px;
+  }
+
+  .ribbon-content-wrap {
+    flex-direction: column;
+    gap: 16px;
     width: 100%;
     align-items: center;
-    gap: 20px;
   }
-}
 
-@media (max-width: 500px) {
-  .ribbon-vs-panel {
-    flex-direction: column;
-    gap: 8px;
+  .ribbon-title {
+    display: block; /* Disable flex layout on mobile/tablet so text wraps naturally */
+    text-align: center;
+    font-size: 1.1rem;
+    line-height: 1.6;
   }
-  .vs-divider {
-    transform: rotate(90deg);
+
+  .ribbon-highlight {
+    display: inline;
+    color: #38BDF8;
+    font-weight: 800;
+  }
+
+  .ribbon-sep {
+    display: none; /* Hide separator on mobile/tablet */
+  }
+
+  .ribbon-subtext {
+    display: block; /* Force subtext to a new line */
+    margin-top: 8px;
+    font-size: 0.88rem;
+    color: #94A3B8;
+    line-height: 1.4;
+  }
+
+  .btn-ribbon-cta {
+    width: 100%;
+    max-width: 320px;
+    justify-content: center;
+    padding: 12px 24px;
+    font-size: 0.95rem;
   }
 }
