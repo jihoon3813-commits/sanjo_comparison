@@ -519,7 +519,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 1. Populate text fields
     const category = CATEGORY_DATA.find(c => c.id === product.categoryId);
-    txtModalCategory.textContent = category ? category.name : '가전';
+    txtModalCategory.textContent = `${category ? category.name : '가전'} | ${product.accounts || 1}구좌`;
     txtModalName.textContent = product.name;
     txtModalDesc.textContent = product.description;
 
@@ -871,13 +871,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     mutual: [],
     category: [],
     brand: [],
-    price: []
+    price: [],
+    accounts: []
   };
 
   let brandViewApplianceFilters = {
     category: [],
     brand: [],
-    price: []
+    price: [],
+    accounts: []
   };
 
   function renderFilterChips(containerId, options, activeArray, onUpdate) {
@@ -930,6 +932,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const categoryOptions = CATEGORY_DATA.filter(c => c.id !== 'all').map(c => ({ id: c.id, name: c.name }));
     const dynamicBrands = getProductBrands(PRODUCT_DATA);
     const dynamicPrices = getProductPriceRanges(PRODUCT_DATA);
+    const accountsOptions = [{ id: '1', name: '1구좌' }, { id: '2', name: '2구좌' }, { id: '3', name: '3구좌' }, { id: '4', name: '4구좌' }];
 
     const updateApplianceFilters = () => {
       renderApplianceProducts();
@@ -939,6 +942,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderFilterChips('filter-chips-category', categoryOptions, applianceFilters.category, updateApplianceFilters);
     renderFilterChips('filter-chips-brand', dynamicBrands, applianceFilters.brand, updateApplianceFilters);
     renderFilterChips('filter-chips-price', dynamicPrices, applianceFilters.price, updateApplianceFilters);
+    renderFilterChips('filter-chips-accounts', accountsOptions, applianceFilters.accounts, updateApplianceFilters);
 
     const btnApplianceReset = document.getElementById('btn-appliance-filter-reset');
     if (btnApplianceReset) {
@@ -947,10 +951,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         applianceFilters.category = [];
         applianceFilters.brand = [];
         applianceFilters.price = [];
+        applianceFilters.accounts = [];
         renderFilterChips('filter-chips-mutual', mutualOptions, applianceFilters.mutual, updateApplianceFilters);
         renderFilterChips('filter-chips-category', categoryOptions, applianceFilters.category, updateApplianceFilters);
         renderFilterChips('filter-chips-brand', dynamicBrands, applianceFilters.brand, updateApplianceFilters);
         renderFilterChips('filter-chips-price', dynamicPrices, applianceFilters.price, updateApplianceFilters);
+        renderFilterChips('filter-chips-accounts', accountsOptions, applianceFilters.accounts, updateApplianceFilters);
         updateApplianceFilters();
       };
     }
@@ -961,6 +967,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         brandViewApplianceFilters.category = [];
         brandViewApplianceFilters.brand = [];
         brandViewApplianceFilters.price = [];
+        brandViewApplianceFilters.accounts = [];
         initBrandFiltersUI();
         renderBrandSpecificProducts();
       };
@@ -974,6 +981,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     const dynamicBrands = getProductBrands(brandSpecificProducts);
     const dynamicPrices = getProductPriceRanges(brandSpecificProducts);
+    const accountsOptions = [{ id: '1', name: '1구좌' }, { id: '2', name: '2구좌' }, { id: '3', name: '3구좌' }, { id: '4', name: '4구좌' }];
 
     const categoryOptions = CATEGORY_DATA.filter(c => c.id !== 'all').map(c => ({ id: c.id, name: c.name }));
     const updateBrandFilters = () => {
@@ -982,6 +990,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderFilterChips('filter-chips-brand-category', categoryOptions, brandViewApplianceFilters.category, updateBrandFilters);
     renderFilterChips('filter-chips-brand-brand', dynamicBrands, brandViewApplianceFilters.brand, updateBrandFilters);
     renderFilterChips('filter-chips-brand-price', dynamicPrices, brandViewApplianceFilters.price, updateBrandFilters);
+    renderFilterChips('filter-chips-brand-accounts', accountsOptions, brandViewApplianceFilters.accounts, updateBrandFilters);
   }
 
   function renderApplianceProducts() {
@@ -1024,6 +1033,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         if (!matched) return false;
       }
+
+      // 5. 구좌수 필터
+      if (applianceFilters.accounts.length > 0) {
+        const prodAccounts = String(product.accounts || 1);
+        if (!applianceFilters.accounts.includes(prodAccounts)) {
+          return false;
+        }
+      }
       
       return true;
     });
@@ -1048,6 +1065,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       card.innerHTML = `
         <div class="product-card-thumb-wrapper">
+          <span class="account-badge account-badge-${product.accounts || 1}">${product.accounts || 1}구좌</span>
           <img src="${product.thumbnail}" alt="${product.name}" class="product-card-thumb" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" loading="lazy">
           <div class="product-placeholder-svg" style="display: none;">
             <svg viewBox="0 0 64 64" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1186,6 +1204,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!matched) return false;
       }
 
+      // 4. Accounts Filter
+      if (brandViewApplianceFilters.accounts.length > 0) {
+        const prodAccounts = String(p.accounts || 1);
+        if (!brandViewApplianceFilters.accounts.includes(prodAccounts)) {
+          return false;
+        }
+      }
+
       return true;
     });
     
@@ -1203,6 +1229,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       card.innerHTML = `
         <div class="product-card-thumb-wrapper">
+          <span class="account-badge account-badge-${product.accounts || 1}">${product.accounts || 1}구좌</span>
           <img src="${product.thumbnail}" alt="${product.name}" class="product-card-thumb" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" loading="lazy">
           <div class="product-placeholder-svg" style="display: none;">
             <svg viewBox="0 0 64 64" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

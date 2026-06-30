@@ -1857,7 +1857,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
         <img src="${p.thumbnail}" alt="" class="p-thumb">
         <div class="p-info">
-          <span class="p-category">[${categoryText}]</span>
+          <span class="p-category">[${categoryText}] [${p.accounts || 1}구좌]</span>
           <h4 class="p-title">${p.name}</h4>
           <span class="p-model">${p.modelName}</span>
         </div>
@@ -2468,6 +2468,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     monthlyInput.value = p.monthly ? parseInt(p.monthly).toLocaleString('ko-KR') : '';
     cardInput.value = p.cardBenefitPrice ? parseInt(p.cardBenefitPrice).toLocaleString('ko-KR') : '';
 
+    const accountsSelect = document.getElementById('prod-accounts');
+    if (accountsSelect) {
+      accountsSelect.value = p.accounts || 1;
+    }
+
     productFormContainer.style.display = 'block';
     document.getElementById('prod-name').focus();
   }
@@ -2490,6 +2495,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       const planSelect = document.getElementById('prod-plan-id');
       if (planSelect) {
         planSelect.value = currentActiveProductPlanTab;
+      }
+
+      const accountsSelect = document.getElementById('prod-accounts');
+      if (accountsSelect) {
+        accountsSelect.value = "1";
       }
       
       productFormContainer.style.display = 'block';
@@ -2519,6 +2529,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       const planId = document.getElementById('prod-plan-id').value;
       const monthlyVal = parseInt(document.getElementById('prod-price-monthly').value.replace(/[^0-9]/g, ''));
       const benefitVal = parseInt(document.getElementById('prod-price-card').value.replace(/[^0-9]/g, ''));
+      const accountsSelect = document.getElementById('prod-accounts');
+      const accounts = accountsSelect ? parseInt(accountsSelect.value) || 1 : 1;
 
       if (!planId) {
         alert("연동할 상조 상품 플랜을 선택해주세요.");
@@ -2544,7 +2556,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             thumbnail, 
             planId, 
             monthly: monthlyVal, 
-            cardBenefitPrice: benefitVal 
+            cardBenefitPrice: benefitVal,
+            accounts
           };
           setProducts(products);
           alert("가전제품 수정이 성공적으로 저장되었습니다.");
@@ -2560,7 +2573,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           thumbnail, 
           planId, 
           monthly: monthlyVal, 
-          cardBenefitPrice: benefitVal
+          cardBenefitPrice: benefitVal,
+          accounts
         };
         products.push(newProduct);
         setProducts(products);
