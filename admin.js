@@ -368,7 +368,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           desc: item.desc,
           logoText: item.logoText || item.name.substring(0, 2),
           fee: Number(item.fee) || 0,
-          logoUrl: item.logoImage || null
+          logoUrl: item.logoImage || undefined
         });
       }
 
@@ -387,7 +387,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             name: n.name,
             desc: n.desc,
             fee: Number(n.fee) || 0,
-            logoUrl: n.logoImage || null
+            logoUrl: n.logoImage || undefined
           });
         }
       }
@@ -3280,7 +3280,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 ...b,
                 desc: brandDesc,
                 fee: brandFee,
-                logoImage: brandLogo || null
+                logoImage: brandLogo || undefined
               };
             }
             return b;
@@ -3294,7 +3294,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             desc: brandDesc,
             logoText: newBrandName.substring(0, 2),
             fee: brandFee,
-            logoImage: brandLogo || null
+            logoImage: brandLogo || undefined
           };
           brands.push(newBrand);
           await setBrands(brands);
@@ -3308,7 +3308,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               ...b,
               desc: brandDesc,
               fee: brandFee,
-              logoImage: brandLogo || null
+              logoImage: brandLogo || undefined
             };
           }
           return b;
