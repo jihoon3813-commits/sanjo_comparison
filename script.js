@@ -766,7 +766,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     btnCloseProductModal.addEventListener('click', closeProductModal);
   }
 
-  // Close modal when clicking on backdrop overlay
+  // Close modal when clicking on backdrop overlay (Disabled per user request: do not close when clicked outside)
+  /*
   if (modalProductDetail) {
     modalProductDetail.addEventListener('click', (e) => {
       if (e.target === modalProductDetail) {
@@ -774,6 +775,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
   }
+  */
 
   function openConsultFormModal(hopeItem, hopeBrand, purpose, budget) {
     if (!consultFormModal) return;

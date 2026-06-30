@@ -3522,8 +3522,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.addEventListener('input', (e) => {
     const target = e.target;
     
-    // Phone Format
-    if (target.type === 'tel' || target.id?.includes('phone') || target.className?.includes('phone')) {
+    // Phone Format (Exclude card-phone per user request)
+    if ((target.type === 'tel' || target.id?.includes('phone') || target.className?.includes('phone')) && !target.classList.contains('card-phone')) {
       const selectionStart = target.selectionStart;
       const oldLength = target.value.length;
       
