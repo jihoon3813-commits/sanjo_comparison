@@ -2784,11 +2784,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Handle plan delete
-  function deletePlan(id) {
+  async function deletePlan(id) {
     if (!confirm("정말 이 상품 플랜을 삭제하시겠습니까? 관련 가전제품 연동 가격도 영향이 있을 수 있습니다.")) return;
     const plans = getPlans();
     const filtered = plans.filter(p => p.id !== id);
-    setPlans(filtered);
+    await setPlans(filtered);
     renderPlansTable();
     alert("성공적으로 삭제되었습니다.");
   }
@@ -3402,7 +3402,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             id, brandId, name, maturityRound, refundRate, depositOrg, funeralService, convertService, membershipService,
             paymentSections, cards, notices
           };
-          setPlans(plans);
+          await setPlans(plans);
           alert("상품 플랜이 성공적으로 수정되었습니다.");
         }
       } else {
@@ -3413,7 +3413,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           paymentSections, cards, notices
         };
         plans.push(newPlan);
-        setPlans(plans);
+        await setPlans(plans);
         alert("새 상품 플랜이 성공적으로 등록되었습니다.");
       }
 
