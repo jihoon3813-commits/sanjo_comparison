@@ -1205,6 +1205,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const tableBody = document.getElementById('customers-table-body');
     if (!tableBody) return;
 
+    const checkAll = document.getElementById('check-all-customers');
+    if (checkAll) checkAll.checked = false;
+    updateDeleteSelectedBtnVisibility();
+
     const cons = getConsultations();
     const query = customerSearch.value.trim().toLowerCase();
     const status = customerStatusFilter.value;
@@ -1231,7 +1235,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     tableBody.innerHTML = '';
 
     if (filtered.length === 0) {
-      tableBody.innerHTML = `<tr><td colspan="8" class="text-center">상담 신청 내역이 존재하지 않습니다.</td></tr>`;
+      tableBody.innerHTML = `<tr><td colspan="9" class="text-center">상담 신청 내역이 존재하지 않습니다.</td></tr>`;
       return;
     }
 
@@ -1263,6 +1267,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // Layout columns
       tr.innerHTML = `
+        <td style="text-align: center;" class="td-checkbox">
+          <input type="checkbox" class="customer-checkbox" data-id="${c.id}">
+        </td>
         <td class="bold">${c.name}</td>
         <td>${c.phone}</td>
         <td><span class="small-text font-navy">${c.hopeItem}</span></td>
@@ -1271,7 +1278,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         <td><span class="small-text text-muted">${regDate}</span></td>
         <td class="td-status-dropdown-container"></td>
         <td>
-          <button class="btn btn-outline btn-xs btn-view-detail">상세</button>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn btn-outline btn-xs btn-view-detail">상세</button>
+            <button class="btn btn-outline-danger btn-xs btn-delete-customer" data-id="${c.id}">삭제</button>
+          </div>
         </td>
       `;
 
@@ -1280,7 +1290,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Make row clickable
       tr.style.cursor = 'pointer';
       tr.addEventListener('click', (e) => {
-        if (e.target.closest('.table-select-status') || e.target.closest('.btn')) {
+        if (e.target.closest('.table-select-status') || e.target.closest('.btn') || e.target.closest('.td-checkbox') || e.target.closest('.customer-checkbox')) {
           return;
         }
         openCustomerModal(c.id);
@@ -1290,13 +1300,83 @@ document.addEventListener('DOMContentLoaded', async () => {
         openCustomerModal(c.id);
       });
 
+      tr.querySelector('.btn-delete-customer').addEventListener('click', (e) => {
+        e.stopPropagation();
+        deleteCustomerSingle(c.id);
+      });
+
+      tr.querySelector('.customer-checkbox').addEventListener('change', () => {
+        const checkboxes = document.querySelectorAll('.customer-checkbox');
+        const checkedBoxes = document.querySelectorAll('.customer-checkbox:checked');
+        if (checkAll) {
+          checkAll.checked = checkboxes.length === checkedBoxes.length;
+        }
+        updateDeleteSelectedBtnVisibility();
+      });
+
       tableBody.appendChild(tr);
     });
+  }
+
+  function updateDeleteSelectedBtnVisibility() {
+    const deleteBtn = document.getElementById('btn-delete-selected-customers');
+    if (!deleteBtn) return;
+    const checkedBoxes = document.querySelectorAll('.customer-checkbox:checked');
+    if (checkedBoxes.length > 0) {
+      deleteBtn.style.display = 'inline-flex';
+      deleteBtn.textContent = `선택 삭제 (${checkedBoxes.length})`;
+    } else {
+      deleteBtn.style.display = 'none';
+    }
+  }
+
+  function deleteCustomerSingle(id) {
+    const cons = getConsultations();
+    const customer = cons.find(c => c.id === id);
+    if (!customer) return;
+    
+    if (confirm(`고객 '${customer.name}'님의 상담 내역을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) {
+      const updated = cons.filter(c => c.id !== id);
+      setConsultations(updated);
+      renderCustomersTable();
+    }
+  }
+
+  function deleteCustomersSelected() {
+    const checkedBoxes = document.querySelectorAll('.customer-checkbox:checked');
+    const checkedIds = Array.from(checkedBoxes).map(cb => cb.getAttribute('data-id'));
+    if (checkedIds.length === 0) {
+      alert('삭제할 고객을 선택해주세요.');
+      return;
+    }
+
+    if (confirm(`선택한 ${checkedIds.length}명의 고객 상담 내역을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) {
+      const cons = getConsultations();
+      const updated = cons.filter(c => !checkedIds.includes(c.id));
+      setConsultations(updated);
+      renderCustomersTable();
+    }
   }
 
   if (customerSearch) customerSearch.addEventListener('input', renderCustomersTable);
   if (customerStatusFilter) customerStatusFilter.addEventListener('change', renderCustomersTable);
   if (customerSellerFilter) customerSellerFilter.addEventListener('change', renderCustomersTable);
+
+  const checkAll = document.getElementById('check-all-customers');
+  if (checkAll) {
+    checkAll.addEventListener('change', (e) => {
+      const checkboxes = document.querySelectorAll('.customer-checkbox');
+      checkboxes.forEach(cb => {
+        cb.checked = e.target.checked;
+      });
+      updateDeleteSelectedBtnVisibility();
+    });
+  }
+
+  const btnDeleteSelectedCustomers = document.getElementById('btn-delete-selected-customers');
+  if (btnDeleteSelectedCustomers) {
+    btnDeleteSelectedCustomers.addEventListener('click', deleteCustomersSelected);
+  }
 
   function changeCustomerStatus(id, newStatus) {
     const cons = getConsultations();

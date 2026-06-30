@@ -165,7 +165,8 @@
             <div class="search-box">
               <input type="text" id="customer-search" placeholder="고객 이름 또는 연락처 검색...">
             </div>
-            <div class="filter-box" style="display: flex; gap: 8px;">
+            <div class="filter-box" style="display: flex; gap: 8px; align-items: center;">
+              <button id="btn-delete-selected-customers" class="btn btn-outline-danger btn-sm" style="display: none; padding: 6px 12px; font-size: 0.82rem;">선택 삭제</button>
               <select id="customer-status-filter">
                 <option value="">전체 진행상태</option>
                 <option value="신규 접수">신규 접수</option>
@@ -185,6 +186,7 @@
             <table>
               <thead>
                 <tr>
+                  <th style="width: 40px; text-align: center;"><input type="checkbox" id="check-all-customers"></th>
                   <th>신청고객</th>
                   <th>연락처</th>
                   <th>희망 가전</th>
