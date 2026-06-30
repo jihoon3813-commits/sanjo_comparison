@@ -370,11 +370,12 @@
         <!-- [TAB] Mutual Aid Company Management (HQ Only) -->
         <section class="tab-panel" id="panel-brands">
           <!-- 제휴 상조회사 브랜드 관리 섹션 추가 -->
-          <div class="brand-management-header" style="margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+          <div class="brand-management-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
             <div>
               <h3>제휴 상조회사 정보 관리</h3>
               <p>각 제휴 상조회사의 기본 명칭, 로고 이미지 및 지급 수수료를 편집합니다.</p>
             </div>
+            <button type="button" class="btn btn-accent btn-sm" id="btn-add-brand-toggle">+ 상조회사 등록</button>
           </div>
           
           <div class="brand-cards-grid" id="admin-brands-cards-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px;">
@@ -394,7 +395,6 @@
             <table>
               <thead>
                 <tr>
-                  <th>플랜 ID</th>
                   <th>상조회사</th>
                   <th>상품 플랜명</th>
                   <th>만기 회차</th>
@@ -828,16 +828,17 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
       
-      <h3 class="modal-title">제휴 상조사 정보 수정</h3>
+      <h3 class="modal-title">제휴 상조사 정보 관리</h3>
       
       <form id="brand-edit-modal-form">
+        <input type="hidden" id="modal-brand-action" value="edit"> <!-- 'edit' or 'add' -->
         <input type="hidden" id="modal-brand-id">
         
         <div class="modal-form-grid" style="grid-template-columns: 1fr;">
           <!-- Brand Name -->
           <div class="form-group">
             <label for="modal-brand-name">상조사명 *</label>
-            <input type="text" id="modal-brand-name" required placeholder="예) 대명아임레디" readonly style="background-color: var(--bg-light); cursor: not-allowed;">
+            <input type="text" id="modal-brand-name" required placeholder="예) 대명아임레디">
           </div>
           
           <!-- Brand Description -->

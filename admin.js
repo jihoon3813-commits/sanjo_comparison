@@ -2647,28 +2647,56 @@ document.addEventListener('DOMContentLoaded', async () => {
       `;
 
       card.querySelector('.btn-edit-brand').addEventListener('click', () => {
-        openBrandEditModal(brand.id);
+        openBrandModal(brand.id);
       });
 
       container.appendChild(card);
     });
   }
 
-  function openBrandEditModal(brandId) {
-    const brands = getBrands() || [];
-    const brand = brands.find(b => b.id === brandId);
-    if (!brand) return;
+  function openBrandModal(brandId = null) {
+    if (!brandEditModal) return;
 
-    modalBrandId.value = brand.id;
-    modalBrandName.value = brand.name;
-    modalBrandDesc.value = brand.desc || '';
-    modalBrandFee.value = brand.fee ? parseInt(brand.fee).toLocaleString() : '0';
-    modalBrandLogoUrl.value = brand.logoImage || '';
-    modalBrandLogoFile.value = ''; // Reset file input
+    const actionInput = document.getElementById('modal-brand-action');
+    const idInput = document.getElementById('modal-brand-id');
+    const nameInput = document.getElementById('modal-brand-name');
+    const descInput = document.getElementById('modal-brand-desc');
+    const feeInput = document.getElementById('modal-brand-fee');
+    const logoUrlInput = document.getElementById('modal-brand-logo-url');
+    const logoFileInput = document.getElementById('modal-brand-logo-file');
+    const titleText = brandEditModal.querySelector('.modal-title');
 
-    if (brand.logoImage) {
-      modalBrandLogoPreview.src = brand.logoImage;
+    brandEditModalForm.reset();
+    if (logoFileInput) logoFileInput.value = '';
+
+    if (brandId) {
+      // Edit mode
+      const brands = getBrands() || [];
+      const brand = brands.find(b => b.id === brandId);
+      if (!brand) return;
+
+      if (titleText) titleText.textContent = "제휴 상조사 정보 수정";
+      if (actionInput) actionInput.value = "edit";
+      idInput.value = brand.id;
+      nameInput.value = brand.name;
+      descInput.value = brand.desc || '';
+      feeInput.value = brand.fee ? parseInt(brand.fee).toLocaleString() : '0';
+      logoUrlInput.value = brand.logoImage || '';
+
+      if (brand.logoImage) {
+        modalBrandLogoPreview.src = brand.logoImage;
+      } else {
+        modalBrandLogoPreview.src = 'https://placehold.co/200x80?text=No+Logo';
+      }
     } else {
+      // Add mode
+      if (titleText) titleText.textContent = "제휴 상조사 신규 등록";
+      if (actionInput) actionInput.value = "add";
+      idInput.value = "";
+      nameInput.value = "";
+      descInput.value = "";
+      feeInput.value = "120,000";
+      logoUrlInput.value = "";
       modalBrandLogoPreview.src = 'https://placehold.co/200x80?text=No+Logo';
     }
 
@@ -2686,6 +2714,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   if (btnCancelBrandEditModal) {
     btnCancelBrandEditModal.addEventListener('click', closeBrandEditModal);
+  }
+
+  const btnAddBrandToggle = document.getElementById('btn-add-brand-toggle');
+  if (btnAddBrandToggle) {
+    btnAddBrandToggle.addEventListener('click', () => openBrandModal());
   }
 
   // Live preview for Logo URL input
@@ -2717,36 +2750,61 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Handle Brand edit form submit
   if (brandEditModalForm) {
-    brandEditModalForm.addEventListener('submit', (e) => {
+    brandEditModalForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
+      const action = document.getElementById('modal-brand-action') ? document.getElementById('modal-brand-action').value : 'edit';
       const id = modalBrandId.value;
+      const name = modalBrandName.value.trim();
       const desc = modalBrandDesc.value.trim();
       const fee = parseInt(modalBrandFee.value.replace(/[^0-9]/g, '')) || 0;
       const logoImage = modalBrandLogoUrl.value.trim();
 
+      if (!name) {
+        alert('상조사명을 입력해주세요.');
+        return;
+      }
       if (!desc) {
         alert('상조사 설명을 입력해주세요.');
         return;
       }
 
       const brands = getBrands() || [];
-      const updatedBrands = brands.map(b => {
-        if (b.id === id) {
-          return {
-            ...b,
-            desc,
-            fee,
-            logoImage: logoImage || null
-          };
-        }
-        return b;
-      });
 
-      setBrands(updatedBrands);
+      if (action === 'edit') {
+        const updatedBrands = brands.map(b => {
+          if (b.id === id) {
+            return {
+              ...b,
+              name,
+              desc,
+              fee,
+              logoImage: logoImage || null,
+              logoText: name.substring(0, 2)
+            };
+          }
+          return b;
+        });
+        await setBrands(updatedBrands);
+        alert('상조회사 정보가 정상적으로 수정되었습니다.');
+      } else {
+        // Add
+        const newBrandId = 'brand_' + Date.now();
+        const newBrand = {
+          id: newBrandId,
+          name,
+          desc,
+          logoText: name.substring(0, 2),
+          fee,
+          logoImage: logoImage || null
+        };
+        brands.push(newBrand);
+        await setBrands(brands);
+        alert('새로운 상조회사가 정상적으로 등록되었습니다.');
+      }
+
       closeBrandEditModal();
       renderAdminBrandsCards();
-      alert('상조회사 정보가 정상적으로 수정되었습니다.');
     });
   }
 
@@ -2772,7 +2830,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     tableBody.innerHTML = '';
 
     if (plans.length === 0) {
-      tableBody.innerHTML = `<tr><td colspan="6" class="text-center">등록된 상조 상품 플랜이 없습니다.</td></tr>`;
+      tableBody.innerHTML = `<tr><td colspan="5" class="text-center">등록된 상조 상품 플랜이 없습니다.</td></tr>`;
       return;
     }
 
@@ -2786,10 +2844,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         summary = '구간 없음';
       }
 
-      const brandName = p.brandId === 'daemyung' ? '대명아임레디' : p.brandId === 'boram' ? '보람상조' : p.brandId === 'preed' ? '프리드라이프' : '교원라이프';
+      const brandName = getBrandName(p.brandId);
 
       tr.innerHTML = `
-        <td class="bold font-navy">${p.id}</td>
         <td class="bold">${brandName}</td>
         <td>${p.name}</td>
         <td>${p.maturityRound}회</td>
