@@ -2595,217 +2595,51 @@ document.addEventListener('DOMContentLoaded', async () => {
   /* ==========================================================================
      7. TAB: MUTUAL AID BRAND MANAGEMENT & PLANS CRUD (HQ ONLY)
      ========================================================================== */
-  // --- Mutual Aid Brands (Sellers info & Logo editing) ---
-  const brandEditModal = document.getElementById('brand-edit-modal');
-  const btnCloseBrandEditModal = document.getElementById('brand-edit-modal-close');
-  const btnCancelBrandEditModal = document.getElementById('modal-brand-edit-cancel');
-  const brandEditModalForm = document.getElementById('brand-edit-modal-form');
-
-  const modalBrandId = document.getElementById('modal-brand-id');
-  const modalBrandName = document.getElementById('modal-brand-name');
-  const modalBrandDesc = document.getElementById('modal-brand-desc');
-  const modalBrandFee = document.getElementById('modal-brand-fee');
-  const modalBrandLogoUrl = document.getElementById('modal-brand-logo-url');
-  const modalBrandLogoFile = document.getElementById('modal-brand-logo-file');
-  const modalBrandLogoPreview = document.getElementById('modal-brand-logo-preview');
-
+  // --- Mutual Aid Brands (Integrated with Plans) ---
   function renderBrandsManagement() {
     renderPlansTable();
-    renderAdminBrandsCards();
   }
 
-  function renderAdminBrandsCards() {
-    const container = document.getElementById('admin-brands-cards-container');
-    if (!container) return;
-
-    const brands = getBrands() || [];
-    container.innerHTML = '';
-
-    brands.forEach(brand => {
-      const card = document.createElement('div');
-      card.className = 'admin-brand-card';
-      card.style.cssText = 'background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 20px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-sm); transition: transform 0.2s, box-shadow 0.2s;';
-      
-      const logoHtml = brand.logoImage 
-        ? `<div style="height: 45px; display: flex; align-items: center; justify-content: flex-start; margin-bottom: 12px; overflow: hidden;"><img src="${brand.logoImage}" style="max-height: 100%; max-width: 130px; object-fit: contain;"></div>`
-        : `<div style="width: 45px; height: 45px; border-radius: 50%; background: var(--primary-light); color: var(--primary-color); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.85rem; margin-bottom: 12px; border: 1px solid var(--border-color);">${brand.logoText}</div>`;
-
-      card.innerHTML = `
-        <div>
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-            ${logoHtml}
-            <span class="badge" style="background: var(--bg-light); color: var(--text-color); border: 1px solid var(--border-color); font-size: 0.72rem; padding: 4px 8px; border-radius: 4px; font-weight: 600;">${brand.id.toUpperCase()}</span>
-          </div>
-          <h4 style="margin: 8px 0 6px; font-size: 1.05rem; font-weight: 700; color: var(--primary-color);">${brand.name}</h4>
-          <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 16px; min-height: 38px; line-height: 1.45; word-break: keep-all;">${brand.desc}</p>
-          <div style="font-size: 0.82rem; padding: 10px 12px; background: var(--bg-light); border-radius: var(--radius-sm); margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(0,0,0,0.03);">
-            <span style="color: var(--text-muted); font-weight: 500;">기본 수수료</span>
-            <span class="font-navy bold" style="font-size: 0.9rem;">${(brand.fee || 0).toLocaleString()}원</span>
-          </div>
-        </div>
-        <button type="button" class="btn btn-outline btn-sm btn-edit-brand" data-id="${brand.id}" style="width: 100%; font-weight: 700; padding: 8px 0; font-size: 0.82rem;">로고/정보 수정</button>
-      `;
-
-      card.querySelector('.btn-edit-brand').addEventListener('click', () => {
-        openBrandModal(brand.id);
-      });
-
-      container.appendChild(card);
-    });
-  }
-
-  function openBrandModal(brandId = null) {
-    if (!brandEditModal) return;
-
-    const actionInput = document.getElementById('modal-brand-action');
-    const idInput = document.getElementById('modal-brand-id');
-    const nameInput = document.getElementById('modal-brand-name');
-    const descInput = document.getElementById('modal-brand-desc');
-    const feeInput = document.getElementById('modal-brand-fee');
-    const logoUrlInput = document.getElementById('modal-brand-logo-url');
-    const logoFileInput = document.getElementById('modal-brand-logo-file');
-    const titleText = brandEditModal.querySelector('.modal-title');
-
-    brandEditModalForm.reset();
-    if (logoFileInput) logoFileInput.value = '';
-
-    if (brandId) {
-      // Edit mode
-      const brands = getBrands() || [];
-      const brand = brands.find(b => b.id === brandId);
-      if (!brand) return;
-
-      if (titleText) titleText.textContent = "제휴 상조사 정보 수정";
-      if (actionInput) actionInput.value = "edit";
-      idInput.value = brand.id;
-      nameInput.value = brand.name;
-      descInput.value = brand.desc || '';
-      feeInput.value = brand.fee ? parseInt(brand.fee).toLocaleString() : '0';
-      logoUrlInput.value = brand.logoImage || '';
-
-      if (brand.logoImage) {
-        modalBrandLogoPreview.src = brand.logoImage;
-      } else {
-        modalBrandLogoPreview.src = 'https://placehold.co/200x80?text=No+Logo';
+  function updateModalBrandInfo() {
+    const brandSelect = document.getElementById('modal-plan-brand');
+    const newBrandInput = document.getElementById('modal-plan-brand-new');
+    const descInput = document.getElementById('modal-plan-brand-desc');
+    const feeInput = document.getElementById('modal-plan-brand-fee');
+    const logoUrlInput = document.getElementById('modal-plan-brand-logo-url');
+    const logoPreview = document.getElementById('modal-plan-brand-logo-preview');
+    
+    if (!brandSelect) return;
+    
+    const selectedId = brandSelect.value;
+    
+    if (selectedId === '__new__') {
+      if (newBrandInput) {
+        newBrandInput.style.display = 'block';
+        newBrandInput.required = true;
+        newBrandInput.value = '';
       }
+      if (descInput) descInput.value = '';
+      if (feeInput) feeInput.value = '120,000';
+      if (logoUrlInput) logoUrlInput.value = '';
+      if (logoPreview) logoPreview.src = 'https://placehold.co/200x80?text=No+Logo';
     } else {
-      // Add mode
-      if (titleText) titleText.textContent = "제휴 상조사 신규 등록";
-      if (actionInput) actionInput.value = "add";
-      idInput.value = "";
-      nameInput.value = "";
-      descInput.value = "";
-      feeInput.value = "120,000";
-      logoUrlInput.value = "";
-      modalBrandLogoPreview.src = 'https://placehold.co/200x80?text=No+Logo';
-    }
-
-    brandEditModal.classList.add('active');
-  }
-
-  function closeBrandEditModal() {
-    brandEditModal.classList.remove('active');
-    brandEditModalForm.reset();
-    modalBrandLogoPreview.src = 'https://placehold.co/200x80?text=No+Logo';
-  }
-
-  if (btnCloseBrandEditModal) {
-    btnCloseBrandEditModal.addEventListener('click', closeBrandEditModal);
-  }
-  if (btnCancelBrandEditModal) {
-    btnCancelBrandEditModal.addEventListener('click', closeBrandEditModal);
-  }
-
-  const btnAddBrandToggle = document.getElementById('btn-add-brand-toggle');
-  if (btnAddBrandToggle) {
-    btnAddBrandToggle.addEventListener('click', () => openBrandModal());
-  }
-
-  // Live preview for Logo URL input
-  if (modalBrandLogoUrl) {
-    modalBrandLogoUrl.addEventListener('input', (e) => {
-      const val = e.target.value.trim();
-      if (val) {
-        modalBrandLogoPreview.src = val;
-      } else {
-        modalBrandLogoPreview.src = 'https://placehold.co/200x80?text=No+Logo';
+      if (newBrandInput) {
+        newBrandInput.style.display = 'none';
+        newBrandInput.required = false;
+        newBrandInput.value = '';
       }
-    });
-  }
-
-  // FileReader preview for local logo file
-  if (modalBrandLogoFile) {
-    modalBrandLogoFile.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          modalBrandLogoUrl.value = event.target.result;
-          modalBrandLogoPreview.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-  }
-
-  // Handle Brand edit form submit
-  if (brandEditModalForm) {
-    brandEditModalForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
       
-      const action = document.getElementById('modal-brand-action') ? document.getElementById('modal-brand-action').value : 'edit';
-      const id = modalBrandId.value;
-      const name = modalBrandName.value.trim();
-      const desc = modalBrandDesc.value.trim();
-      const fee = parseInt(modalBrandFee.value.replace(/[^0-9]/g, '')) || 0;
-      const logoImage = modalBrandLogoUrl.value.trim();
-
-      if (!name) {
-        alert('상조사명을 입력해주세요.');
-        return;
-      }
-      if (!desc) {
-        alert('상조사 설명을 입력해주세요.');
-        return;
-      }
-
       const brands = getBrands() || [];
-
-      if (action === 'edit') {
-        const updatedBrands = brands.map(b => {
-          if (b.id === id) {
-            return {
-              ...b,
-              name,
-              desc,
-              fee,
-              logoImage: logoImage || null,
-              logoText: name.substring(0, 2)
-            };
-          }
-          return b;
-        });
-        await setBrands(updatedBrands);
-        alert('상조회사 정보가 정상적으로 수정되었습니다.');
-      } else {
-        // Add
-        const newBrandId = 'brand_' + Date.now();
-        const newBrand = {
-          id: newBrandId,
-          name,
-          desc,
-          logoText: name.substring(0, 2),
-          fee,
-          logoImage: logoImage || null
-        };
-        brands.push(newBrand);
-        await setBrands(brands);
-        alert('새로운 상조회사가 정상적으로 등록되었습니다.');
+      const brand = brands.find(b => b.id === selectedId);
+      if (brand) {
+        if (descInput) descInput.value = brand.desc || '';
+        if (feeInput) feeInput.value = brand.fee ? parseInt(brand.fee).toLocaleString() : '0';
+        if (logoUrlInput) logoUrlInput.value = brand.logoImage || '';
+        if (logoPreview) {
+          logoPreview.src = brand.logoImage || 'https://placehold.co/200x80?text=No+Logo';
+        }
       }
-
-      closeBrandEditModal();
-      renderAdminBrandsCards();
-    });
+    }
   }
 
   // --- Mutual Aid Product Plans CRUD ---
@@ -3138,6 +2972,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     membershipContainer.innerHTML = '';
     planModalForm.reset();
 
+    // Reset brand logo inputs
+    const logoUrlInput = document.getElementById('modal-plan-brand-logo-url');
+    const logoFileInput = document.getElementById('modal-plan-brand-logo-file');
+    const logoPreview = document.getElementById('modal-plan-brand-logo-preview');
+    if (logoUrlInput) logoUrlInput.value = '';
+    if (logoFileInput) logoFileInput.value = '';
+    if (logoPreview) logoPreview.src = 'https://placehold.co/200x80?text=No+Logo';
+
     if (id) {
       // Edit
       const plans = getPlans();
@@ -3152,6 +2994,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       maturityInput.value = p.maturityRound;
       refundInput.value = p.refundRate;
       depositInput.value = p.depositOrg;
+
+      updateModalBrandInfo();
 
       // Bind Funeral Services
       if (p.funeralService) {
@@ -3203,6 +3047,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       titleText.textContent = "신규 상조 상품 플랜 등록";
       actionInput.value = "add";
       idInput.value = "";
+      if (brandInput.options.length > 0) {
+        brandInput.selectedIndex = 0;
+      }
+      updateModalBrandInfo();
+      
       addPlanFuneralRow('');
       addPlanConvertRow('');
       addPlanMembershipRow('');
@@ -3223,14 +3072,33 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const planBrandSelect = document.getElementById('modal-plan-brand');
   const planBrandNewInput = document.getElementById('modal-plan-brand-new');
-  if (planBrandSelect && planBrandNewInput) {
-    planBrandSelect.addEventListener('change', (e) => {
-      if (e.target.value === '__new__') {
-        planBrandNewInput.style.display = 'block';
-        planBrandNewInput.required = true;
-      } else {
-        planBrandNewInput.style.display = 'none';
-        planBrandNewInput.required = false;
+  if (planBrandSelect) {
+    planBrandSelect.addEventListener('change', () => {
+      updateModalBrandInfo();
+    });
+  }
+
+  // Live previews for Logo URL and local logo file inside plan modal
+  const modalPlanBrandLogoUrl = document.getElementById('modal-plan-brand-logo-url');
+  const modalPlanBrandLogoPreview = document.getElementById('modal-plan-brand-logo-preview');
+  if (modalPlanBrandLogoUrl && modalPlanBrandLogoPreview) {
+    modalPlanBrandLogoUrl.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      modalPlanBrandLogoPreview.src = val || 'https://placehold.co/200x80?text=No+Logo';
+    });
+  }
+
+  const modalPlanBrandLogoFile = document.getElementById('modal-plan-brand-logo-file');
+  if (modalPlanBrandLogoFile && modalPlanBrandLogoUrl && modalPlanBrandLogoPreview) {
+    modalPlanBrandLogoFile.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          modalPlanBrandLogoUrl.value = event.target.result;
+          modalPlanBrandLogoPreview.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
       }
     });
   }
@@ -3252,12 +3120,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const updated = brands.filter(b => b.id !== selectedId);
         await setBrands(updated);
         populatePlanBrandDropdown();
-        renderBrandsManagement(); // Sync the brands dashboard tab list
-        
-        if (planBrandNewInput) {
-          planBrandNewInput.style.display = 'none';
-          planBrandNewInput.required = false;
-        }
+        renderBrandsManagement();
+        updateModalBrandInfo();
+        alert('상조회사가 삭제되었습니다.');
       }
     });
   }
@@ -3300,7 +3165,22 @@ document.addEventListener('DOMContentLoaded', async () => {
       const refundRate = document.getElementById('modal-plan-refund').value.trim();
       const depositOrg = document.getElementById('modal-plan-deposit').value.trim();
 
-      // If user selected to register a new brand
+      // Extract brand info inputs
+      const brandDescInput = document.getElementById('modal-plan-brand-desc');
+      const brandFeeInput = document.getElementById('modal-plan-brand-fee');
+      const brandLogoUrlInput = document.getElementById('modal-plan-brand-logo-url');
+
+      const brandDesc = brandDescInput ? brandDescInput.value.trim() : '';
+      const brandFee = brandFeeInput ? parseInt(brandFeeInput.value.replace(/[^0-9]/g, '')) || 0 : 0;
+      const brandLogo = brandLogoUrlInput ? brandLogoUrlInput.value.trim() : '';
+
+      if (!brandDesc) {
+        alert('상조회사 설명을 입력해 주세요.');
+        return;
+      }
+
+      const brands = getBrands() || [];
+
       if (brandId === '__new__') {
         const newBrandInput = document.getElementById('modal-plan-brand-new');
         const newBrandName = newBrandInput ? newBrandInput.value.trim() : '';
@@ -3309,24 +3189,50 @@ document.addEventListener('DOMContentLoaded', async () => {
           return;
         }
 
-        const brands = getBrands() || [];
         const existing = brands.find(b => b.name === newBrandName);
         if (existing) {
           brandId = existing.id;
+          // Update existing brand with the new description, fee, logo
+          const updatedBrands = brands.map(b => {
+            if (b.id === brandId) {
+              return {
+                ...b,
+                desc: brandDesc,
+                fee: brandFee,
+                logoImage: brandLogo || null
+              };
+            }
+            return b;
+          });
+          await setBrands(updatedBrands);
         } else {
           const newBrandId = 'brand_' + Date.now();
           const newBrand = {
             id: newBrandId,
             name: newBrandName,
-            desc: '신규 제휴 상조회사',
+            desc: brandDesc,
             logoText: newBrandName.substring(0, 2),
-            fee: 120000
+            fee: brandFee,
+            logoImage: brandLogo || null
           };
           brands.push(newBrand);
           await setBrands(brands);
           brandId = newBrandId;
-          renderBrandsManagement(); // Sync the brands dashboard tab list
         }
+      } else {
+        // Update existing brand with the new description, fee, logo
+        const updatedBrands = brands.map(b => {
+          if (b.id === brandId) {
+            return {
+              ...b,
+              desc: brandDesc,
+              fee: brandFee,
+              logoImage: brandLogo || null
+            };
+          }
+          return b;
+        });
+        await setBrands(updatedBrands);
       }
 
       const funeralService = [];

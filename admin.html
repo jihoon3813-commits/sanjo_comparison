@@ -369,18 +369,7 @@
 
         <!-- [TAB] Mutual Aid Company Management (HQ Only) -->
         <section class="tab-panel" id="panel-brands">
-          <!-- 제휴 상조회사 브랜드 관리 섹션 추가 -->
-          <div class="brand-management-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
-            <div>
-              <h3>제휴 상조회사 정보 관리</h3>
-              <p>각 제휴 상조회사의 기본 명칭, 로고 이미지 및 지급 수수료를 편집합니다.</p>
-            </div>
-            <button type="button" class="btn btn-accent btn-sm" id="btn-add-brand-toggle">+ 상조회사 등록</button>
-          </div>
-          
-          <div class="brand-cards-grid" id="admin-brands-cards-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px;">
-            <!-- Dynamically populated brand cards with logo editing -->
-          </div>
+
 
           <!-- 상품 플랜 관리 섹션 추가 -->
           <div class="brand-management-header" style="display: flex; justify-content: space-between; align-items: center;">
@@ -703,6 +692,34 @@
             <label for="modal-plan-deposit">선수금 예치 기관 *</label>
             <input type="text" id="modal-plan-deposit" required placeholder="예) 상조보증공제조합 / 신한은행">
           </div>
+
+          <!-- Brand Info Integration Section -->
+          <div class="form-group span-2" id="modal-plan-brand-info-section" style="border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-sm); background-color: #F8FAFC; margin-top: 8px; margin-bottom: 8px;">
+            <h4 style="margin-top: 0; margin-bottom: 12px; color: var(--primary-color); font-weight: 700; font-size: 0.95rem;">상조회사 상세 정보 (로고 및 설명 수정)</h4>
+            <div class="modal-form-grid" style="grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 0;">
+              <div class="form-group span-2">
+                <label for="modal-plan-brand-desc">상조회사 요약 설명 *</label>
+                <input type="text" id="modal-plan-brand-desc" required placeholder="예) 레저/리조트 우대 및 소노호텔 멤버십 혜택이 강력한 대표 상조사">
+              </div>
+              <div class="form-group">
+                <label for="modal-plan-brand-fee">기본 지급 수수료 (원) *</label>
+                <input type="text" id="modal-plan-brand-fee" class="price-input" required placeholder="예) 150,000">
+              </div>
+              <div class="form-group">
+                <label for="modal-plan-brand-logo-url">상조회사 로고 이미지 URL *</label>
+                <input type="text" id="modal-plan-brand-logo-url" placeholder="https://... 로고 이미지 URL 입력">
+              </div>
+              <div class="form-group span-2" style="margin-bottom: 0;">
+                <label>로고 이미지 직접 업로드</label>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <input type="file" id="modal-plan-brand-logo-file" accept="image/*" style="font-size: 0.8rem; margin-bottom: 0; flex-grow: 1;">
+                </div>
+                <div style="margin-top: 8px; display: flex; align-items: center; justify-content: center; background: #fff; border: 1px solid var(--border-color); border-radius: 4px; padding: 8px; height: 70px;">
+                  <img id="modal-plan-brand-logo-preview" src="https://placehold.co/200x80?text=No+Logo" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                </div>
+              </div>
+            </div>
+          </div>
           
           <!-- Funeral Service Specs -->
           <div class="form-group span-2" style="border-top: 1px solid var(--border-color); padding-top: 16px;">
@@ -821,58 +838,7 @@
     </div>
   </div>
 
-  <!-- 6. Mutual Aid Brand Edit Modal -->
-  <div class="modal-overlay" id="brand-edit-modal">
-    <div class="modal-content" style="max-width: 500px; width: 90%;">
-      <button class="modal-close-btn" id="brand-edit-modal-close" aria-label="모달 닫기">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
-      
-      <h3 class="modal-title">제휴 상조사 정보 관리</h3>
-      
-      <form id="brand-edit-modal-form">
-        <input type="hidden" id="modal-brand-action" value="edit"> <!-- 'edit' or 'add' -->
-        <input type="hidden" id="modal-brand-id">
-        
-        <div class="modal-form-grid" style="grid-template-columns: 1fr;">
-          <!-- Brand Name -->
-          <div class="form-group">
-            <label for="modal-brand-name">상조사명 *</label>
-            <input type="text" id="modal-brand-name" required placeholder="예) 대명아임레디">
-          </div>
-          
-          <!-- Brand Description -->
-          <div class="form-group">
-            <label for="modal-brand-desc">설명 *</label>
-            <textarea id="modal-brand-desc" required rows="3" placeholder="상조사에 대한 요약 설명을 입력해 주세요."></textarea>
-          </div>
 
-          <!-- Commission -->
-          <div class="form-group">
-            <label for="modal-brand-fee">기본 지급 수수료 (원) *</label>
-            <input type="text" id="modal-brand-fee" class="price-input" required placeholder="예) 150,000">
-          </div>
-          
-          <!-- Brand Logo Upload or URL -->
-          <div class="form-group" style="border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 8px;">
-            <label>상조사 로고 이미지 *</label>
-            <input type="text" id="modal-brand-logo-url" placeholder="https://... 이미지 URL 입력" style="margin-bottom: 8px;">
-            <div style="display: flex; gap: 8px; align-items: center;">
-              <input type="file" id="modal-brand-logo-file" accept="image/*" style="font-size: 0.8rem; margin-bottom: 0;">
-            </div>
-            <div style="margin-top: 12px; display: flex; align-items: center; justify-content: center; background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 6px; padding: 12px; height: 100px;">
-              <img id="modal-brand-logo-preview" src="https://placehold.co/200x80?text=No+Logo" style="max-height: 100%; max-width: 100%; object-fit: contain;">
-            </div>
-          </div>
-        </div>
-        
-        <div class="modal-footer" style="margin-top: 20px;">
-          <button type="button" class="btn btn-outline" id="modal-brand-edit-cancel">취소</button>
-          <button type="submit" class="btn btn-primary" id="modal-brand-edit-save">저장하기</button>
-        </div>
-      </form>
-    </div>
-  </div>
 
   <!-- Admin logic script -->
   <script type="module" src="admin.js"></script>
