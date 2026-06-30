@@ -281,11 +281,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     return 'general'; // 일반가전
   };
 
-  const getSellers = () => SELLER_DATA;
+  const getSellers = () => [...SELLER_DATA];
   const setSellers = async (newData) => {
     const oldData = SELLER_DATA;
     SELLER_DATA = newData;
     localStorage.setItem('lifemoa_sellers', JSON.stringify(newData));
+    if (!convex) return;
     try {
       if (newData.length > oldData.length) {
         const added = newData.filter(n => !oldData.some(o => o.id === n.id));
@@ -317,11 +318,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   };
   
-  const getConsultations = () => CONSULTATION_DATA;
+  const getConsultations = () => [...CONSULTATION_DATA];
   const setConsultations = async (newData) => {
     const oldData = CONSULTATION_DATA;
     CONSULTATION_DATA = newData;
     localStorage.setItem('lifemoa_consultations', JSON.stringify(newData));
+    if (!convex) return;
     try {
       if (newData.length > oldData.length) {
         const added = newData.filter(n => !oldData.some(o => o.id === n.id));
@@ -350,11 +352,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   };
   
-  const getBrands = () => BRAND_DATA;
+  const getBrands = () => [...BRAND_DATA];
   const setBrands = async (newData) => {
     const oldData = BRAND_DATA;
     BRAND_DATA = newData;
     localStorage.setItem('lifemoa_brands', JSON.stringify(newData));
+    if (!convex) return;
     try {
       // Sync additions
       const added = newData.filter(n => !oldData.some(o => o.id === n.id));
@@ -398,11 +401,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     return brand ? brand.name : brandId;
   };
 
-  const getPlans = () => PLAN_DATA;
+  const getPlans = () => [...PLAN_DATA];
   const setPlans = async (newData) => {
     const oldData = PLAN_DATA;
     PLAN_DATA = newData;
     localStorage.setItem('lifemoa_plans', JSON.stringify(newData));
+    if (!convex) return;
     try {
       if (newData.length > oldData.length) {
         const added = newData.filter(n => !oldData.some(o => o.id === n.id));
@@ -427,11 +431,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   };
 
-  const getProducts = () => PRODUCT_DATA;
+  const getProducts = () => [...PRODUCT_DATA];
   const setProducts = async (newData) => {
     const oldData = PRODUCT_DATA;
     PRODUCT_DATA = newData;
     localStorage.setItem('lifemoa_products', JSON.stringify(newData));
+    if (!convex) return;
     try {
       if (newData.length > oldData.length) {
         const added = newData.filter(n => !oldData.some(o => o.id === n.id));
@@ -460,11 +465,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   };
   
-  const getSettlements = () => SETTLEMENT_DATA;
+  const getSettlements = () => [...SETTLEMENT_DATA];
   const setSettlements = async (newData) => {
     const oldData = SETTLEMENT_DATA;
     SETTLEMENT_DATA = newData;
     localStorage.setItem('lifemoa_settlements', JSON.stringify(newData));
+    if (!convex) return;
     try {
       if (newData.length > oldData.length) {
         const added = newData.filter(n => !oldData.some(o => o.id === n.id));
