@@ -1943,6 +1943,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  // Populate plans options in the bulk product modal plan select dropdown
+  function populateBulkFormPlans() {
+    const select = document.getElementById('bulk-target-plan-id');
+    if (!select) return;
+    const plans = getPlans();
+    select.innerHTML = '';
+    plans.forEach(p => {
+      const option = document.createElement('option');
+      option.value = p.id;
+      option.textContent = `[${getBrandName(p.brandId)}] ${p.name}`;
+      select.appendChild(option);
+    });
+  }
+
   // Mock Scraped Database representing list pages
   const MOCK_SCRAPED_DATA = {
     laptops: [
@@ -2328,14 +2342,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       const products = getProducts();
-      const plans = getPlans();
       let importedCount = 0;
 
-      // Determine which plan to link the imported products to
-      let targetPlanId = currentActiveProductPlanTab;
-      if (targetPlanId === 'all') {
-        targetPlanId = plans.length > 0 ? plans[0].id : '';
-      }
+      // Determine which plan and accounts to link the imported products to
+      const targetPlanSelect = document.getElementById('bulk-target-plan-id');
+      const targetPlanId = targetPlanSelect ? targetPlanSelect.value : currentActiveProductPlanTab;
+      
+      const targetAccountsSelect = document.getElementById('bulk-target-accounts');
+      const targetAccounts = targetAccountsSelect ? parseInt(targetAccountsSelect.value) || 1 : 1;
 
       if (!targetPlanId) {
         alert("등록할 상조 플랜이 존재하지 않습니다. 상조사 관리에서 플랜을 먼저 등록해주세요.");
@@ -2373,6 +2387,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           description: item.description,
           thumbnail: item.thumbnail,
           planId: targetPlanId,
+          accounts: targetAccounts,
           monthly: monthlyPrice,
           cardBenefitPrice: benefitPrice
         };
@@ -2435,6 +2450,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         currentScrapedProducts = listToScrape;
         renderScrapedItemsList(listToScrape);
+
+        // Pre-fill target plan and accounts dropdowns in the bulk import modal
+        populateBulkFormPlans();
+        const bulkPlanIdSelect = document.getElementById('bulk-target-plan-id');
+        const plans = getPlans();
+        if (bulkPlanIdSelect) {
+          bulkPlanIdSelect.value = currentActiveProductPlanTab === 'all' ? (plans.length > 0 ? plans[0].id : '') : currentActiveProductPlanTab;
+        }
+
+        const bulkAccountsSelect = document.getElementById('bulk-target-accounts');
+        const syncAccountsSelect = document.getElementById('prod-sync-accounts');
+        if (bulkAccountsSelect && syncAccountsSelect) {
+          bulkAccountsSelect.value = syncAccountsSelect.value;
+        }
 
         if (bulkProductModal) {
           bulkProductModal.classList.add('active');
