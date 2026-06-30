@@ -3027,6 +3027,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     container.appendChild(div);
   }
 
+  function populatePlanBrandDropdown() {
+    const brandSelect = document.getElementById('modal-plan-brand');
+    if (!brandSelect) return;
+    brandSelect.innerHTML = '';
+    const brands = getBrands() || [];
+    brands.forEach(b => {
+      const opt = document.createElement('option');
+      opt.value = b.id;
+      opt.textContent = b.name;
+      brandSelect.appendChild(opt);
+    });
+    const newOpt = document.createElement('option');
+    newOpt.value = '__new__';
+    newOpt.textContent = '➕ 직접 입력 (신규 등록)';
+    brandSelect.appendChild(newOpt);
+  }
+
   // Open Plan Modal
   function openPlanModal(id = null) {
     if (!planModal) return;
@@ -3038,6 +3055,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const maturityInput = document.getElementById('modal-plan-maturity');
     const refundInput = document.getElementById('modal-plan-refund');
     const depositInput = document.getElementById('modal-plan-deposit');
+    const newBrandInput = document.getElementById('modal-plan-brand-new');
+
+    populatePlanBrandDropdown();
+    if (newBrandInput) {
+      newBrandInput.style.display = 'none';
+      newBrandInput.value = '';
+      newBrandInput.required = false;
+    }
 
     const paymentBody = document.getElementById('modal-plan-payment-body');
     const cardsContainer = document.getElementById('modal-plan-cards-container');
@@ -3138,6 +3163,48 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (btnClosePlanModal) btnClosePlanModal.addEventListener('click', closePlanModal);
   if (btnCancelPlanModal) btnCancelPlanModal.addEventListener('click', closePlanModal);
+
+  const planBrandSelect = document.getElementById('modal-plan-brand');
+  const planBrandNewInput = document.getElementById('modal-plan-brand-new');
+  if (planBrandSelect && planBrandNewInput) {
+    planBrandSelect.addEventListener('change', (e) => {
+      if (e.target.value === '__new__') {
+        planBrandNewInput.style.display = 'block';
+        planBrandNewInput.required = true;
+      } else {
+        planBrandNewInput.style.display = 'none';
+        planBrandNewInput.required = false;
+      }
+    });
+  }
+
+  const btnDeletePlanBrand = document.getElementById('btn-delete-plan-brand');
+  if (btnDeletePlanBrand && planBrandSelect) {
+    btnDeletePlanBrand.addEventListener('click', async () => {
+      const selectedId = planBrandSelect.value;
+      if (selectedId === '__new__') {
+        alert('직접 입력 모드에서는 상조회사를 삭제할 수 없습니다.');
+        return;
+      }
+      
+      const brands = getBrands() || [];
+      const brandToDelete = brands.find(b => b.id === selectedId);
+      if (!brandToDelete) return;
+      
+      if (confirm(`제휴 상조회사 '${brandToDelete.name}'를 정말로 삭제하시겠습니까?\n이 상조회사와 연관된 모든 상품 플랜에 영향이 있을 수 있습니다.`)) {
+        const updated = brands.filter(b => b.id !== selectedId);
+        await setBrands(updated);
+        populatePlanBrandDropdown();
+        renderBrandsManagement(); // Sync the brands dashboard tab list
+        
+        if (planBrandNewInput) {
+          planBrandNewInput.style.display = 'none';
+          planBrandNewInput.required = false;
+        }
+      }
+    });
+  }
+
   if (planModal) {
     planModal.addEventListener('click', (e) => {
       if (e.target === planModal) closePlanModal();
@@ -3165,16 +3232,45 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Plan Form submit
   if (planModalForm) {
-    planModalForm.addEventListener('submit', (e) => {
+    planModalForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const action = document.getElementById('modal-plan-action').value;
       const id = document.getElementById('modal-plan-id').value;
-      const brandId = document.getElementById('modal-plan-brand').value;
+      let brandId = document.getElementById('modal-plan-brand').value;
       const name = document.getElementById('modal-plan-name').value.trim();
       const maturityRound = parseInt(document.getElementById('modal-plan-maturity').value);
       const refundRate = document.getElementById('modal-plan-refund').value.trim();
       const depositOrg = document.getElementById('modal-plan-deposit').value.trim();
+
+      // If user selected to register a new brand
+      if (brandId === '__new__') {
+        const newBrandInput = document.getElementById('modal-plan-brand-new');
+        const newBrandName = newBrandInput ? newBrandInput.value.trim() : '';
+        if (!newBrandName) {
+          alert('신규 상조회사 이름을 입력해 주세요.');
+          return;
+        }
+
+        const brands = getBrands() || [];
+        const existing = brands.find(b => b.name === newBrandName);
+        if (existing) {
+          brandId = existing.id;
+        } else {
+          const newBrandId = 'brand_' + Date.now();
+          const newBrand = {
+            id: newBrandId,
+            name: newBrandName,
+            desc: '신규 제휴 상조회사',
+            logoText: newBrandName.substring(0, 2),
+            fee: 120000
+          };
+          brands.push(newBrand);
+          await setBrands(brands);
+          brandId = newBrandId;
+          renderBrandsManagement(); // Sync the brands dashboard tab list
+        }
+      }
 
       const funeralService = [];
       document.querySelectorAll('.plan-funeral-line').forEach(input => {
