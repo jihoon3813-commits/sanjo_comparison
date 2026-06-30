@@ -300,14 +300,89 @@ document.addEventListener('DOMContentLoaded', async () => {
           });
         }
 
-        await convex.mutation(api.brands.seed, { items: localBrands });
-        await convex.mutation(api.plans.seed, { items: localPlans });
-        await convex.mutation(api.products.seed, { items: localProducts });
+        // Sanitize for Convex validators
+        const seedBrands = localBrands.map(b => ({
+          id: b.id,
+          name: b.name,
+          desc: b.desc,
+          logoText: b.logoText || b.name.substring(0, 2),
+          fee: Number(b.fee) || 0,
+          logoUrl: b.logoUrl || b.logoImage || undefined
+        }));
+
+        const seedPlans = localPlans.map(p => ({
+          id: p.id,
+          brandId: p.brandId,
+          name: p.name,
+          funeralService: p.funeralService,
+          refundRate: p.refundRate,
+          depositOrg: p.depositOrg,
+          convertService: p.convertService,
+          membershipService: p.membershipService,
+          maturityRound: Number(p.maturityRound),
+          paymentSections: (p.paymentSections || []).map(s => ({
+            start: Number(s.start),
+            end: Number(s.end),
+            funeralAmount: Number(s.funeralAmount),
+            applianceAmount: Number(s.applianceAmount)
+          })),
+          notices: p.notices || [],
+          cards: (p.cards || []).map(c => ({
+            name: c.name,
+            image: c.image || '',
+            annualFee: Number(c.annualFee) || 0,
+            benefits: c.benefits || [],
+            phoneApply: c.phoneApply || '',
+            onlineApplyUrl: c.onlineApplyUrl || ''
+          }))
+        }));
+
+        const seedProducts = localProducts.map(p => ({
+          id: p.id,
+          name: p.name,
+          categoryId: p.categoryId,
+          modelName: p.modelName || '',
+          description: p.description || '',
+          thumbnail: p.thumbnail || '',
+          planId: p.planId,
+          accounts: p.accounts !== undefined ? Number(p.accounts) : undefined,
+          monthly: Number(p.monthly) || 0,
+          cardBenefitPrice: Number(p.cardBenefitPrice) || 0
+        }));
+
+        await convex.mutation(api.brands.seed, { items: seedBrands });
+        await convex.mutation(api.plans.seed, { items: seedPlans });
+        await convex.mutation(api.products.seed, { items: seedProducts });
 
         const localSellers = JSON.parse(localStorage.getItem('lifemoa_sellers')) || mockSellers;
+        const seedSellers = localSellers.map(s => ({
+          id: s.id,
+          name: s.name,
+          phone: s.phone,
+          address: s.address,
+          username: s.username,
+          password: s.password,
+          subdomain: s.subdomain,
+          status: s.status,
+          registerDate: s.registerDate
+        }));
         const localConsultations = JSON.parse(localStorage.getItem('lifemoa_consultations')) || mockConsultations;
-        await convex.mutation(api.sellers.seed, { items: localSellers });
-        await convex.mutation(api.consultations.seed, { items: localConsultations });
+        const seedConsultations = localConsultations.map(c => ({
+          id: c.id,
+          name: c.name,
+          phone: c.phone,
+          hopeItem: c.hopeItem || '',
+          hopeBrand: c.hopeBrand || '',
+          purpose: c.purpose || '',
+          budget: c.budget || '',
+          consultTime: c.consultTime || '',
+          userMessage: c.userMessage || '',
+          sellerId: c.sellerId || '',
+          registerDate: c.registerDate,
+          status: c.status
+        }));
+        await convex.mutation(api.sellers.seed, { items: seedSellers });
+        await convex.mutation(api.consultations.seed, { items: seedConsultations });
 
         const rawBrandsRefetched = await convex.query(api.brands.get);
         BRAND_DATA = rawBrandsRefetched.map(b => ({

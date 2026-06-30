@@ -393,6 +393,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     } catch (err) {
       console.error("Convex brands sync failed:", err);
+      alert("Convex 서버와의 상조사 동기화에 실패했습니다: " + err.message);
     }
   };
   const getBrandName = (brandId) => {
@@ -428,6 +429,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     } catch (err) {
       console.error("Convex plans sync failed:", err);
+      alert("Convex 서버와의 상품 플랜 동기화에 실패했습니다: " + err.message);
     }
   };
 
@@ -528,17 +530,104 @@ document.addEventListener('DOMContentLoaded', async () => {
           });
         }
 
-        await convex.mutation(api.brands.seed, { items: localBrands });
-        await convex.mutation(api.plans.seed, { items: localPlans });
-        await convex.mutation(api.products.seed, { items: localProducts });
+        // Sanitize for Convex validators
+        const seedBrands = localBrands.map(b => ({
+          id: b.id,
+          name: b.name,
+          desc: b.desc,
+          logoText: b.logoText || b.name.substring(0, 2),
+          fee: Number(b.fee) || 0,
+          logoUrl: b.logoUrl || b.logoImage || undefined
+        }));
+
+        const seedPlans = localPlans.map(p => ({
+          id: p.id,
+          brandId: p.brandId,
+          name: p.name,
+          funeralService: p.funeralService,
+          refundRate: p.refundRate,
+          depositOrg: p.depositOrg,
+          convertService: p.convertService,
+          membershipService: p.membershipService,
+          maturityRound: Number(p.maturityRound),
+          paymentSections: (p.paymentSections || []).map(s => ({
+            start: Number(s.start),
+            end: Number(s.end),
+            funeralAmount: Number(s.funeralAmount),
+            applianceAmount: Number(s.applianceAmount)
+          })),
+          notices: p.notices || [],
+          cards: (p.cards || []).map(c => ({
+            name: c.name,
+            image: c.image || '',
+            annualFee: Number(c.annualFee) || 0,
+            benefits: c.benefits || [],
+            phoneApply: c.phoneApply || '',
+            onlineApplyUrl: c.onlineApplyUrl || ''
+          }))
+        }));
+
+        const seedProducts = localProducts.map(p => ({
+          id: p.id,
+          name: p.name,
+          categoryId: p.categoryId,
+          modelName: p.modelName || '',
+          description: p.description || '',
+          thumbnail: p.thumbnail || '',
+          planId: p.planId,
+          accounts: p.accounts !== undefined ? Number(p.accounts) : undefined,
+          monthly: Number(p.monthly) || 0,
+          cardBenefitPrice: Number(p.cardBenefitPrice) || 0
+        }));
+
+        await convex.mutation(api.brands.seed, { items: seedBrands });
+        await convex.mutation(api.plans.seed, { items: seedPlans });
+        await convex.mutation(api.products.seed, { items: seedProducts });
 
         const localSellers = JSON.parse(localStorage.getItem('lifemoa_sellers')) || mockSellers;
+        const seedSellers = localSellers.map(s => ({
+          id: s.id,
+          name: s.name,
+          phone: s.phone,
+          address: s.address,
+          username: s.username,
+          password: s.password,
+          subdomain: s.subdomain,
+          status: s.status,
+          registerDate: s.registerDate
+        }));
         const localConsultations = JSON.parse(localStorage.getItem('lifemoa_consultations')) || mockConsultations;
-        await convex.mutation(api.sellers.seed, { items: localSellers });
-        await convex.mutation(api.consultations.seed, { items: localConsultations });
+        const seedConsultations = localConsultations.map(c => ({
+          id: c.id,
+          name: c.name,
+          phone: c.phone,
+          hopeItem: c.hopeItem || '',
+          hopeBrand: c.hopeBrand || '',
+          purpose: c.purpose || '',
+          budget: c.budget || '',
+          consultTime: c.consultTime || '',
+          userMessage: c.userMessage || '',
+          sellerId: c.sellerId || '',
+          registerDate: c.registerDate,
+          status: c.status
+        }));
+        await convex.mutation(api.sellers.seed, { items: seedSellers });
+        await convex.mutation(api.consultations.seed, { items: seedConsultations });
 
         const localSettlements = JSON.parse(localStorage.getItem('lifemoa_settlements')) || mockSettlements;
-        await convex.mutation(api.settlements.seed, { items: localSettlements });
+        const seedSettlements = localSettlements.map(s => ({
+          id: s.id,
+          orderId: s.orderId,
+          sellerId: s.sellerId,
+          customerName: s.customerName,
+          productName: s.productName,
+          brandId: s.brandId,
+          brandName: s.brandName,
+          commission: Number(s.commission) || 0,
+          status: s.status,
+          date: s.date
+        }));
+        await convex.mutation(api.settlements.seed, { items: seedSettlements });
 
         const rawBrandsRefetched = await convex.query(api.brands.get);
         BRAND_DATA = rawBrandsRefetched.map(b => ({
@@ -3242,7 +3331,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const id = document.getElementById('modal-plan-id').value;
       let brandId = document.getElementById('modal-plan-brand').value;
       const name = document.getElementById('modal-plan-name').value.trim();
-      const maturityRound = parseInt(document.getElementById('modal-plan-maturity').value);
+      const maturityRound = parseInt(document.getElementById('modal-plan-maturity').value) || 0;
       const refundRate = document.getElementById('modal-plan-refund').value.trim();
       const depositOrg = document.getElementById('modal-plan-deposit').value.trim();
 
@@ -3338,10 +3427,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       for (let i = 0; i < secRows.length; i++) {
         const row = secRows[i];
-        const start = parseInt(row.querySelector('.sec-start').value);
-        const end = parseInt(row.querySelector('.sec-end').value);
-        const funeralAmount = parseInt(row.querySelector('.sec-funeral').value.replace(/[^0-9]/g, ''));
-        const applianceAmount = parseInt(row.querySelector('.sec-appliance').value.replace(/[^0-9]/g, ''));
+        const start = parseInt(row.querySelector('.sec-start').value) || 0;
+        const end = parseInt(row.querySelector('.sec-end').value) || 0;
+        const funeralAmount = parseInt(row.querySelector('.sec-funeral').value.replace(/[^0-9]/g, '')) || 0;
+        const applianceAmount = parseInt(row.querySelector('.sec-appliance').value.replace(/[^0-9]/g, '')) || 0;
 
         if (end < start) {
           alert(`구간 ${i+1}의 종료회차가 시작회차보다 작습니다.`);
