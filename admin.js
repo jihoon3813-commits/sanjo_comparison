@@ -3199,11 +3199,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  // Close modal when clicking on backdrop overlay (Disabled per user request to prevent accidental data loss)
+  /*
   if (planModal) {
     planModal.addEventListener('click', (e) => {
       if (e.target === planModal) closePlanModal();
     });
   }
+  */
 
   if (btnAddPlanToggle) btnAddPlanToggle.addEventListener('click', () => openPlanModal());
   if (btnAddPaymentSec) btnAddPaymentSec.addEventListener('click', () => {
