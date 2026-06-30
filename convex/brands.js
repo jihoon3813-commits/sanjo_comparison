@@ -8,10 +8,49 @@ export const get = query({
   },
 });
 
+// 상조사 추가
+export const add = mutation({
+  args: {
+    id: v.string(),
+    name: v.string(),
+    desc: v.string(),
+    logoText: v.string(),
+    fee: v.number(),
+    logoUrl: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const existing = await ctx.db
+      .query("brands")
+      .withIndex("by_custom_id", (q) => q.eq("id", args.id))
+      .first();
+    if (!existing) {
+      return await ctx.db.insert("brands", args);
+    }
+    return existing._id;
+  },
+});
+
+// 상조사 삭제
+export const remove = mutation({
+  args: {
+    id: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const existing = await ctx.db
+      .query("brands")
+      .withIndex("by_custom_id", (q) => q.eq("id", args.id))
+      .first();
+    if (existing) {
+      await ctx.db.delete(existing._id);
+    }
+  },
+});
+
 // 상조사 정보 업데이트 (어드민용)
 export const update = mutation({
   args: {
     id: v.string(),
+    name: v.optional(v.string()),
     desc: v.string(),
     fee: v.number(),
     logoUrl: v.optional(v.string()),
@@ -26,11 +65,16 @@ export const update = mutation({
       throw new Error(`상조사 ${args.id}를 찾을 수 없습니다.`);
     }
 
-    await ctx.db.patch(existing._id, {
+    const patchData = {
       desc: args.desc,
       fee: args.fee,
       logoUrl: args.logoUrl,
-    });
+    };
+    if (args.name) {
+      patchData.name = args.name;
+    }
+
+    await ctx.db.patch(existing._id, patchData);
     return existing._id;
   },
 });

@@ -18,6 +18,7 @@ export const add = mutation({
     description: v.string(),
     thumbnail: v.string(),
     planId: v.string(),
+    accounts: v.optional(v.number()),
     monthly: v.number(),
     cardBenefitPrice: v.number(),
   },
@@ -48,6 +49,7 @@ export const addBulk = mutation({
         description: v.string(),
         thumbnail: v.string(),
         planId: v.string(),
+        accounts: v.optional(v.number()),
         monthly: v.number(),
         cardBenefitPrice: v.number(),
       })
@@ -103,6 +105,7 @@ export const seed = mutation({
         description: v.string(),
         thumbnail: v.string(),
         planId: v.string(),
+        accounts: v.optional(v.number()),
         monthly: v.number(),
         cardBenefitPrice: v.number(),
       })

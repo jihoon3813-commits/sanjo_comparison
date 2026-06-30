@@ -14,11 +14,11 @@ export const add = mutation({
     id: v.string(),
     brandId: v.string(),
     name: v.string(),
-    funeralService: v.string(),
+    funeralService: v.union(v.string(), v.array(v.string())),
     refundRate: v.string(),
     depositOrg: v.string(),
-    convertService: v.string(),
-    membershipService: v.string(),
+    convertService: v.union(v.string(), v.array(v.string())),
+    membershipService: v.union(v.string(), v.array(v.string())),
     maturityRound: v.number(),
     paymentSections: v.array(
       v.object({
@@ -82,11 +82,11 @@ export const seed = mutation({
         id: v.string(),
         brandId: v.string(),
         name: v.string(),
-        funeralService: v.string(),
+        funeralService: v.union(v.string(), v.array(v.string())),
         refundRate: v.string(),
         depositOrg: v.string(),
-        convertService: v.string(),
-        membershipService: v.string(),
+        convertService: v.union(v.string(), v.array(v.string())),
+        membershipService: v.union(v.string(), v.array(v.string())),
         maturityRound: v.number(),
         paymentSections: v.array(
           v.object({

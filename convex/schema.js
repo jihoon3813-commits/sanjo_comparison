@@ -15,11 +15,11 @@ export default defineSchema({
     id: v.string(), // custom id (e.g. 'plan_daemyung_429')
     brandId: v.string(), // references brands.id
     name: v.string(),
-    funeralService: v.string(),
+    funeralService: v.union(v.string(), v.array(v.string())),
     refundRate: v.string(),
     depositOrg: v.string(),
-    convertService: v.string(),
-    membershipService: v.string(),
+    convertService: v.union(v.string(), v.array(v.string())),
+    membershipService: v.union(v.string(), v.array(v.string())),
     maturityRound: v.number(),
     paymentSections: v.array(v.object({
       start: v.number(),
@@ -46,6 +46,7 @@ export default defineSchema({
     description: v.string(),
     thumbnail: v.string(),
     planId: v.string(), // references plans.id
+    accounts: v.optional(v.number()),
     monthly: v.number(),
     cardBenefitPrice: v.number(),
   }).index("by_custom_id", ["id"]).index("by_categoryId", ["categoryId"]),

@@ -356,14 +356,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     BRAND_DATA = newData;
     localStorage.setItem('lifemoa_brands', JSON.stringify(newData));
     try {
+      // Sync additions
+      const added = newData.filter(n => !oldData.some(o => o.id === n.id));
+      for (const item of added) {
+        await convex.mutation(api.brands.add, {
+          id: item.id,
+          name: item.name,
+          desc: item.desc,
+          logoText: item.logoText || item.name.substring(0, 2),
+          fee: Number(item.fee) || 0,
+          logoUrl: item.logoImage || null
+        });
+      }
+
+      // Sync deletions
+      const deleted = oldData.filter(o => !newData.some(n => o.id === n.id));
+      for (const item of deleted) {
+        await convex.mutation(api.brands.remove, { id: item.id });
+      }
+
+      // Sync updates
       for (const n of newData) {
         const o = oldData.find(x => x.id === n.id);
         if (o && JSON.stringify(o) !== JSON.stringify(n)) {
           await convex.mutation(api.brands.update, {
             id: n.id,
+            name: n.name,
             desc: n.desc,
             fee: Number(n.fee) || 0,
-            logoUrl: n.logoUrl
+            logoUrl: n.logoImage || null
           });
         }
       }
@@ -473,7 +494,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (!convex) {
         throw new Error("Convex URL is not defined.");
       }
-      BRAND_DATA = await convex.query(api.brands.get);
+      const rawBrands = await convex.query(api.brands.get);
+      BRAND_DATA = rawBrands.map(b => ({
+        ...b,
+        logoImage: b.logoUrl || b.logoImage || null
+      }));
       PRODUCT_DATA = await convex.query(api.products.get);
       PLAN_DATA = await convex.query(api.plans.get);
       SELLER_DATA = await convex.query(api.sellers.get);
@@ -509,7 +534,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const localSettlements = JSON.parse(localStorage.getItem('lifemoa_settlements')) || mockSettlements;
         await convex.mutation(api.settlements.seed, { items: localSettlements });
 
-        BRAND_DATA = await convex.query(api.brands.get);
+        const rawBrandsRefetched = await convex.query(api.brands.get);
+        BRAND_DATA = rawBrandsRefetched.map(b => ({
+          ...b,
+          logoImage: b.logoUrl || b.logoImage || null
+        }));
         PRODUCT_DATA = await convex.query(api.products.get);
         PLAN_DATA = await convex.query(api.plans.get);
         SELLER_DATA = await convex.query(api.sellers.get);

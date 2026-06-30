@@ -275,7 +275,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (!convex) {
         throw new Error("Convex URL is not defined.");
       }
-      BRAND_DATA = await convex.query(api.brands.get);
+      const rawBrands = await convex.query(api.brands.get);
+      BRAND_DATA = rawBrands.map(b => ({
+        ...b,
+        logoImage: b.logoUrl || b.logoImage || null
+      }));
       PRODUCT_DATA = await convex.query(api.products.get);
       PLAN_DATA = await convex.query(api.plans.get);
 
@@ -305,7 +309,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         await convex.mutation(api.sellers.seed, { items: localSellers });
         await convex.mutation(api.consultations.seed, { items: localConsultations });
 
-        BRAND_DATA = await convex.query(api.brands.get);
+        const rawBrandsRefetched = await convex.query(api.brands.get);
+        BRAND_DATA = rawBrandsRefetched.map(b => ({
+          ...b,
+          logoImage: b.logoUrl || b.logoImage || null
+        }));
         PRODUCT_DATA = await convex.query(api.products.get);
         PLAN_DATA = await convex.query(api.plans.get);
         console.log("Seeding to Convex completed.");
@@ -1332,6 +1340,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
+    const formatFieldText = (val, defaultVal = '') => {
+      if (!val) return defaultVal;
+      if (Array.isArray(val)) {
+        return val.map(item => `• ${item.trim()}`).join('\n');
+      }
+      return val;
+    };
+
     // Build comparison header
     let theadHtml = `
       <thead>
@@ -1392,15 +1408,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         </tr>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">장례 서비스 구성</td>
-          ${plans.map(p => `<td class="compare-td-${p.brandId}" style="font-size: 0.82rem; text-align: left; line-height: 1.4; vertical-align: top; padding: 15px; max-width: 260px; word-break: keep-all; white-space: pre-line;">${p.funeralService || '기본 의전 제공'}</td>`).join('')}
+          ${plans.map(p => `<td class="compare-td-${p.brandId}" style="font-size: 0.82rem; text-align: left; line-height: 1.4; vertical-align: top; padding: 15px; max-width: 260px; word-break: keep-all; white-space: pre-line;">${formatFieldText(p.funeralService, '기본 의전 제공')}</td>`).join('')}
         </tr>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">라이프 전환 서비스</td>
-          ${plans.map(p => `<td class="compare-td-${p.brandId}" style="font-size: 0.82rem; text-align: left; line-height: 1.4; vertical-align: top; padding: 15px; max-width: 260px; word-break: keep-all; white-space: pre-line;">${p.convertService || '전환 서비스 지원'}</td>`).join('')}
+          ${plans.map(p => `<td class="compare-td-${p.brandId}" style="font-size: 0.82rem; text-align: left; line-height: 1.4; vertical-align: top; padding: 15px; max-width: 260px; word-break: keep-all; white-space: pre-line;">${formatFieldText(p.convertService, '전환 서비스 지원')}</td>`).join('')}
         </tr>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">멤버십 혜택</td>
-          ${plans.map(p => `<td class="compare-td-${p.brandId}" style="font-size: 0.82rem; text-align: left; line-height: 1.4; vertical-align: top; padding: 15px; max-width: 260px; word-break: keep-all; white-space: pre-line;">${p.membershipService || '멤버십 특약 혜택'}</td>`).join('')}
+          ${plans.map(p => `<td class="compare-td-${p.brandId}" style="font-size: 0.82rem; text-align: left; line-height: 1.4; vertical-align: top; padding: 15px; max-width: 260px; word-break: keep-all; white-space: pre-line;">${formatFieldText(p.membershipService, '멤버십 특약 혜택')}</td>`).join('')}
         </tr>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">만기 환급율</td>
