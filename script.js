@@ -14,10 +14,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   const defaultBrands = [
-    { id: 'daemyung', name: '대명아임레디', desc: '레저/리조트 우대 및 소노호텔 멤버십 혜택이 강력한 대표 상조사', logoText: '대명', fee: 150000 },
-    { id: 'boram', name: '보람상조', desc: '전통과 신뢰의 1위 브랜드, 크루즈/웨딩/주얼리 자유 전환 서비스', logoText: '보람', fee: 120000 },
-    { id: 'preed', name: '프리드라이프', desc: '국내 최대 누적 가입자수 보유, 합리적이고 투명한 납입 플랜 제공', logoText: '프리드', fee: 130000 },
-    { id: 'kyowon', name: '교원라이프', desc: '교육/어학 연계 및 생활 가전 결합 등 실용적 라이프 케어 우수 상조사', logoText: '교원', fee: 140000 }
+    { id: 'daemyung', name: '대명아임레디', desc: '레저/리조트 우대 및 소노호텔 멤버십 혜택이 강력한 대표 상조사', logoText: '대명', fee: 150000, color: '#0369A1' },
+    { id: 'boram', name: '보람상조', desc: '전통과 신뢰의 1위 브랜드, 크루즈/웨딩/주얼리 자유 전환 서비스', logoText: '보람', fee: 120000, color: '#B91C1C' },
+    { id: 'preed', name: '프리드라이프', desc: '국내 최대 누적 가입자수 보유, 합리적이고 투명한 납입 플랜 제공', logoText: '프리드', fee: 130000, color: '#6D28D9' },
+    { id: 'kyowon', name: '교원라이프', desc: '교육/어학 연계 및 생활 가전 결합 등 실용적 라이프 케어 우수 상조사', logoText: '교원', fee: 140000, color: '#C2410C' }
   ];
 
   const defaultPlans = [
@@ -307,7 +307,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           desc: b.desc,
           logoText: b.logoText || b.name.substring(0, 2),
           fee: Number(b.fee) || 0,
-          logoUrl: b.logoUrl || b.logoImage || undefined
+          logoUrl: b.logoUrl || b.logoImage || undefined,
+          color: b.color || undefined
         }));
 
         const seedPlans = localPlans.map(p => ({
@@ -474,6 +475,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   function getBrandName(brandId) {
     const brand = BRAND_DATA.find(b => b.id === brandId);
     return brand ? brand.name : brandId;
+  }
+
+  function getBrandColor(brandId) {
+    const brand = BRAND_DATA.find(b => b.id === brandId);
+    return brand ? brand.color : null;
   }
 
   /* ==========================================================================
@@ -742,12 +748,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         noticesHtml = '<li>별도의 주요 안내사항이 없습니다.</li>';
       }
       
+      const brandColor = getBrandColor(brandId);
+      const badgeStyle = brandColor ? `style="background-color: ${brandColor}15; color: ${brandColor}; border-color: ${brandColor}30;"` : '';
+      
       const card = document.createElement('div');
       card.className = 'brand-price-card premium-detail-card';
       card.innerHTML = `
         <div class="premium-card-header">
           <div class="brand-info-header">
-            <span class="brand-badge brand-${brandId}">${brandName}</span>
+            <span class="brand-badge brand-${brandId}" ${badgeStyle}>${brandName}</span>
             <h5 class="plan-name-title">${plan.name}</h5>
           </div>
           <button type="button" class="modal-apply-btn apply-modal-pricing-btn" 
@@ -1139,7 +1148,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       let brandBadgesHtml = '';
       if (plan) {
         const name = getBrandName(plan.brandId);
-        brandBadgesHtml = `<span class="brand-badge brand-${plan.brandId}">${name}</span>`;
+        const brandColor = getBrandColor(plan.brandId);
+        const badgeStyle = brandColor ? `style="background-color: ${brandColor}15; color: ${brandColor}; border-color: ${brandColor}30;"` : '';
+        brandBadgesHtml = `<span class="brand-badge brand-${plan.brandId}" ${badgeStyle}>${name}</span>`;
       }
 
       const card = document.createElement('div');
@@ -1312,6 +1323,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const categoryName = CATEGORY_DATA.find(c => c.id === product.categoryId)?.name || '가전';
 
+      const brandColor = brand ? brand.color : null;
+      const badgeStyle = brandColor ? `style="background-color: ${brandColor}15; color: ${brandColor}; border-color: ${brandColor}30;"` : '';
+
       card.innerHTML = `
         <div class="product-card-thumb-wrapper">
           <span class="account-badge account-badge-${product.accounts || 1}">${product.accounts || 1}구좌</span>
@@ -1332,7 +1346,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <p class="product-card-model">${product.modelName}</p>
             <div class="product-card-brands-wrapper">
               <span class="brands-label">가입 상조사</span>
-              <span class="brand-badge brand-${brand.id} accent">${brand.name}</span>
+              <span class="brand-badge brand-${brand.id} accent" ${badgeStyle}>${brand.name}</span>
             </div>
           </div>
           <div class="product-card-price-action-group">
@@ -1430,12 +1444,23 @@ document.addEventListener('DOMContentLoaded', async () => {
       <thead>
         <tr>
           <th style="min-width: 150px; text-align: center;">비교 항목</th>
-          ${plans.map(p => `
-            <th class="brand-compare-header-${p.brandId}" style="min-width: 260px; text-align: center; padding: 20px 15px;">
-              <span class="brand-badge brand-${p.brandId}" style="margin: 0 auto 8px; display: inline-block;">${getBrandName(p.brandId)}</span>
-              <div style="font-size: 1.05rem; font-weight: 800; color: var(--primary-color); margin-top: 6px; line-height: 1.3;">${p.name}</div>
-            </th>
-          `).join('')}
+          ${plans.map(p => {
+            const brandColor = getBrandColor(p.brandId);
+            const headerStyle = brandColor 
+              ? `style="min-width: 260px; text-align: center; padding: 20px 15px; border-top: 5px solid ${brandColor} !important; background-color: ${brandColor}20 !important;"` 
+              : `class="brand-compare-header-${p.brandId}" style="min-width: 260px; text-align: center; padding: 20px 15px;"`;
+            
+            const badgeStyle = brandColor
+              ? `style="margin: 0 auto 8px; display: inline-block; background-color: ${brandColor}15; color: ${brandColor}; border-color: ${brandColor}30;"`
+              : `style="margin: 0 auto 8px; display: inline-block;" class="brand-badge brand-${p.brandId}"`;
+
+            return `
+              <th ${headerStyle}>
+                <span class="brand-badge" ${badgeStyle}>${getBrandName(p.brandId)}</span>
+                <div style="font-size: 1.05rem; font-weight: 800; color: var(--primary-color); margin-top: 6px; line-height: 1.3;">${p.name}</div>
+              </th>
+            `;
+          }).join('')}
         </tr>
       </thead>
     `;
@@ -1473,53 +1498,120 @@ document.addEventListener('DOMContentLoaded', async () => {
       <tbody>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">만기 회차</td>
-          ${plans.map(p => `<td class="compare-td-${p.brandId}" style="text-align: center; font-weight: 800; color: var(--primary-color); font-size: 0.95rem;">${p.maturityRound}회 만기</td>`).join('')}
+          ${plans.map(p => {
+            const brandColor = getBrandColor(p.brandId);
+            const style = brandColor ? `style="text-align: center; font-weight: 800; color: var(--primary-color); font-size: 0.95rem; background-color: ${brandColor}0d;"` : '';
+            return `<td class="compare-td-${p.brandId}" ${style}>${p.maturityRound}회 만기</td>`;
+          }).join('')}
         </tr>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">월 납입금 구조</td>
-          ${paymentRowsHtml.map((html, idx) => `<td class="compare-td-${plans[idx].brandId}" style="vertical-align: top; padding: 15px;">${html}</td>`).join('')}
+          ${paymentRowsHtml.map((html, idx) => {
+            const p = plans[idx];
+            const brandColor = getBrandColor(p.brandId);
+            const style = brandColor ? `style="vertical-align: top; padding: 15px; background-color: ${brandColor}0d;"` : '';
+            return `<td class="compare-td-${p.brandId}" ${style}>${html}</td>`;
+          }).join('')}
         </tr>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">제휴카드 할인 혜택</td>
-          ${cardRowsHtml.map((html, idx) => `<td class="compare-td-${plans[idx].brandId}" style="vertical-align: top; padding: 15px;">${html}</td>`).join('')}
+          ${cardRowsHtml.map((html, idx) => {
+            const p = plans[idx];
+            const brandColor = getBrandColor(p.brandId);
+            const style = brandColor ? `style="vertical-align: top; padding: 15px; background-color: ${brandColor}0d;"` : '';
+            return `<td class="compare-td-${p.brandId}" ${style}>${html}</td>`;
+          }).join('')}
         </tr>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">장례 서비스 구성</td>
-          ${plans.map(p => `<td class="compare-td-${p.brandId}" style="font-size: 0.82rem; text-align: left; line-height: 1.4; vertical-align: top; padding: 15px; max-width: 260px; word-break: keep-all; white-space: pre-line;">${formatFieldText(p.funeralService, '기본 의전 제공')}</td>`).join('')}
+          ${plans.map(p => {
+            const brandColor = getBrandColor(p.brandId);
+            const style = brandColor ? `style="font-size: 0.82rem; text-align: left; line-height: 1.4; vertical-align: top; padding: 15px; max-width: 260px; word-break: keep-all; white-space: pre-line; background-color: ${brandColor}0d;"` : '';
+            return `<td class="compare-td-${p.brandId}" ${style}>${formatFieldText(p.funeralService, '기본 의전 제공')}</td>`;
+          }).join('')}
         </tr>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">라이프 전환 서비스</td>
-          ${plans.map(p => `<td class="compare-td-${p.brandId}" style="font-size: 0.82rem; text-align: left; line-height: 1.4; vertical-align: top; padding: 15px; max-width: 260px; word-break: keep-all; white-space: pre-line;">${formatFieldText(p.convertService, '전환 서비스 지원')}</td>`).join('')}
+          ${plans.map(p => {
+            const brandColor = getBrandColor(p.brandId);
+            const style = brandColor ? `style="font-size: 0.82rem; text-align: left; line-height: 1.4; vertical-align: top; padding: 15px; max-width: 260px; word-break: keep-all; white-space: pre-line; background-color: ${brandColor}0d;"` : '';
+            return `<td class="compare-td-${p.brandId}" ${style}>${formatFieldText(p.convertService, '전환 서비스 지원')}</td>`;
+          }).join('')}
         </tr>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">멤버십 혜택</td>
-          ${plans.map(p => `<td class="compare-td-${p.brandId}" style="font-size: 0.82rem; text-align: left; line-height: 1.4; vertical-align: top; padding: 15px; max-width: 260px; word-break: keep-all; white-space: pre-line;">${formatFieldText(p.membershipService, '멤버십 특약 혜택')}</td>`).join('')}
+          ${plans.map(p => {
+            const brandColor = getBrandColor(p.brandId);
+            const style = brandColor ? `style="font-size: 0.82rem; text-align: left; line-height: 1.4; vertical-align: top; padding: 15px; max-width: 260px; word-break: keep-all; white-space: pre-line; background-color: ${brandColor}0d;"` : '';
+            return `<td class="compare-td-${p.brandId}" ${style}>${formatFieldText(p.membershipService, '멤버십 특약 혜택')}</td>`;
+          }).join('')}
         </tr>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">만기 환급율</td>
-          ${plans.map(p => `<td class="compare-td-${p.brandId}" style="text-align: center; font-weight: 800; color: var(--accent-color); font-size: 1rem; padding: 15px;">${p.refundRate || '100%'}</td>`).join('')}
+          ${plans.map(p => {
+            const brandColor = getBrandColor(p.brandId);
+            const style = brandColor ? `style="text-align: center; font-weight: 800; color: var(--accent-color); font-size: 1rem; padding: 15px; background-color: ${brandColor}0d;"` : '';
+            return `<td class="compare-td-${p.brandId}" ${style}>${p.refundRate || '100%'}</td>`;
+          }).join('')}
         </tr>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">선수금 예치 기관</td>
-          ${plans.map(p => `<td class="compare-td-${p.brandId}" style="text-align: center; font-size: 0.85rem; font-weight: 600; color: var(--text-main); padding: 15px;">${p.depositOrg || '상조공제조합'}</td>`).join('')}
+          ${plans.map(p => {
+            const brandColor = getBrandColor(p.brandId);
+            const style = brandColor ? `style="text-align: center; font-size: 0.85rem; font-weight: 600; color: var(--text-main); padding: 15px; background-color: ${brandColor}0d;"` : '';
+            return `<td class="compare-td-${p.brandId}" ${style}>${p.depositOrg || '상조공제조합'}</td>`;
+          }).join('')}
         </tr>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">무료상담</td>
-          ${plans.map(p => `
-            <td class="compare-td-${p.brandId}" style="text-align: center; padding: 15px;">
-              <button type="button" class="btn btn-accent btn-sm btn-compare-apply-now" 
-                data-plan-name="${p.name}" 
-                data-brand-name="${getBrandName(p.brandId)}"
-                style="padding: 10px 16px; font-size: 0.85rem; width: 100%; border-radius: 6px; font-weight: 800; box-shadow: 0 4px 10px rgba(0, 181, 148, 0.15); transition: var(--transition);">
-                상담 신청
-              </button>
-            </td>
-          `).join('')}
+          ${plans.map(p => {
+            const brandColor = getBrandColor(p.brandId);
+            const style = brandColor ? `style="text-align: center; padding: 15px; background-color: ${brandColor}0d;"` : '';
+            return `
+              <td class="compare-td-${p.brandId}" ${style}>
+                <button type="button" class="btn btn-accent btn-sm btn-compare-apply-now" 
+                  data-plan-name="${p.name}" 
+                  data-brand-name="${getBrandName(p.brandId)}"
+                  style="padding: 10px 16px; font-size: 0.85rem; width: 100%; border-radius: 6px; font-weight: 800; box-shadow: 0 4px 10px rgba(0, 181, 148, 0.15); transition: var(--transition);">
+                  상담 신청
+                </button>
+              </td>
+            `;
+          }).join('')}
         </tr>
       </tbody>
     `;
 
     wrapper.innerHTML = `<table>${theadHtml}${tbodyHtml}</table>`;
+
+    // Dynamic mouseover events for brand column hover effect
+    setTimeout(() => {
+      const table = wrapper.querySelector('table');
+      if (!table) return;
+      
+      const tds = table.querySelectorAll('td');
+      tds.forEach(td => {
+        const classList = Array.from(td.classList);
+        const compareClass = classList.find(c => c.startsWith('compare-td-'));
+        if (!compareClass) return;
+        
+        const brandId = compareClass.replace('compare-td-', '');
+        const brandColor = getBrandColor(brandId);
+        if (!brandColor) return;
+        
+        td.addEventListener('mouseenter', () => {
+          // Find all cells in the same brand column and change their backgrounds
+          table.querySelectorAll(`.${compareClass}`).forEach(cell => {
+            cell.style.backgroundColor = `${brandColor}18`; // Hover 9.4% opacity
+          });
+        });
+        td.addEventListener('mouseleave', () => {
+          table.querySelectorAll(`.${compareClass}`).forEach(cell => {
+            cell.style.backgroundColor = `${brandColor}0d`; // Default 5% opacity
+          });
+        });
+      });
+    }, 100);
 
     // Bind event listeners to comparison apply buttons
     wrapper.querySelectorAll('.btn-compare-apply-now').forEach(btn => {

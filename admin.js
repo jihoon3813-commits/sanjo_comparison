@@ -18,10 +18,10 @@ document.addEventListener('DOMContentLoaded', async () => {
      1. Database & Initializer Logic (localStorage)
      ========================================================================== */
   const defaultBrands = [
-    { id: 'daemyung', name: '대명아임레디', desc: '레저/리조트 우대 및 소노호텔 멤버십 혜택이 강력한 대표 상조사', logoText: '대명', fee: 150000 },
-    { id: 'boram', name: '보람상조', desc: '전통과 신뢰의 1위 브랜드, 크루즈/웨딩/주얼리 자유 전환 서비스', logoText: '보람', fee: 120000 },
-    { id: 'preed', name: '프리드라이프', desc: '국내 최대 누적 가입자수 보유, 합리적이고 투명한 납입 플랜 제공', logoText: '프리드', fee: 130000 },
-    { id: 'kyowon', name: '교원라이프', desc: '교육/어학 연계 및 생활 가전 결합 등 실용적 라이프 케어 우수 상조사', logoText: '교원', fee: 140000 }
+    { id: 'daemyung', name: '대명아임레디', desc: '레저/리조트 우대 및 소노호텔 멤버십 혜택이 강력한 대표 상조사', logoText: '대명', fee: 150000, color: '#0369A1' },
+    { id: 'boram', name: '보람상조', desc: '전통과 신뢰의 1위 브랜드, 크루즈/웨딩/주얼리 자유 전환 서비스', logoText: '보람', fee: 120000, color: '#B91C1C' },
+    { id: 'preed', name: '프리드라이프', desc: '국내 최대 누적 가입자수 보유, 합리적이고 투명한 납입 플랜 제공', logoText: '프리드', fee: 130000, color: '#6D28D9' },
+    { id: 'kyowon', name: '교원라이프', desc: '교육/어학 연계 및 생활 가전 결합 등 실용적 라이프 케어 우수 상조사', logoText: '교원', fee: 140000, color: '#C2410C' }
   ];
 
   const defaultPlans = [
@@ -368,7 +368,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           desc: item.desc,
           logoText: item.logoText || item.name.substring(0, 2),
           fee: Number(item.fee) || 0,
-          logoUrl: item.logoImage || undefined
+          logoUrl: item.logoImage || undefined,
+          color: item.color || undefined
         });
       }
 
@@ -387,7 +388,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             name: n.name,
             desc: n.desc,
             fee: Number(n.fee) || 0,
-            logoUrl: n.logoImage || undefined
+            logoUrl: n.logoImage || undefined,
+            color: n.color || undefined
           });
         }
       }
@@ -537,7 +539,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           desc: b.desc,
           logoText: b.logoText || b.name.substring(0, 2),
           fee: Number(b.fee) || 0,
-          logoUrl: b.logoUrl || b.logoImage || undefined
+          logoUrl: b.logoUrl || b.logoImage || undefined,
+          color: b.color || undefined
         }));
 
         const seedPlans = localPlans.map(p => ({
@@ -2774,6 +2777,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const feeInput = document.getElementById('modal-plan-brand-fee');
     const logoUrlInput = document.getElementById('modal-plan-brand-logo-url');
     const logoPreview = document.getElementById('modal-plan-brand-logo-preview');
+    const colorInput = document.getElementById('modal-plan-brand-color');
     
     if (!brandSelect) return;
     
@@ -2789,6 +2793,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (feeInput) feeInput.value = '120,000';
       if (logoUrlInput) logoUrlInput.value = '';
       if (logoPreview) logoPreview.src = 'https://placehold.co/200x80?text=No+Logo';
+      if (colorInput) colorInput.value = '#0369A1';
     } else {
       if (newBrandInput) {
         newBrandInput.style.display = 'none';
@@ -2805,6 +2810,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (logoPreview) {
           logoPreview.src = brand.logoImage || 'https://placehold.co/200x80?text=No+Logo';
         }
+        if (colorInput) colorInput.value = brand.color || '#0369A1';
       }
     }
   }
@@ -3143,9 +3149,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const logoUrlInput = document.getElementById('modal-plan-brand-logo-url');
     const logoFileInput = document.getElementById('modal-plan-brand-logo-file');
     const logoPreview = document.getElementById('modal-plan-brand-logo-preview');
+    const colorInput = document.getElementById('modal-plan-brand-color');
     if (logoUrlInput) logoUrlInput.value = '';
     if (logoFileInput) logoFileInput.value = '';
     if (logoPreview) logoPreview.src = 'https://placehold.co/200x80?text=No+Logo';
+    if (colorInput) colorInput.value = '#0369A1';
 
     if (id) {
       // Edit
@@ -3270,6 +3278,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  // Preset brand color buttons interaction
+  document.querySelectorAll('.btn-color-preset').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const color = btn.getAttribute('data-color');
+      const colorInput = document.getElementById('modal-plan-brand-color');
+      if (colorInput) {
+        colorInput.value = color;
+      }
+    });
+  });
+
   const btnDeletePlanBrand = document.getElementById('btn-delete-plan-brand');
   if (btnDeletePlanBrand && planBrandSelect) {
     btnDeletePlanBrand.addEventListener('click', async () => {
@@ -3339,10 +3359,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       const brandDescInput = document.getElementById('modal-plan-brand-desc');
       const brandFeeInput = document.getElementById('modal-plan-brand-fee');
       const brandLogoUrlInput = document.getElementById('modal-plan-brand-logo-url');
+      const brandColorInput = document.getElementById('modal-plan-brand-color');
 
       const brandDesc = brandDescInput ? brandDescInput.value.trim() : '';
       const brandFee = brandFeeInput ? parseInt(brandFeeInput.value.replace(/[^0-9]/g, '')) || 0 : 0;
       const brandLogo = brandLogoUrlInput ? brandLogoUrlInput.value.trim() : '';
+      const brandColor = brandColorInput ? brandColorInput.value.trim() : '#0369A1';
 
       if (!brandDesc) {
         alert('상조회사 설명을 입력해 주세요.');
@@ -3362,14 +3384,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         const existing = brands.find(b => b.name === newBrandName);
         if (existing) {
           brandId = existing.id;
-          // Update existing brand with the new description, fee, logo
+          // Update existing brand with the new description, fee, logo, color
           const updatedBrands = brands.map(b => {
             if (b.id === brandId) {
               return {
                 ...b,
                 desc: brandDesc,
                 fee: brandFee,
-                logoImage: brandLogo || undefined
+                logoImage: brandLogo || undefined,
+                color: brandColor
               };
             }
             return b;
@@ -3383,21 +3406,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             desc: brandDesc,
             logoText: newBrandName.substring(0, 2),
             fee: brandFee,
-            logoImage: brandLogo || undefined
+            logoImage: brandLogo || undefined,
+            color: brandColor
           };
           brands.push(newBrand);
           await setBrands(brands);
           brandId = newBrandId;
         }
       } else {
-        // Update existing brand with the new description, fee, logo
+        // Update existing brand with the new description, fee, logo, color
         const updatedBrands = brands.map(b => {
           if (b.id === brandId) {
             return {
               ...b,
               desc: brandDesc,
               fee: brandFee,
-              logoImage: brandLogo || undefined
+              logoImage: brandLogo || undefined,
+              color: brandColor
             };
           }
           return b;

@@ -9,6 +9,7 @@ export default defineSchema({
     logoText: v.string(),
     fee: v.number(),
     logoUrl: v.optional(v.string()),
+    color: v.optional(v.string()),
   }).index("by_custom_id", ["id"]),
 
   plans: defineTable({

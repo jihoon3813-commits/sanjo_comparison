@@ -17,6 +17,7 @@ export const add = mutation({
     logoText: v.string(),
     fee: v.number(),
     logoUrl: v.optional(v.string()),
+    color: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const existing = await ctx.db
@@ -54,6 +55,7 @@ export const update = mutation({
     desc: v.string(),
     fee: v.number(),
     logoUrl: v.optional(v.string()),
+    color: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const existing = await ctx.db
@@ -69,6 +71,7 @@ export const update = mutation({
       desc: args.desc,
       fee: args.fee,
       logoUrl: args.logoUrl,
+      color: args.color,
     };
     if (args.name) {
       patchData.name = args.name;
@@ -90,6 +93,7 @@ export const seed = mutation({
         logoText: v.string(),
         fee: v.number(),
         logoUrl: v.optional(v.string()),
+        color: v.optional(v.string()),
       })
     ),
   },
