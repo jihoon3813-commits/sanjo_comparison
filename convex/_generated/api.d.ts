@@ -12,6 +12,7 @@ import type * as brands from "../brands.js";
 import type * as consultations from "../consultations.js";
 import type * as plans from "../plans.js";
 import type * as products from "../products.js";
+import type * as scraper from "../scraper.js";
 import type * as sellers from "../sellers.js";
 import type * as settlements from "../settlements.js";
 
@@ -26,6 +27,7 @@ declare const fullApi: ApiFromModules<{
   consultations: typeof consultations;
   plans: typeof plans;
   products: typeof products;
+  scraper: typeof scraper;
   sellers: typeof sellers;
   settlements: typeof settlements;
 }>;

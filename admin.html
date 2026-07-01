@@ -275,22 +275,32 @@
             <div class="product-form-card" id="product-form-container" style="display: none; max-height: 80vh; overflow-y: auto;">
               <h3 id="product-form-title">새 가전제품 등록</h3>
               
-              <!-- URL 동기화 기능 -->
+              <!-- URL 동기화 기능 (복수 URL 지원) -->
               <div class="form-group sync-url-group" style="background-color: var(--bg-light); padding: 16px; border-radius: var(--radius-sm); border: 1px dashed var(--primary-color); margin-bottom: 20px;">
-                <label for="prod-sync-url" style="color: var(--primary-color); font-weight: 700; display: block; margin-bottom: 6px;">제품 정보 자동 동기화 (URL)</label>
-                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
-                  <div style="width: 130px; min-width: 130px;">
-                    <select id="prod-sync-accounts" style="margin-bottom: 0; padding: 8px; height: 38px; font-size: 0.85rem;">
-                      <option value="1">1구좌로 등록</option>
-                      <option value="2">2구좌로 등록</option>
-                      <option value="3">3구좌로 등록</option>
-                      <option value="4">4구좌로 등록</option>
-                    </select>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                  <label style="color: var(--primary-color); font-weight: 700; margin: 0;">제품 정보 자동 동기화 (URL)</label>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 130px; min-width: 130px;">
+                      <select id="prod-sync-accounts" style="margin-bottom: 0; padding: 8px; height: 38px; font-size: 0.85rem;">
+                        <option value="1">1구좌로 등록</option>
+                        <option value="2">2구좌로 등록</option>
+                        <option value="3">3구좌로 등록</option>
+                        <option value="4">4구좌로 등록</option>
+                      </select>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-sm" id="btn-prod-sync" style="white-space: nowrap; margin-bottom: 0; padding: 0 16px; height: 38px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem;">가져오기</button>
                   </div>
-                  <input type="text" id="prod-sync-url" placeholder="네이버쇼핑, 비즈인노 상품 URL 입력" style="margin-bottom: 0; flex-grow: 1; height: 38px; padding: 8px 12px; font-size: 0.85rem;">
-                  <button type="button" class="btn btn-primary btn-sm" id="btn-prod-sync" style="white-space: nowrap; margin-bottom: 0; padding: 0 16px; height: 38px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem;">가져오기</button>
                 </div>
-                <span class="small-text text-muted" style="display: block; font-size: 0.75rem;">URL 입력 후 가져오기를 누르면 해당 리스트 페이지 내 제품 목록이 수집됩니다.</span>
+                <div id="prod-sync-url-list" style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px;">
+                  <div class="sync-url-row" style="display: flex; gap: 6px; align-items: center;">
+                    <input type="text" class="prod-sync-url-input" placeholder="네이버쇼핑, 비즈인노 상품 URL 입력" style="margin-bottom: 0; flex-grow: 1; height: 38px; padding: 8px 12px; font-size: 0.85rem;">
+                    <button type="button" class="btn-sync-url-remove" title="삭제" style="width: 34px; height: 34px; border: none; background: transparent; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; border-radius: 4px; visibility: hidden;" onmouseenter="this.style.color='var(--danger-color)'; this.style.background='rgba(220,53,69,0.08)'" onmouseleave="this.style.color='var(--text-muted)'; this.style.background='transparent'">✕</button>
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <span class="small-text text-muted" style="font-size: 0.75rem;">URL 입력 후 가져오기를 누르면 해당 리스트 페이지 내 제품 목록이 수집됩니다.</span>
+                  <button type="button" id="btn-add-sync-url" style="background: none; border: 1px dashed var(--primary-color); color: var(--primary-color); cursor: pointer; font-size: 0.78rem; font-weight: 600; padding: 4px 12px; border-radius: 4px; white-space: nowrap; display: flex; align-items: center; gap: 4px;" onmouseenter="this.style.background='rgba(3,105,161,0.06)'" onmouseleave="this.style.background='none'">+ URL 추가</button>
+                </div>
               </div>
 
               <form id="product-edit-form">

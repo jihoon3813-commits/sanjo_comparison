@@ -769,12 +769,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         <div class="premium-core-list">
           <div class="core-list-row">
-            <span class="row-label">월 기본납입금</span>
-            <span class="row-value monthly-price-val">월 ${(Number(product.monthly) || 0).toLocaleString()}원</span>
-          </div>
-          <div class="core-list-row">
-            <span class="row-label">제휴카드 최대 혜택가</span>
-            <span class="row-value benefit-price-val">월 ${(Number(product.cardBenefitPrice) || 0).toLocaleString()}원</span>
+            <span class="row-label">가전제품 기본렌탈료</span>
+            <span class="row-value text-accent" style="font-weight: 800; color: var(--accent-color);">0원 (전액 지원)</span>
           </div>
           <div class="core-list-row">
             <span class="row-label">만기 환급율</span>
@@ -1186,15 +1182,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
           <div class="product-card-price-action-group">
             <div class="product-card-price-container">
-              <div style="display: flex; align-items: center; justify-content: space-between;">
-                <span class="product-card-price-label" style="font-size: 0.8rem; font-weight: 800; color: var(--accent-dark);">월 납입금</span>
-                <span class="product-card-price-value" style="font-size: 1.15rem; color: var(--text-main); font-weight: 800;">${monthlyTxt}</span>
-              </div>
-              <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px dashed rgba(0, 181, 148, 0.2); padding-top: 6px; margin-top: 2px;">
-                <span class="product-card-price-label" style="font-size: 0.8rem; font-weight: 800; color: var(--accent-color);">카드 혜택가</span>
-                <span class="product-card-price-value" style="font-size: 1.3rem; color: var(--accent-color); font-weight: 900;">${benefitTxt}</span>
-              </div>
-              <div class="product-card-guarantee" style="margin-top: 6px; border-top: 1px solid rgba(0, 181, 148, 0.1); padding-top: 6px;">
+              <div class="product-card-guarantee" style="margin-top: 0; padding-top: 0; border-top: none;">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" class="guarantee-check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 상조만기 시 환급율 100% 보장
               </div>
@@ -1351,15 +1339,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
           <div class="product-card-price-action-group">
             <div class="product-card-price-container">
-              <div style="display: flex; align-items: center; justify-content: space-between;">
-                <span class="product-card-price-label" style="font-size: 0.8rem; font-weight: 800; color: var(--accent-dark);">월 납입금</span>
-                <span class="product-card-price-value" style="font-size: 1.15rem; color: var(--text-main); font-weight: 800;">${monthlyTxt}</span>
-              </div>
-              <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px dashed rgba(0, 181, 148, 0.2); padding-top: 6px; margin-top: 2px;">
-                <span class="product-card-price-label" style="font-size: 0.8rem; font-weight: 800; color: var(--accent-color);">카드 혜택가</span>
-                <span class="product-card-price-value" style="font-size: 1.3rem; color: var(--accent-color); font-weight: 900;">${benefitTxt}</span>
-              </div>
-              <div class="product-card-guarantee" style="margin-top: 6px; border-top: 1px solid rgba(0, 181, 148, 0.1); padding-top: 6px;">
+              <div class="product-card-guarantee" style="margin-top: 0; padding-top: 0; border-top: none;">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" class="guarantee-check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 상조만기 시 환급율 100% 보장 <span>(${monthsTxt})</span>
               </div>

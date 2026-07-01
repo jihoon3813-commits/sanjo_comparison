@@ -1755,7 +1755,70 @@ document.addEventListener('DOMContentLoaded', async () => {
   const btnProductFormCancel = document.getElementById('btn-product-form-cancel');
 
   const btnProdSync = document.getElementById('btn-prod-sync');
-  const prodSyncUrl = document.getElementById('prod-sync-url');
+  const prodSyncUrlList = document.getElementById('prod-sync-url-list');
+  const btnAddSyncUrl = document.getElementById('btn-add-sync-url');
+
+  // Multi-URL add/remove management
+  function addSyncUrlRow() {
+    if (!prodSyncUrlList) return;
+    const row = document.createElement('div');
+    row.className = 'sync-url-row';
+    row.style.cssText = 'display: flex; gap: 6px; align-items: center;';
+    row.innerHTML = `
+      <input type="text" class="prod-sync-url-input" placeholder="네이버쇼핑, 비즈인노 상품 URL 입력" style="margin-bottom: 0; flex-grow: 1; height: 38px; padding: 8px 12px; font-size: 0.85rem;">
+      <button type="button" class="btn-sync-url-remove" title="삭제" style="width: 34px; height: 34px; border: none; background: transparent; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; border-radius: 4px;" onmouseenter="this.style.color='var(--danger-color)'; this.style.background='rgba(220,53,69,0.08)'" onmouseleave="this.style.color='var(--text-muted)'; this.style.background='transparent'">✕</button>
+    `;
+    prodSyncUrlList.appendChild(row);
+    updateSyncUrlRemoveButtons();
+    row.querySelector('.prod-sync-url-input').focus();
+  }
+
+  function updateSyncUrlRemoveButtons() {
+    if (!prodSyncUrlList) return;
+    const rows = prodSyncUrlList.querySelectorAll('.sync-url-row');
+    rows.forEach(row => {
+      const removeBtn = row.querySelector('.btn-sync-url-remove');
+      if (removeBtn) {
+        removeBtn.style.visibility = rows.length <= 1 ? 'hidden' : 'visible';
+      }
+    });
+  }
+
+  function clearSyncUrlInputs() {
+    if (!prodSyncUrlList) return;
+    // Remove all rows except the first one, and clear the first one
+    const rows = prodSyncUrlList.querySelectorAll('.sync-url-row');
+    rows.forEach((row, i) => {
+      if (i === 0) {
+        row.querySelector('.prod-sync-url-input').value = '';
+      } else {
+        row.remove();
+      }
+    });
+    updateSyncUrlRemoveButtons();
+  }
+
+  function getSyncUrls() {
+    if (!prodSyncUrlList) return [];
+    const inputs = prodSyncUrlList.querySelectorAll('.prod-sync-url-input');
+    return Array.from(inputs).map(inp => inp.value.trim()).filter(v => v.length > 0);
+  }
+
+  if (btnAddSyncUrl) {
+    btnAddSyncUrl.addEventListener('click', () => addSyncUrlRow());
+  }
+
+  if (prodSyncUrlList) {
+    prodSyncUrlList.addEventListener('click', (e) => {
+      if (e.target.closest('.btn-sync-url-remove')) {
+        const row = e.target.closest('.sync-url-row');
+        if (row) {
+          row.remove();
+          updateSyncUrlRemoveButtons();
+        }
+      }
+    });
+  }
 
   let currentActiveProductPlanTab = 'all'; // Default tab
   let productSearchQuery = '';
@@ -1812,7 +1875,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (idsToDelete.includes(editId)) {
         productFormContainer.style.display = 'none';
         productEditForm.reset();
-        prodSyncUrl.value = '';
+        clearSyncUrlInputs();
       }
     });
   }
@@ -2337,6 +2400,197 @@ document.addEventListener('DOMContentLoaded', async () => {
         thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/uploads/pwvu7urobnh_1781830664646.jpg"
       }
     ],
+    bizinno_2: [
+      {
+        name: "LG 트롬 오브제컬렉션 세탁기(21kg)",
+        modelName: "FG21WNR",
+        categoryId: "washer",
+        description: "LG 트롬 오브제컬렉션 세탁기(21kg) (FG21WNR) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/batch_20260503_v8/X2/3138b8e6/2f9f9018/thumb_ea9dc261.png"
+      },
+      {
+        name: "LG 통돌이 컴포트 세탁기(21kg)",
+        modelName: "T21GZ9",
+        categoryId: "washer",
+        description: "LG 통돌이 컴포트 세탁기(21kg) (T21GZ9) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/uploads/bwejs0ngmh_1782361830419.jpg"
+      },
+      {
+        name: "하이얼 식기세척기+세탁기",
+        modelName: "HDW06MFW+HW12-BP4959LK-B",
+        categoryId: "washer",
+        description: "하이얼 식기세척기+세탁기 (HDW06MFW+HW12-BP4959LK-B) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/uploads/kza9o41y1xq_1781746704158.jpg"
+      },
+      {
+        name: "삼성 그랑데 세탁기(21kg)",
+        modelName: "WF21DG6650BW",
+        categoryId: "washer",
+        description: "삼성 그랑데 세탁기(21kg) (WF21DG6650BW) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/clean_assets_20260509/wf21dg6650bw_thumb_final_v1.jpg"
+      },
+      {
+        name: "삼성 양문형 냉장고(852L)",
+        modelName: "RS84DB5002CW",
+        categoryId: "fridge",
+        description: "삼성 양문형 냉장고(852L) (RS84DB5002CW) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/clean_assets_20260509/rs84db5002cw_thumb.jpg"
+      },
+      {
+        name: "삼성 1도어 냉장고(380L)",
+        modelName: "RR70H39E10",
+        categoryId: "fridge",
+        description: "삼성 1도어 냉장고(380L) (RR70H39E10) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/uploads/5jvyfnh8sxt_1781738769077.jpg"
+      },
+      {
+        name: "삼성 1도어 김치냉장고",
+        modelName: "RQ70H32S10 코타화이트",
+        categoryId: "fridge",
+        description: "삼성 1도어 김치냉장고 (RQ70H32S10 코타화이트) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/uploads/6niodu9zqvw_1781739607032.jpg"
+      },
+      {
+        name: "1도어 냉동고(318L)",
+        modelName: "RZ70H32JN0",
+        categoryId: "fridge",
+        description: "1도어 냉동고(318L) (RZ70H32JN0) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/uploads/xldfsfe6akc_1781738855302.jpg"
+      },
+      {
+        name: "LG 50인치 나노셀 AI TV",
+        modelName: "50NA1C90AK 벽걸이/스탠드",
+        categoryId: "tv",
+        description: "LG 50인치 나노셀 AI TV (50NA1C90AK 벽걸이/스탠드) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/uploads/mlpfex6ov5i_1779085528295.png"
+      },
+      {
+        name: "삼성 55인치 miniLED TV",
+        modelName: "KU55MH75AFXKR 벽걸이",
+        categoryId: "tv",
+        description: "삼성 55인치 miniLED TV (KU55MH75AFXKR 벽걸이) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/uploads/gxwnyuib3xm_1780034278750.jpg"
+      },
+      {
+        name: "삼성 43인치 Serif TV",
+        modelName: "KQ43LSD01AFXKR",
+        categoryId: "tv",
+        description: "삼성 43인치 Serif TV (KQ43LSD01AFXKR) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/clean_assets_20260509/kq43lsd01afxkr_thumb.jpg"
+      },
+      {
+        name: "SK매직 원코크 얼음물 정수기(36개월)",
+        modelName: "WPUIAC414S",
+        categoryId: "water",
+        description: "SK매직 원코크 얼음물 정수기(36개월) (WPUIAC414S) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/clean_assets_20260509/wpu_iac414_sk_______________wpu_iac414__png.png"
+      },
+      {
+        name: "LG 트롬 건조기 듀얼 인버터 히트펌프",
+        modelName: "RH10VTA 모던 스테인리스",
+        categoryId: "dryer",
+        description: "LG 트롬 건조기 듀얼 인버터 히트펌프 (RH10VTA 모던 스테인리스) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/batch_20260503_v8/X2/3138b8e6/5b1cde5f/thumb_202e7500.jpg"
+      },
+      {
+        name: "LG 바스에어시스템 프리미엄 듀얼",
+        modelName: "MX0120BASR",
+        categoryId: "general",
+        description: "LG 바스에어시스템 프리미엄 듀얼 (MX0120BASR) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/batch_20260503_v8/X2/3138b8e6/2b615446/thumb_0d550947.png"
+      },
+      {
+        name: "DJI 로봇청소기",
+        modelName: "ROMO 로모 S",
+        categoryId: "cleaner",
+        description: "DJI 로봇청소기 (ROMO 로모 S) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/uploads/ec7dzohmty7_1781746877808.jpg"
+      },
+      {
+        name: "쿠쿠 초소형 정수기(48개월)",
+        modelName: "CP-AMS100E",
+        categoryId: "water",
+        description: "쿠쿠 초소형 정수기(48개월) (CP-AMS100E) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/clean_assets_20260509/cp_ams100e___________cp_ams100ewh________png.png"
+      },
+      {
+        name: "쿠쿠 무선청소기+음식물처리기",
+        modelName: "CVC-DEM2540UG+CFD-EFF201DCNW 노블화이트",
+        categoryId: "cleaner",
+        description: "쿠쿠 무선청소기+음식물처리기 (CVC-DEM2540UG+CFD-EFF201DCNW 노블화이트) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/clean_assets_20260509/cvc_dem2540ug_cfd_eff201dcn_________________cvc_dem2540ug_cfd_eff201dcnw_g__jpg.jpg"
+      },
+      {
+        name: "쿠쿠 냉온정 얼음정수기(48개월)",
+        modelName: "CP-SS100WSV",
+        categoryId: "water",
+        description: "쿠쿠 냉온정 얼음정수기(48개월) (CP-SS100WSV) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/clean_assets_20260509/cp_ss100wsv______________48____cp_ss100wsv_jpg.jpg"
+      },
+      {
+        name: "쿠쿠 공기청정기(20평)(48개월)+음식물처리기",
+        modelName: "AC-20T10FWH+CFD-EFF201DCNW 노블화이트",
+        categoryId: "airpurifier",
+        description: "쿠쿠 공기청정기(20평)(48개월)+음식물처리기 (AC-20T10FWH+CFD-EFF201DCNW 노블화이트) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/uploads/980pe6gtlok_1781740332374.jpg"
+      },
+      {
+        name: "전동 매트화이트 스크린 120인치 노출형",
+        modelName: "BBMW-120",
+        categoryId: "general",
+        description: "전동 매트화이트 스크린 120인치 노출형 (BBMW-120) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/uploads/43g9e0ov8j3_1782712200486.jpg"
+      },
+      {
+        name: "우즈 제습기",
+        modelName: "SW-42FX",
+        categoryId: "general",
+        description: "우즈 제습기 (SW-42FX) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/uploads/b3boetq69zp_1781746913163.jpg"
+      },
+      {
+        name: "에스테오 EP7 뷰티 디바이스",
+        modelName: "SE-5100",
+        categoryId: "general",
+        description: "에스테오 EP7 뷰티 디바이스 (SE-5100) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/clean_assets_20260509/se_5100______ep7_________se_5100__jpg.jpg"
+      },
+      {
+        name: "애플 아이패드 11세대 패키지",
+        modelName: "MD3Y4KH/Asilver+JCP5428+JCP2723+JCP2602+ID716",
+        categoryId: "general",
+        description: "애플 아이패드 11세대 패키지 (MD3Y4KH/Asilver+JCP5428+JCP2723+JCP2602+ID716) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/uploads/fl8b8gtlwk_1782106159235.jpg"
+      },
+      {
+        name: "샤크 무선청소기 FIT+에어스타일러+선풍기",
+        modelName: "LC150KRBL+HD434KR+FA221KR",
+        categoryId: "cleaner",
+        description: "샤크 무선청소기 FIT+에어스타일러+선풍기 (LC150KRBL+HD434KR+FA221KR) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/uploads/zf86r1ef2i_1781741133284.jpg"
+      },
+      {
+        name: "샤크 무선청소기 FIT+닌자블렌더+선풍기",
+        modelName: "LC150KRBL+TB201KR+FA221KR",
+        categoryId: "cleaner",
+        description: "샤크 무선청소기 FIT+닌자블렌더+선풍기 (LC150KRBL+TB201KR+FA221KR) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/uploads/72u1kbqf7bd_1781746580182.jpg"
+      },
+      {
+        name: "삼성 제트청소기",
+        modelName: "VS28D950ACB",
+        categoryId: "cleaner",
+        description: "삼성 제트청소기 (VS28D950ACB) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/clean_assets_20260509/vs28d950acb_thumb.jpg"
+      },
+      {
+        name: "삼성 인덕션",
+        modelName: "NZ63DB657CFH",
+        categoryId: "general",
+        description: "삼성 인덕션 (NZ63DB657CFH) - 결합 상조상품: 스마트케어4더블",
+        thumbnail: "https://tvtpvecnjyjnvjhbozks.supabase.co/storage/v1/object/public/products/uploads/981ardunso8_1781739295778.jpg"
+      }
+    ],
     mixed: [
       {
         name: 'LG 오브제컬렉션 원바디 워시타워',
@@ -2412,12 +2666,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       const autoCatId = autoDetermineCategory(p.name, p.description);
       const categoryName = categoryMap[autoCatId] || '일반가전';
 
-      let estPrice = '월 39,000원 상당';
-      if (['fridge', 'washer', 'dryer', 'aircon', 'furniture'].includes(autoCatId)) estPrice = '월 49,000원 상당';
-      if (['massage', 'tv'].includes(autoCatId)) estPrice = '월 59,000원 상당';
-      if (['water', 'cleaner', 'airpurifier', 'styler'].includes(autoCatId)) estPrice = '월 29,900원 상당';
-      if (['laptop'].includes(autoCatId)) estPrice = '월 42,900원 상당';
-
       const div = document.createElement('div');
       div.className = 'scraped-product-item';
       div.style.cssText = 'display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border-color); padding: 12px; border-radius: var(--radius-sm); background: #ffffff;';
@@ -2432,7 +2680,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             <p class="text-muted" style="font-size: 0.75rem; margin: 0; line-height: 1.3; max-width: 500px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;">${p.description}</p>
           </div>
         </div>
-        <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-color); white-space: nowrap; margin-left: 12px;">${estPrice}</div>
       `;
       bulkProductsListBody.appendChild(div);
     });
@@ -2441,7 +2688,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   function closeBulkProductModal() {
     if (bulkProductModal) {
       bulkProductModal.classList.remove('active');
-      prodSyncUrl.value = '';
+      clearSyncUrlInputs();
     }
   }
 
@@ -2536,66 +2783,417 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // Handle URL Sync Crawler Simulator
+  // Handle URL Sync Crawler Simulator (Multi-URL support)
+  async function resolveUrlToMockData(rawUrl, accountsOverride) {
+    let urlClean = rawUrl.toLowerCase().trim();
+    urlClean = urlClean.replace(/^(https?:\/\/)?(www\.)?/i, '');
+    urlClean = urlClean.replace(/\/$/, '');
+
+    // Parse accounts and page query parameters from URL
+    let accountsVal = null;
+    let pageVal = null;
+    try {
+      const urlObj = new URL(rawUrl.startsWith('http') ? rawUrl : 'https://' + rawUrl);
+      accountsVal = urlObj.searchParams.get('accounts');
+      pageVal = urlObj.searchParams.get('page');
+    } catch (e) {
+      const matchAcc = rawUrl.match(/accounts=(\d+)/i);
+      if (matchAcc) accountsVal = matchAcc[1];
+      const matchPage = rawUrl.match(/page=(\d+)/i);
+      if (matchPage) pageVal = matchPage[1];
+    }
+
+    // 1. If it's a Lifenuri URL, dynamically fetch products via AJAX POST
+    if (urlClean.includes('lifenuri.com')) {
+      console.log("[Lifenuri Scanner] Detected Lifenuri URL:", rawUrl);
+      const accounts = accountsOverride !== undefined ? accountsOverride : 1;
+      
+      // Convert rawUrl to local proxy URL
+      let proxiedUrl = rawUrl;
+      try {
+        const urlObj = new URL(rawUrl.startsWith('http') ? rawUrl : 'https://' + rawUrl);
+        proxiedUrl = '/lifenuri-proxy' + urlObj.pathname + urlObj.search;
+        console.log("[Lifenuri Scanner] Proxied URL:", proxiedUrl);
+      } catch (e) {
+        console.warn("Failed to construct proxied Lifenuri URL:", e);
+      }
+
+      try {
+        console.log("[Lifenuri Scanner] Fetching HTML from proxy...");
+        const resHtml = await fetch(proxiedUrl, {
+          headers: {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+          }
+        });
+        console.log("[Lifenuri Scanner] HTML Response Status:", resHtml.status);
+        if (resHtml.ok) {
+          const html = await resHtml.text();
+          const themeNoMatch = html.match(/var\s+first_theme\s*=\s*(\d+)/i) || html.match(/onclick="listdata\('(\d+)'\)"/i);
+          const themeNo = themeNoMatch ? themeNoMatch[1] : null;
+          console.log("[Lifenuri Scanner] Extracted themeNo:", themeNo);
+
+          if (themeNo) {
+            console.log("[Lifenuri Scanner] Fetching product list via POST...");
+            const listRes = await fetch(`/lifenuri-proxy/shop/themes/${themeNo}/list`, {
+              method: "POST",
+              headers: {
+                "Accept": "application/json, text/javascript, */*; q=0.01",
+                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "X-Requested-With": "XMLHttpRequest",
+                "Referer": rawUrl,
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+              },
+              body: `actions=goods&themes_no=${themeNo}`
+            });
+            console.log("[Lifenuri Scanner] POST Response Status:", listRes.status);
+
+            if (listRes.ok) {
+              const listData = await listRes.json();
+              console.log("[Lifenuri Scanner] API Return Code:", listData.return_code, "Message:", listData.return_msg);
+              if (listData.return_code === 1000) {
+                const rawProducts = listData.themeslistrow || [];
+                const liveProducts = rawProducts.map(p => {
+                  const name = p.goods_title || "";
+                  const modelName = p.goods_info_model || "";
+                  const thumbnail = p.goods_image_main2 || "";
+                  const goodsCode = p.goods_code || "";
+                  
+                  let categoryId = "general";
+                  const nameLower = name.toLowerCase();
+                  if (nameLower.includes("tv") || nameLower.includes("티비") || nameLower.includes("모니터")) categoryId = "tv";
+                  else if (nameLower.includes("냉장고")) categoryId = "fridge";
+                  else if (nameLower.includes("세탁기")) categoryId = "washer";
+                  else if (nameLower.includes("건조기")) categoryId = "dryer";
+                  else if (nameLower.includes("에어컨")) categoryId = "aircon";
+                  else if (nameLower.includes("공기청정기")) categoryId = "airpurifier";
+                  else if (nameLower.includes("청소기")) categoryId = "cleaner";
+                  else if (nameLower.includes("의류관리기") || nameLower.includes("스타일러")) categoryId = "styler";
+                  else if (nameLower.includes("가구")) categoryId = "furniture";
+                  else if (nameLower.includes("노트북") || nameLower.includes("컴퓨터")) categoryId = "laptop";
+                  else if (nameLower.includes("정수기")) categoryId = "water";
+                  else if (nameLower.includes("안마의자")) categoryId = "massage";
+
+                  const acc = accounts;
+                  let plan = "스마트케어5싱글";
+                  if (acc === 2) plan = "스마트케어4더블";
+                  else if (acc === 3) plan = "스마트케어5트리플";
+                  else if (acc === 4) plan = "스마트케어5쿼드";
+
+                  const desc = `${name} (${modelName}) - 결합 상조상품: ${plan}`;
+
+                  return {
+                    name,
+                    modelName,
+                    categoryId,
+                    description: desc,
+                    thumbnail,
+                    href: `https://boram.lifenuri.com/shop/products/${goodsCode}`,
+                    plan
+                  };
+                });
+                console.log("[Lifenuri Scanner] Successfully parsed products count:", liveProducts.length);
+                return { data: liveProducts, url: rawUrl };
+              } else {
+                console.warn("[Lifenuri Scanner] API returned error return_code:", listData.return_code, listData.return_msg);
+              }
+            } else {
+              console.warn("[Lifenuri Scanner] POST request failed with status:", listRes.status);
+            }
+          } else {
+            console.warn("[Lifenuri Scanner] Could not extract themeNo from HTML content");
+          }
+        } else {
+          console.warn("[Lifenuri Scanner] HTML request failed with status:", resHtml.status);
+        }
+      } catch (err) {
+        console.warn("Failed to fetch live Lifenuri products in simulator:", err);
+      }
+    }
+
+    // 2. If it's a Bizinno URL, dynamically generate/filter products based on the accounts count
+    if (urlClean.includes('bizinno.kr')) {
+      const accounts = accountsOverride !== undefined ? accountsOverride : (accountsVal ? parseInt(accountsVal) : null);
+      const page = pageVal ? parseInt(pageVal) : null;
+
+      try {
+        // Try fetching live products from Bizinno's database (Supabase)
+        const supabaseUrl = 'https://tvtpvecnjyjnvjhbozks.supabase.co/rest/v1/products?select=*';
+        const response = await fetch(supabaseUrl, {
+          headers: {
+            'apikey': 'sb_publishable_bgd5nh-qDblE3CfK6SbJXw_brkDvmXC',
+            'authorization': 'Bearer sb_publishable_bgd5nh-qDblE3CfK6SbJXw_brkDvmXC',
+            'accept-profile': 'public'
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          let filtered = data;
+          if (accounts !== null) {
+            filtered = data.filter(item => item['구좌수'] === accounts);
+          }
+          filtered = filtered.filter(item => item['공개_여부'] !== false);
+          // Sort by BIZINNO_MODEL_ORDER for accounts === 2
+          if (accounts === 2) {
+            const bizinnoOrder = [
+              "FG21WNR", "T21GZ9", "HDW06MFW+HW12-BP4959LK-B", "WF21DG6650BW",
+              "RS84DB5002CW", "RR70H39E10", "RQ70H32S10 코타화이트", "RZ70H32JN0",
+              "50NA1C90AK 벽걸이/스탠드", "KU55MH75AFXKR 벽걸이", "KQ43LSD01AFXKR",
+              "WPUIAC414S", "RH10VTA 모던 스테인리스",
+              "MX0120BASR", "ROMO 로모 S", "CP-AMS100E", "CVC-DEM2540UG+CFD-EFF201DCNW 노블화이트",
+              "CP-SS100WSV", "AC-20T10FWH+CFD-EFF201DCNW 노블화이트", "BBMW-120",
+              "SW-42FX", "SE-5100", "MD3Y4KH/Asilver+JCP5428+JCP2723+JCP2602+ID716",
+              "LC150KRBL+HD434KR+FA221KR", "LC150KRBL+TB201KR+FA221KR", "VS28D950ACB",
+              "NZ63DB657CFH",
+              "DF18CG3100TR(HR)", "AR60F11D11WS", "DV21DG8600BW", "SM-X626NZAAKOO",
+              "BRAMS-S3800", "Qrevo Curv + H60", "SQRCUKR0N031", "IZZI", "GO+", "LIFT+",
+              "X50s Pro Ultra", "L10s Heat/G10", "L30s Pro Ultra Heat/G10", "V12S+Carbonator 3",
+              "세라믹파티나 토파즈+허쉬젯 컴팩트", "BBGS-122", "NCB354"
+            ];
+
+            const getCleanModel = s => (s || '').trim().toLowerCase().replace(/\s+/g, '');
+            const cleanOrder = bizinnoOrder.map(getCleanModel);
+
+            filtered.sort((a, b) => {
+              const modelA = getCleanModel(a['모델명']);
+              const modelB = getCleanModel(b['모델명']);
+              
+              let idxA = cleanOrder.findIndex(m => m === modelA || m.includes(modelA) || modelA.includes(m));
+              let idxB = cleanOrder.findIndex(m => m === modelB || m.includes(modelB) || modelB.includes(m));
+              
+              if (idxA === -1) idxA = 9999;
+              if (idxB === -1) idxB = 9999;
+              
+              return idxA - idxB;
+            });
+          } else {
+            // Sort by 노출_순위 DESC for other accounts counts
+            filtered.sort((a, b) => (b['노출_순위'] || 0) - (a['노출_순위'] || 0));
+          }
+
+          // If page is specified, apply pagination (page size of 14)
+          if (page !== null) {
+            const pageSize = 14;
+            const start = (page - 1) * pageSize;
+            const end = start + pageSize;
+            filtered = filtered.slice(start, end);
+          }
+
+          const liveProducts = filtered.map(item => {
+            const name = item['제품명'] || '';
+            const modelName = item['모델명'] || '';
+            
+            const catName = item['카테고리'] || '';
+            let categoryId = 'general';
+            if (catName.includes('TV') || catName.includes('티비')) categoryId = 'tv';
+            else if (catName.includes('냉장고')) categoryId = 'fridge';
+            else if (catName.includes('세탁기')) categoryId = 'washer';
+            else if (catName.includes('건조기')) categoryId = 'dryer';
+            else if (catName.includes('에어컨')) categoryId = 'aircon';
+            else if (catName.includes('공기청정기')) categoryId = 'airpurifier';
+            else if (catName.includes('청소기')) categoryId = 'cleaner';
+            else if (catName.includes('의류관리기') || catName.includes('스타일러')) categoryId = 'styler';
+            else if (catName.includes('가구')) categoryId = 'furniture';
+            else if (catName.includes('노트북') || catName.includes('컴퓨터')) categoryId = 'laptop';
+            else if (catName.includes('정수기')) categoryId = 'water';
+            else if (catName.includes('안마의자')) categoryId = 'massage';
+
+            const thumbnail = item['메인_썸네일(목록용)'] || '';
+            const href = `/product/${encodeURIComponent(modelName)}?accounts=${accounts || item['구좌수'] || 1}`;
+            
+            const acc = item['구좌수'] || accounts || 1;
+            let plan = '스마트케어5싱글';
+            if (acc === 2) plan = '스마트케어4더블';
+            else if (acc === 3) plan = '스마트케어5트리플';
+            else if (acc === 4) plan = '스마트케어5쿼드';
+
+            const desc = `${name} (${modelName}) - 결합 상조상품: ${plan}`;
+
+            return {
+              name,
+              modelName,
+              categoryId,
+              description: desc,
+              thumbnail,
+              href,
+              plan
+            };
+          });
+
+          return { data: liveProducts, url: rawUrl };
+        }
+      } catch (err) {
+        console.warn("Failed to fetch live Bizinno products, falling back to local mock:", err);
+      }
+
+      // Local mock fallback if Supabase fails
+      const allBizinno = MOCK_SCRAPED_DATA.bizinno;
+      
+      if (accounts === 1) {
+        const targetIds = [
+          "SQ07GA3WBS", // LG 휘센 벽걸이 에어컨(7평)
+          "WPUJAC125S", // SK매직 초소형 라이트 직수 정수기
+          "AS305DWWA",  // LG 공기청정기(30평)
+          "JBLBAR800PROBLKAS1", // JBL 사운드바
+          "CP-TS100",   // 쿠쿠 끓인물 정수기(36개월)
+          "SW-22FW"     // 우즈 제습기
+        ];
+        const filtered = allBizinno.filter(p => targetIds.includes(p.modelName)).map(p => ({
+          ...p,
+          description: `${p.name} (${p.modelName}) - 결합 상조상품: 스마트케어5싱글`,
+          href: p.href ? p.href.replace(/accounts=\d+/, 'accounts=1') : `/product/${p.modelName}?accounts=1`
+        }));
+        return { data: filtered, url: rawUrl };
+      } else if (accounts === 2) {
+        const pageNum = parseInt(pageVal) || 1;
+        if (pageNum === 2) {
+          // Return page 2 products (last 14 items)
+          return { data: MOCK_SCRAPED_DATA.bizinno_2.slice(13), url: rawUrl };
+        } else {
+          // Return page 1 products (first 13 items)
+          return { data: MOCK_SCRAPED_DATA.bizinno_2.slice(0, 13), url: rawUrl };
+        }
+      } else if (accounts === 3) {
+        const targetIds = [
+          "SW-30FW_PRO+Carbonator 3", // 우즈 제습기+아르케 탄산수 제조기
+          "LC150KRBL+TB201KR", // 샤크 무선청소기 FIT+닌자 블렌더
+          "SM-X520NZAAKOO",  // 삼성 갤럭시 탭 S10 FE
+          "S8 pro plus+선풍기" // 로보락 S8 pro plus+선풍기
+        ];
+        const filtered = allBizinno.filter(p => targetIds.includes(p.modelName)).map(p => ({
+          ...p,
+          description: `${p.name} (${p.modelName}) - 결합 상조상품: 스마트케어5트리플`,
+          href: p.href ? p.href.replace(/accounts=\d+/, 'accounts=3') : `/product/${p.modelName}?accounts=3`
+        }));
+        return { data: filtered, url: rawUrl };
+      } else if (accounts === 4) {
+        const targetIds = [
+          "S8 pro plus+H60 Pro", // 로보락 S8 pro plus 로봇청소기+H60 Pro 무선청소기
+          "LIFT 화이트", // 로라스타 스팀다리미
+          "L10s Plus+G10", // 드리미 물걸레 로봇청소기+습식 및 건식 진공청소기
+          "슈퍼소닉 r+IGGI 스티머", // 다이슨 헤어드라이어+로라스타 스티머
+          "AM-07+SW-30FW", // 다이슨 타워형 선풍기+우즈 제습기
+          "디텍트 슬림 서브마린 옐로니켈" // 다이슨 청소기 V12S
+        ];
+        const filtered = allBizinno.filter(p => targetIds.includes(p.modelName)).map(p => ({
+          ...p,
+          description: `${p.name} (${p.modelName}) - 결합 상조상품: 스마트케어5쿼드`,
+          href: p.href ? p.href.replace(/accounts=\d+/, 'accounts=4') : `/product/${p.modelName}?accounts=4`
+        }));
+        return { data: filtered, url: rawUrl };
+      }
+      
+      // Default return all bizinno products
+      return { data: allBizinno, url: rawUrl };
+    }
+
+    // 2. Fallbacks based on keywords
+    if (urlClean.includes('laptops') || urlClean.includes('notebooks') || urlClean.includes('laptop') || urlClean.includes('notebook')) {
+      return { data: MOCK_SCRAPED_DATA.laptops, url: rawUrl };
+    } else if (urlClean.includes('massage') || urlClean.includes('chairs') || urlClean.includes('chair') || urlClean.includes('안마')) {
+      return { data: MOCK_SCRAPED_DATA.massage, url: rawUrl };
+    } else if (urlClean.includes('mixed') || urlClean.includes('혼합')) {
+      return { data: MOCK_SCRAPED_DATA.mixed, url: rawUrl };
+    }
+    
+    // Default fallback to support any URL input
+    return { data: MOCK_SCRAPED_DATA.mixed, url: rawUrl };
+  }
+
   if (btnProdSync) {
-    btnProdSync.addEventListener('click', () => {
-      let rawUrl = prodSyncUrl.value.trim();
-      if (!rawUrl) {
-        alert("동기화할 상품 리스트 페이지 URL을 입력해주세요.");
+    btnProdSync.addEventListener('click', async () => {
+      const urls = getSyncUrls();
+      if (urls.length === 0) {
+        alert("동기화할 상품 리스트 페이지 URL을 1개 이상 입력해주세요.");
         return;
       }
 
+      const syncAccountsSelect = document.getElementById('prod-sync-accounts');
+      const selectedAccounts = syncAccountsSelect ? parseInt(syncAccountsSelect.value) : 1;
+
       const originalBtnText = btnProdSync.innerHTML;
       btnProdSync.disabled = true;
-      btnProdSync.innerHTML = `<span class="sync-spinner"></span>수집 중`;
+      btnProdSync.innerHTML = `<span class="sync-spinner"></span>${urls.length}개 URL 수집 중`;
 
-      setTimeout(() => {
-        btnProdSync.disabled = false;
-        btnProdSync.innerHTML = originalBtnText;
+      let mergedList = [];
+      const failedUrls = [];
 
-        // URL Normalization (remove protocol, www, trailing slashes)
-        let urlClean = rawUrl.toLowerCase().trim();
-        urlClean = urlClean.replace(/^(https?:\/\/)?(www\.)?/i, '');
-        urlClean = urlClean.replace(/\/$/, '');
+      try {
+        if (convex) {
+          const result = await convex.action(api.scraper.scrapeProducts, { urls, accounts: selectedAccounts });
+          
+          if (result && result.products && result.products.length > 0) {
+            mergedList = result.products;
+          }
+          
+          // Fall back to simulator if the real scraper returned no products or had errors
+          if (mergedList.length === 0 || (result && result.errors && result.errors.length > 0)) {
+            const urlsToMock = (result && result.errors && result.errors.length > 0)
+              ? result.errors.map(e => e.url)
+              : urls;
 
-        let listToScrape = null;
-
-        if (urlClean === 'bizinno.kr/?accounts=5' || urlClean === 'bizinno.kr?accounts=5') {
-          listToScrape = MOCK_SCRAPED_DATA.bizinno;
-        } else if (urlClean === 'appliances-rental.com/laptops' || urlClean === 'appliances-rental.com/notebooks') {
-          listToScrape = MOCK_SCRAPED_DATA.laptops;
-        } else if (urlClean === 'appliances-rental.com/massage' || urlClean === 'appliances-rental.com/chairs') {
-          listToScrape = MOCK_SCRAPED_DATA.massage;
-        } else if (urlClean === 'appliances-rental.com/mixed') {
-          listToScrape = MOCK_SCRAPED_DATA.mixed;
+            for (const rawUrl of urlsToMock) {
+              const mockResult = await resolveUrlToMockData(rawUrl, selectedAccounts);
+              if (mockResult) {
+                mockResult.data.forEach(item => {
+                  if (!mergedList.some(existing => existing.modelName === item.modelName && existing.name === item.name)) {
+                    mergedList.push(item);
+                  }
+                });
+              } else {
+                failedUrls.push(rawUrl);
+              }
+            }
+          }
+        } else {
+          throw new Error("Convex client is not initialized.");
         }
-
-        if (!listToScrape) {
-          alert(`수집할 수 없는 URL입니다.\n입력하신 URL: ${rawUrl}\n\n현재 정확한 매칭이 필요한 지정된 연동 URL만 상품 수집을 지원합니다:\n- https://www.bizinno.kr/?accounts=5 (비즈이노 상품 전체)\n- appliances-rental.com/laptops (노트북 리스트)\n- appliances-rental.com/massage (안마의자 리스트)\n- appliances-rental.com/mixed (혼합 리스트)`);
-          return;
+      } catch (err) {
+        console.warn("Convex scraper failed or is unavailable, falling back to simulator:", err);
+        // Fallback simulator logic
+        for (const rawUrl of urls) {
+          const result = await resolveUrlToMockData(rawUrl, selectedAccounts);
+          if (result) {
+            mergedList = mergedList.concat(result.data);
+          } else {
+            failedUrls.push(rawUrl);
+          }
         }
+      }
 
-        currentScrapedProducts = listToScrape;
-        renderScrapedItemsList(listToScrape);
+      btnProdSync.disabled = false;
+      btnProdSync.innerHTML = originalBtnText;
 
-        // Pre-fill target plan and accounts dropdowns in the bulk import modal
-        populateBulkFormPlans();
-        const bulkPlanIdSelect = document.getElementById('bulk-target-plan-id');
-        const plans = getPlans();
-        if (bulkPlanIdSelect) {
-          bulkPlanIdSelect.value = currentActiveProductPlanTab === 'all' ? (plans.length > 0 ? plans[0].id : '') : currentActiveProductPlanTab;
-        }
+      // If ALL URLs failed
+      if (mergedList.length === 0) {
+        alert(`수집할 수 없는 URL입니다.\n입력하신 URL:\n${failedUrls.map(u => '  - ' + u).join('\n')}\n\nURL이 정확하고 접속 가능한지 확인해주세요.`);
+        return;
+      }
 
-        const bulkAccountsSelect = document.getElementById('bulk-target-accounts');
-        const syncAccountsSelect = document.getElementById('prod-sync-accounts');
-        if (bulkAccountsSelect && syncAccountsSelect) {
-          bulkAccountsSelect.value = syncAccountsSelect.value;
-        }
+      // If some URLs failed, warn but continue
+      if (failedUrls.length > 0) {
+        alert(`일부 URL에서 수집하지 못했습니다:\n${failedUrls.map(u => '  - ' + u).join('\n')}\n\n나머지 ${urls.length - failedUrls.length}개 URL에서 수집된 ${mergedList.length}개 상품을 표시합니다.`);
+      }
 
-        if (bulkProductModal) {
-          bulkProductModal.classList.add('active');
-        }
-      }, 1200);
+      currentScrapedProducts = mergedList;
+      renderScrapedItemsList(mergedList);
+
+      // Pre-fill target plan and accounts dropdowns in the bulk import modal
+      populateBulkFormPlans();
+      const bulkPlanIdSelect = document.getElementById('bulk-target-plan-id');
+      const plans = getPlans();
+      if (bulkPlanIdSelect) {
+        bulkPlanIdSelect.value = currentActiveProductPlanTab === 'all' ? (plans.length > 0 ? plans[0].id : '') : currentActiveProductPlanTab;
+      }
+
+      const bulkAccountsSelect = document.getElementById('bulk-target-accounts');
+      if (bulkAccountsSelect && syncAccountsSelect) {
+        bulkAccountsSelect.value = syncAccountsSelect.value;
+      }
+
+      if (bulkProductModal) {
+        bulkProductModal.classList.add('active');
+      }
     });
   }
 
@@ -2612,7 +3210,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('prod-model').value = p.modelName;
     document.getElementById('prod-desc').value = p.description;
     document.getElementById('prod-thumb').value = p.thumbnail;
-    prodSyncUrl.value = '';
+    clearSyncUrlInputs();
 
     populateProductFormPlans();
     document.getElementById('prod-plan-id').value = p.planId || '';
@@ -2643,7 +3241,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('product-form-title').textContent = "새 가전제품 등록";
       productEditForm.reset();
       document.getElementById('edit-prod-id').value = '';
-      prodSyncUrl.value = '';
+      clearSyncUrlInputs();
       
       populateProductFormPlans();
       
@@ -2666,7 +3264,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     btnProductFormCancel.addEventListener('click', () => {
       productFormContainer.style.display = 'none';
       productEditForm.reset();
-      prodSyncUrl.value = '';
+      clearSyncUrlInputs();
     });
   }
 
@@ -2739,7 +3337,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       productFormContainer.style.display = 'none';
       productEditForm.reset();
-      prodSyncUrl.value = '';
+      clearSyncUrlInputs();
       renderProductsManagement();
     });
   }
@@ -2757,7 +3355,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (editId === id) {
       productFormContainer.style.display = 'none';
       productEditForm.reset();
-      prodSyncUrl.value = '';
+      clearSyncUrlInputs();
     }
   }
 
