@@ -1599,7 +1599,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     const bIdxB = getBrandSortIndex(brandB);
     if (bIdxA !== bIdxB) return bIdxA - bIdxB;
     
-    // 2. 카테고리 (노트북 -> TV -> 에어컨 -> 정수기 -> 안마의자 -> 건조기 -> 세탁기 -> 기타)
+    // 2. 구좌수 (3 -> 4 -> 2 -> 1)
+    const getAccountsSortIndex = (acc) => {
+      const accStr = String(acc || 1);
+      const mapping = {
+        '3': 0,
+        '4': 1,
+        '2': 2,
+        '1': 3
+      };
+      return accStr in mapping ? mapping[accStr] : 4;
+    };
+    const aIdxA = getAccountsSortIndex(a.accounts);
+    const aIdxB = getAccountsSortIndex(b.accounts);
+    if (aIdxA !== aIdxB) return aIdxA - aIdxB;
+    
+    // 3. 카테고리 (노트북 -> TV -> 에어컨 -> 정수기 -> 안마의자 -> 건조기 -> 세탁기 -> 기타)
     const getCategorySortIndex = (catId) => {
       const mapping = {
         'laptop': 0,
@@ -1616,7 +1631,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const cIdxB = getCategorySortIndex(b.categoryId);
     if (cIdxA !== cIdxB) return cIdxA - cIdxB;
     
-    // 3. 제조 브랜드 (LG -> 삼성 -> 애플 -> SK매직 -> 세라젬 -> 바디프랜드 -> 쿠쿠 -> 기타)
+    // 4. 제조 브랜드 (LG -> 삼성 -> 애플 -> SK매직 -> 세라젬 -> 바디프랜드 -> 쿠쿠 -> 기타)
     const getApplBrandSortIndex = (prodName) => {
       const appBrand = getApplianceBrand(prodName);
       const mapping = {
@@ -1633,21 +1648,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const abIdxA = getApplBrandSortIndex(a.name);
     const abIdxB = getApplBrandSortIndex(b.name);
     if (abIdxA !== abIdxB) return abIdxA - abIdxB;
-    
-    // 4. 구좌수 (3 -> 4 -> 2 -> 1)
-    const getAccountsSortIndex = (acc) => {
-      const accStr = String(acc || 1);
-      const mapping = {
-        '3': 0,
-        '4': 1,
-        '2': 2,
-        '1': 3
-      };
-      return accStr in mapping ? mapping[accStr] : 4;
-    };
-    const aIdxA = getAccountsSortIndex(a.accounts);
-    const aIdxB = getAccountsSortIndex(b.accounts);
-    if (aIdxA !== aIdxB) return aIdxA - aIdxB;
     
     return a.id.localeCompare(b.id);
   }
