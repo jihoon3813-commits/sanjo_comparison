@@ -1404,39 +1404,78 @@ a {
 
 .products-grid.cols-2 {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 24px;
 }
 
 .products-grid.cols-3 {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
 }
 
 .products-grid.cols-4 {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
 }
 
 /* Card layout inside cols-2, cols-3, cols-4 (Grid views) */
-.products-grid.cols-2 .product-card,
-.products-grid.cols-3 .product-card,
-.products-grid.cols-4 .product-card {
+.products-grid.cols-2 .product-card {
   flex-direction: column;
   align-items: stretch;
   gap: 20px;
   text-align: left;
+  padding: 24px;
 }
 
-.products-grid.cols-2 .product-card-thumb-wrapper,
-.products-grid.cols-3 .product-card-thumb-wrapper,
+.products-grid.cols-3 .product-card {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+  text-align: left;
+  padding: 16px;
+}
+
+.products-grid.cols-4 .product-card {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  text-align: left;
+  padding: 14px;
+}
+
+.products-grid.cols-2 .product-card-thumb-wrapper {
+  width: 100%;
+  min-width: 100%;
+  height: 200px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-color);
+}
+
+.products-grid.cols-3 .product-card-thumb-wrapper {
+  width: 100%;
+  min-width: 100%;
+  height: 170px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-color);
+}
+
 .products-grid.cols-4 .product-card-thumb-wrapper {
   width: 100%;
   min-width: 100%;
-  height: auto;
-  aspect-ratio: 4 / 3;
+  height: 140px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-color);
 }
 
 .products-grid.cols-2 .product-card-info-content,
@@ -1578,7 +1617,8 @@ a {
 .product-card-thumb {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  background-color: #ffffff;
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -3112,7 +3152,7 @@ tbody tr:last-child td {
   /* Tablet layout: fallback 3 & 4 columns to 2 columns */
   .products-grid.cols-3,
   .products-grid.cols-4 {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
