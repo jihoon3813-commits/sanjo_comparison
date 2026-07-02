@@ -2171,6 +2171,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           <span class="p-category">[${categoryText}] [${p.accounts || 1}구좌]</span>
           <h4 class="p-title">${p.name}</h4>
           <span class="p-model">${p.modelName}</span>
+          <div class="p-price" style="font-size: 0.78rem; margin-top: 4px; color: #4b5563;">
+            월 ${p.monthly ? parseInt(p.monthly).toLocaleString('ko-KR') : 0}원 | 제휴 할인가 월 ${p.cardBenefitPrice ? parseInt(p.cardBenefitPrice).toLocaleString('ko-KR') : 0}원
+          </div>
         </div>
         <div class="p-actions">
           <button class="btn btn-outline btn-xs btn-edit" data-id="${p.id}">수정</button>

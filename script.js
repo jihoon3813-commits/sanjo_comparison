@@ -857,6 +857,24 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   */
 
+  function populateBrandSelects() {
+    const selects = [
+      document.getElementById('select-brand'),
+      document.getElementById('modal-select-brand')
+    ];
+    selects.forEach(select => {
+      if (!select) return;
+      
+      const defaultOpts = [
+        '<option value="" disabled selected>선택하세요</option>',
+        '<option value="상관없음/추천받기">상관없음 / 추천받기</option>'
+      ];
+      
+      const brandOpts = BRAND_DATA.map(b => `<option value="${b.name}">${b.name}</option>`);
+      select.innerHTML = defaultOpts.join('') + brandOpts.join('');
+    });
+  }
+
   function openConsultFormModal(hopeItem, hopeBrand, purpose, budget) {
     if (!consultFormModal) return;
 
@@ -883,6 +901,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     if (modalSelectBrand && hopeBrand) {
+      let brandExists = false;
+      for (let i = 0; i < modalSelectBrand.options.length; i++) {
+        if (modalSelectBrand.options[i].value === hopeBrand) {
+          brandExists = true;
+          break;
+        }
+      }
+      if (!brandExists) {
+        const option = document.createElement('option');
+        option.value = hopeBrand;
+        option.textContent = hopeBrand;
+        modalSelectBrand.appendChild(option);
+      }
       modalSelectBrand.value = hopeBrand;
     }
 
@@ -914,14 +945,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     const name = productName.toUpperCase();
     if (name.includes('삼성') || name.includes('SAMSUNG')) return '삼성';
     if (name.includes('LG') || name.includes('엘지')) return 'LG';
+    if (name.includes('다이슨') || name.includes('DYSON')) return '다이슨';
     if (name.includes('쿠쿠') || name.includes('CUCKOO')) return '쿠쿠';
-    if (name.includes('자코모') || name.includes('JAKOMO')) return '자코모';
     if (name.includes('하이얼') || name.includes('HAIER')) return '하이얼';
     if (name.includes('바디프랜드') || name.includes('BODYFRIEND')) return '바디프랜드';
     if (name.includes('코지마') || name.includes('COZYMA')) return '코지마';
     if (name.includes('휴테크') || name.includes('HUTECH')) return '휴테크';
     if (name.includes('세라젬') || name.includes('CERAGEM')) return '세라젬';
-    if (name.includes('다이슨') || name.includes('DYSON')) return '다이슨';
+    if (name.includes('자코모') || name.includes('JAKOMO')) return '자코모';
+    if (name.includes('레노버') || name.includes('LENOVO')) return '레노버';
+    if (name.includes('로보락') || name.includes('ROBOROCK')) return '로보락';
+    if (name.includes('딤채') || name.includes('DIMCHAE') || name.includes('위니아') || name.includes('WINIA')) return '위니아딤채';
+    if (name.includes('쿠첸') || name.includes('CUCHEN')) return '쿠첸';
+    if (name.includes('린나이') || name.includes('RINNAI')) return '린나이';
+    if (name.includes('코웨이') || name.includes('COWAY')) return '코웨이';
+    if (name.includes('SK매직') || name.includes('SK MAGIC') || name.includes('SKMAGIC')) return 'SK매직';
+    if (name.includes('소노시즌') || name.includes('SONOSEASON')) return '소노시즌';
+    if (name.includes('위닉스') || name.includes('WINIX')) return '위닉스';
+    if (name.includes('일렉트로룩스') || name.includes('ELECTROLUX')) return '일렉트로룩스';
+    if (name.includes('테팔') || name.includes('TEFAL')) return '테팔';
+    if (name.includes('발뮤다') || name.includes('BALMUDA')) return '발뮤다';
+    if (name.includes('드롱기') || name.includes('DELONGHI')) return '드롱기';
+    if (name.includes('보네이도') || name.includes('VORNADO')) return '보네이도';
+    if (name.includes('에이수스') || name.includes('ASUS')) return '에이수스';
+    if (name.includes('HP')) return 'HP';
+    if (name.includes('애플') || name.includes('APPLE') || name.includes('아이패드') || name.includes('IPAD') || name.includes('맥북') || name.includes('MACBOOK')) return '애플';
+    if (name.includes('닌텐도') || name.includes('NINTENDO')) return '닌텐도';
+    if (name.includes('소니') || name.includes('SONY')) return '소니';
+    if (name.includes('루컴즈') || name.includes('LUCOMS')) return '루컴즈';
+    if (name.includes('이메텍') || name.includes('IMETEC')) return '이메텍';
+    if (name.includes('파세코') || name.includes('PASECO')) return '파세코';
+    if (name.includes('캐리어') || name.includes('CARRIER')) return '캐리어';
     return '기타';
   }
 
@@ -956,6 +1010,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (hasEtc) sortedBrands.push('기타');
     return sortedBrands.map(b => ({ id: b, name: b }));
   }
+
+  let landingProductSearchQuery = '';
+  let landingBrandProductSearchQuery = '';
 
   let applianceFilters = {
     mutual: [],
@@ -1087,6 +1144,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     gridApplianceProducts.innerHTML = '';
     
     const filteredProducts = PRODUCT_DATA.filter(product => {
+      // 0. 실시간 검색어 필터
+      if (landingProductSearchQuery) {
+        const q = landingProductSearchQuery.toLowerCase().trim();
+        const matchesName = product.name.toLowerCase().includes(q);
+        const matchesModel = (product.modelName || '').toLowerCase().includes(q);
+        if (!matchesName && !matchesModel) return false;
+      }
+
       // 1. 상조사 필터
       if (applianceFilters.mutual.length > 0) {
         const plan = PLAN_DATA.find(p => p.id === product.planId);
@@ -1182,7 +1247,19 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
           <div class="product-card-price-action-group">
             <div class="product-card-price-container">
-              <div class="product-card-guarantee" style="margin-top: 0; padding-top: 0; border-top: none;">
+              <div class="price-row" style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 2px;">
+                <span class="product-card-price-label">월 납입금</span>
+                <div class="product-card-price-value" style="font-size: 1.1rem; color: #1f2937;">
+                  ${monthlyTxt}
+                </div>
+              </div>
+              <div class="price-row" style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px;">
+                <span class="product-card-price-label" style="color: #ef4444;">제휴 할인가</span>
+                <div class="product-card-price-value" style="font-size: 1.1rem; color: #ef4444;">
+                  ${benefitTxt}
+                </div>
+              </div>
+              <div class="product-card-guarantee" style="margin-top: 4px; padding-top: 4px; border-top: 1px dashed rgba(0, 181, 148, 0.15);">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" class="guarantee-check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 상조만기 시 환급율 100% 보장
               </div>
@@ -1257,6 +1334,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       const plan = PLAN_DATA.find(planItem => planItem.id === p.planId);
       if (!plan || plan.brandId !== currentActiveBrandId) {
         return false;
+      }
+
+      // 0. 실시간 검색어 필터
+      if (landingBrandProductSearchQuery) {
+        const q = landingBrandProductSearchQuery.toLowerCase().trim();
+        const matchesName = p.name.toLowerCase().includes(q);
+        const matchesModel = (p.modelName || '').toLowerCase().includes(q);
+        if (!matchesName && !matchesModel) return false;
       }
 
       // 1. Category Filter
@@ -1339,7 +1424,19 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
           <div class="product-card-price-action-group">
             <div class="product-card-price-container">
-              <div class="product-card-guarantee" style="margin-top: 0; padding-top: 0; border-top: none;">
+              <div class="price-row" style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 2px;">
+                <span class="product-card-price-label">월 납입금</span>
+                <div class="product-card-price-value" style="font-size: 1.1rem; color: #1f2937;">
+                  ${monthlyTxt}
+                </div>
+              </div>
+              <div class="price-row" style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px;">
+                <span class="product-card-price-label" style="color: #ef4444;">제휴 할인가</span>
+                <div class="product-card-price-value" style="font-size: 1.1rem; color: #ef4444;">
+                  ${benefitTxt}
+                </div>
+              </div>
+              <div class="product-card-guarantee" style="margin-top: 4px; padding-top: 4px; border-top: 1px dashed rgba(0, 181, 148, 0.15);">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" class="guarantee-check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 상조만기 시 환급율 100% 보장 <span>(${monthsTxt})</span>
               </div>
@@ -1398,6 +1495,48 @@ document.addEventListener('DOMContentLoaded', async () => {
         grid.classList.add(`cols-${currentProductLayout}`);
       }
     });
+  }
+
+  function initSearchControls() {
+    const applianceSearchInput = document.getElementById('landing-product-search-input');
+    const applianceSearchClear = document.getElementById('landing-product-search-clear');
+    if (applianceSearchInput) {
+      applianceSearchInput.addEventListener('input', () => {
+        landingProductSearchQuery = applianceSearchInput.value.toLowerCase().trim();
+        if (applianceSearchClear) {
+          applianceSearchClear.style.display = landingProductSearchQuery ? 'flex' : 'none';
+        }
+        renderApplianceProducts();
+      });
+    }
+    if (applianceSearchClear) {
+      applianceSearchClear.addEventListener('click', () => {
+        applianceSearchInput.value = '';
+        landingProductSearchQuery = '';
+        applianceSearchClear.style.display = 'none';
+        renderApplianceProducts();
+      });
+    }
+
+    const brandSearchInput = document.getElementById('landing-brand-product-search-input');
+    const brandSearchClear = document.getElementById('landing-brand-product-search-clear');
+    if (brandSearchInput) {
+      brandSearchInput.addEventListener('input', () => {
+        landingBrandProductSearchQuery = brandSearchInput.value.toLowerCase().trim();
+        if (brandSearchClear) {
+          brandSearchClear.style.display = landingBrandProductSearchQuery ? 'flex' : 'none';
+        }
+        renderBrandSpecificProducts();
+      });
+    }
+    if (brandSearchClear) {
+      brandSearchClear.addEventListener('click', () => {
+        brandSearchInput.value = '';
+        landingBrandProductSearchQuery = '';
+        brandSearchClear.style.display = 'none';
+        renderBrandSpecificProducts();
+      });
+    }
   }
 
   // 6. Dynamic Comparison Table on Main Page
@@ -1614,7 +1753,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Initialize Selection UI rendering after loading Convex data
   async function init() {
     await initData();
+    populateBrandSelects();
     initSmartFilters();
+    initSearchControls();
     renderApplianceProducts();
     renderBrandsGrid();
     initLayoutControls();
