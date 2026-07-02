@@ -1824,8 +1824,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     const accounts = parseInt(syncAccountsSelect.value) || 1;
 
     let targetUrl = '';
-    if (SYNC_URL_MAP[planName] && SYNC_URL_MAP[planName][accounts]) {
-      targetUrl = SYNC_URL_MAP[planName][accounts];
+    let matchedKey = null;
+    if (planName.includes('B299')) {
+      matchedKey = '보람피플 B299';
+    } else if (planName.includes('스마트케어4')) {
+      matchedKey = '소노아임레디 스마트케어4';
+    } else if (planName.includes('스마트케어5')) {
+      matchedKey = '소노아임레디 스마트케어5';
+    }
+
+    if (matchedKey && SYNC_URL_MAP[matchedKey] && SYNC_URL_MAP[matchedKey][accounts]) {
+      targetUrl = SYNC_URL_MAP[matchedKey][accounts];
     }
 
     const firstInput = document.querySelector('.prod-sync-url-input');
