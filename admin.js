@@ -3260,7 +3260,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       try {
         if (convex) {
-          const result = await convex.action(api.scraper.scrapeProducts, { urls, accounts: selectedAccounts });
+          const plans = getPlans();
+          const activePlan = plans.find(p => p.id === currentActiveProductPlanTab);
+          const planName = activePlan ? activePlan.name : '';
+          const result = await convex.action(api.scraper.scrapeProducts, {
+            urls,
+            accounts: selectedAccounts,
+            planName: planName
+          });
           
           if (result && result.products && result.products.length > 0) {
             mergedList = result.products;

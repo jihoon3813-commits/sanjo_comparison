@@ -7,6 +7,7 @@ export const scrapeProducts = action({
   args: {
     urls: v.array(v.string()),
     accounts: v.optional(v.number()),
+    planName: v.optional(v.string()),
   },
   handler: async (_ctx, args) => {
     const allProducts = [];
@@ -14,7 +15,7 @@ export const scrapeProducts = action({
 
     for (const url of args.urls) {
       try {
-        const products = await scrapeOneUrl(url, args.accounts);
+        const products = await scrapeOneUrl(url, args.accounts, args.planName);
         allProducts.push(...products);
       } catch (err) {
         errors.push({ url, error: err.message || String(err) });
@@ -25,7 +26,7 @@ export const scrapeProducts = action({
   },
 });
 
-async function scrapeOneUrl(rawUrl, accountsOverride) {
+async function scrapeOneUrl(rawUrl, accountsOverride, planName) {
   // Normalize URL
   let url = rawUrl.trim();
   if (!url.startsWith("http://") && !url.startsWith("https://")) {
@@ -49,10 +50,27 @@ async function scrapeOneUrl(rawUrl, accountsOverride) {
       if (matchPage) pageVal = matchPage[1];
     }
 
-    const accounts = accountsOverride !== undefined ? accountsOverride : (accountsVal ? parseInt(accountsVal) : null);
+    let dbAccounts = null;
+    if (accountsVal) {
+      dbAccounts = parseInt(accountsVal);
+    } else {
+      const accounts = accountsOverride !== undefined ? accountsOverride : 1;
+      const name = planName || "";
+      if (name.includes("스마트케어4")) {
+        if (accounts === 2) dbAccounts = 2;
+      } else if (name.includes("스마트케어5")) {
+        if (accounts === 1) dbAccounts = 5;
+        else if (accounts === 2) dbAccounts = 3;
+        else if (accounts === 3) dbAccounts = 4;
+        else if (accounts === 4) dbAccounts = 6;
+      } else {
+        dbAccounts = accounts;
+      }
+    }
+
     const page = pageVal ? parseInt(pageVal) : null;
 
-    return fetchBizinnoFromSupabase(accounts, page);
+    return fetchBizinnoFromSupabase(dbAccounts, page);
   }
 
   if (hostname.includes("lifenuri")) {
@@ -266,6 +284,8 @@ async function fetchBizinnoFromSupabase(accounts, page) {
     if (acc === 2) plan = '스마트케어4더블';
     else if (acc === 3) plan = '스마트케어5트리플';
     else if (acc === 4) plan = '스마트케어5쿼드';
+    else if (acc === 5) plan = '스마트케어5싱글';
+    else if (acc === 6) plan = '스마트케어5쿼드';
 
     const desc = `${name} (${modelName}) - 결합 상조상품: ${plan}`;
 
