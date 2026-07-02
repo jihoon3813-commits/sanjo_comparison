@@ -1804,6 +1804,51 @@ document.addEventListener('DOMContentLoaded', async () => {
     return Array.from(inputs).map(inp => inp.value.trim()).filter(v => v.length > 0);
   }
 
+  function autoFillSyncUrl() {
+    const plans = getPlans();
+    
+    // Get plan from form select first, or fallback to current active plan tab
+    const planSelect = document.getElementById('prod-plan-id');
+    let activePlan = null;
+    if (planSelect && planSelect.value) {
+      activePlan = plans.find(p => p.id === planSelect.value);
+    }
+    if (!activePlan) {
+      activePlan = plans.find(p => p.id === currentActiveProductPlanTab);
+    }
+    if (!activePlan) return;
+
+    const planName = activePlan.name.trim();
+    const syncAccountsSelect = document.getElementById('prod-sync-accounts');
+    if (!syncAccountsSelect) return;
+    const accounts = parseInt(syncAccountsSelect.value) || 1;
+
+    let targetUrl = '';
+    if (SYNC_URL_MAP[planName] && SYNC_URL_MAP[planName][accounts]) {
+      targetUrl = SYNC_URL_MAP[planName][accounts];
+    }
+
+    const firstInput = document.querySelector('.prod-sync-url-input');
+    if (firstInput) {
+      firstInput.value = targetUrl;
+    }
+  }
+
+  const syncAccountsSelect = document.getElementById('prod-sync-accounts');
+  if (syncAccountsSelect) {
+    syncAccountsSelect.addEventListener('change', () => {
+      autoFillSyncUrl();
+    });
+  }
+
+  // Also bind to single product plan dropdown changes
+  const prodPlanIdSelect = document.getElementById('prod-plan-id');
+  if (prodPlanIdSelect) {
+    prodPlanIdSelect.addEventListener('change', () => {
+      autoFillSyncUrl();
+    });
+  }
+
   if (btnAddSyncUrl) {
     btnAddSyncUrl.addEventListener('click', () => addSyncUrlRow());
   }
@@ -1821,7 +1866,26 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   let currentActiveProductPlanTab = 'all'; // Default tab
+  let currentActiveProductAccountsTab = 'all'; // Default account tab
   let productSearchQuery = '';
+
+  const SYNC_URL_MAP = {
+    '보람피플 B299': {
+      1: 'https://boram.lifenuri.com/shop/themesgroup/135',
+      2: 'https://boram.lifenuri.com/shop/themesgroup/140',
+      3: 'https://boram.lifenuri.com/shop/themesgroup/145',
+      4: 'https://boram.lifenuri.com/shop/themesgroup/150'
+    },
+    '소노아임레디 스마트케어4': {
+      2: 'https://www.bizinno.kr/?accounts=2'
+    },
+    '소노아임레디 스마트케어5': {
+      1: 'https://www.bizinno.kr/?accounts=5',
+      2: 'https://www.bizinno.kr/?accounts=3',
+      3: 'https://www.bizinno.kr/?accounts=4',
+      4: 'https://www.bizinno.kr/?accounts=6'
+    }
+  };
 
   const productSearchInput = document.getElementById('product-search-input');
   const productSelectAll = document.getElementById('product-select-all');
@@ -1943,7 +2007,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     allTab.textContent = '전체 보기';
     allTab.addEventListener('click', () => {
       currentActiveProductPlanTab = 'all';
+      currentActiveProductAccountsTab = 'all'; // Reset account sub-tab
       renderProductPlanTabs();
+      renderProductAccountsTabs();
       renderProductsManagementList();
     });
     tabsBar.appendChild(allTab);
@@ -1956,7 +2022,42 @@ document.addEventListener('DOMContentLoaded', async () => {
       tab.textContent = p.name;
       tab.addEventListener('click', () => {
         currentActiveProductPlanTab = p.id;
+        currentActiveProductAccountsTab = 'all'; // Reset account sub-tab
         renderProductPlanTabs();
+        renderProductAccountsTabs();
+        renderProductsManagementList();
+      });
+      tabsBar.appendChild(tab);
+    });
+  }
+
+  // Render Horizontal Accounts Tab bar (구좌별 탭)
+  function renderProductAccountsTabs() {
+    const tabsBar = document.getElementById('product-accounts-tabs-bar');
+    if (!tabsBar) return;
+
+    tabsBar.innerHTML = '';
+
+    const accountsOptions = [
+      { id: 'all', name: '전체 구좌' },
+      { id: '1', name: '1구좌' },
+      { id: '2', name: '2구좌' },
+      { id: '3', name: '3구좌' },
+      { id: '4', name: '4구좌' }
+    ];
+
+    accountsOptions.forEach(opt => {
+      const tab = document.createElement('button');
+      tab.type = 'button';
+      tab.className = `btn-plan-tab ${currentActiveProductAccountsTab === opt.id ? 'active' : ''}`;
+      tab.textContent = opt.name;
+      tab.style.padding = '6px 12px';
+      tab.style.fontSize = '0.8rem';
+      tab.style.height = 'auto';
+      
+      tab.addEventListener('click', () => {
+        currentActiveProductAccountsTab = opt.id;
+        renderProductAccountsTabs();
         renderProductsManagementList();
       });
       tabsBar.appendChild(tab);
@@ -1965,6 +2066,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function renderProductsManagement() {
     renderProductPlanTabs();
+    renderProductAccountsTabs();
     renderProductsManagementList();
   }
 
@@ -1979,6 +2081,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     let filtered = currentActiveProductPlanTab === 'all'
       ? products
       : products.filter(p => p.planId === currentActiveProductPlanTab);
+
+    // Filter products by accounts sub-tab (구좌별 필터)
+    if (currentActiveProductAccountsTab !== 'all') {
+      const targetAcc = parseInt(currentActiveProductAccountsTab);
+      filtered = filtered.filter(p => (p.accounts || 1) === targetAcc);
+    } else {
+      // In "All Accounts" view, sort products by accounts count ascending (1 -> 2 -> 3 -> 4)
+      filtered = [...filtered].sort((a, b) => (a.accounts || 1) - (b.accounts || 1));
+    }
 
     // Search filter
     const categoryMap = {
@@ -2012,11 +2123,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Update list title with count
     const listTitle = document.getElementById('current-plan-list-title');
     if (listTitle) {
+      const accSuffix = currentActiveProductAccountsTab === 'all' ? '' : ` [${currentActiveProductAccountsTab}구좌]`;
       if (currentActiveProductPlanTab === 'all') {
-        listTitle.textContent = `등록 가전 제품 목록 (${filtered.length}개)`;
+        listTitle.textContent = `등록 가전 제품 목록${accSuffix} (${filtered.length}개)`;
       } else {
         const activePlan = plans.find(pl => pl.id === currentActiveProductPlanTab);
-        listTitle.textContent = `${activePlan ? activePlan.name : '플랜'} 연동 가전 (${filtered.length}개)`;
+        listTitle.textContent = `${activePlan ? activePlan.name : '플랜'} 연동 가전${accSuffix} (${filtered.length}개)`;
       }
     }
 
@@ -2912,8 +3024,36 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 2. If it's a Bizinno URL, dynamically generate/filter products based on the accounts count
     if (urlClean.includes('bizinno.kr')) {
-      const accounts = accountsOverride !== undefined ? accountsOverride : (accountsVal ? parseInt(accountsVal) : null);
       const page = pageVal ? parseInt(pageVal) : null;
+      
+      const plans = getPlans();
+      const activePlan = plans.find(p => p.id === currentActiveProductPlanTab);
+      const planName = activePlan ? activePlan.name : '';
+
+      let dbAccounts = null;
+      if (accountsVal !== null) {
+        dbAccounts = parseInt(accountsVal);
+      } else {
+        const accounts = accountsOverride !== undefined ? accountsOverride : 1;
+        if (planName.includes('스마트케어4')) {
+          if (accounts === 2) dbAccounts = 2;
+        } else if (planName.includes('스마트케어5')) {
+          if (accounts === 1) dbAccounts = 5;
+          else if (accounts === 2) dbAccounts = 3;
+          else if (accounts === 3) dbAccounts = 4;
+          else if (accounts === 4) dbAccounts = 6;
+        }
+      }
+
+      // Determine mock target accounts count (normalized to 1, 2, 3, or 4 for fallback)
+      let accounts = accountsOverride !== undefined ? accountsOverride : 1;
+      if (accountsVal !== null) {
+        const val = parseInt(accountsVal);
+        if (val === 5) accounts = 1;
+        else if (val === 2 || val === 3) accounts = 2;
+        else if (val === 4) accounts = 3;
+        else if (val === 6) accounts = 4;
+      }
 
       try {
         // Try fetching live products from Bizinno's database (Supabase)
@@ -2929,8 +3069,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (response.ok) {
           const data = await response.json();
           let filtered = data;
-          if (accounts !== null) {
-            filtered = data.filter(item => item['구좌수'] === accounts);
+          if (dbAccounts !== null) {
+            filtered = data.filter(item => item['구좌수'] === dbAccounts);
           }
           filtered = filtered.filter(item => item['공개_여부'] !== false);
           // Sort by BIZINNO_MODEL_ORDER for accounts === 2
@@ -3212,6 +3352,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('prod-thumb').value = p.thumbnail;
     clearSyncUrlInputs();
 
+    // Hide auto sync URL group when editing
+    const syncGroup = document.querySelector('.sync-url-group');
+    if (syncGroup) syncGroup.style.display = 'none';
+
     populateProductFormPlans();
     document.getElementById('prod-plan-id').value = p.planId || '';
     
@@ -3243,6 +3387,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('edit-prod-id').value = '';
       clearSyncUrlInputs();
       
+      // Show auto sync URL group when adding
+      const syncGroup = document.querySelector('.sync-url-group');
+      if (syncGroup) syncGroup.style.display = 'block';
+
+      // Pre-select accounts dropdown in sync section based on the current sub-tab
+      const syncAccountsSelect = document.getElementById('prod-sync-accounts');
+      if (syncAccountsSelect) {
+        syncAccountsSelect.value = currentActiveProductAccountsTab === 'all' ? '1' : currentActiveProductAccountsTab;
+      }
+
+      autoFillSyncUrl();
+      
       populateProductFormPlans();
       
       // Auto-preselect current plan in the dropdown
@@ -3265,6 +3421,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       productFormContainer.style.display = 'none';
       productEditForm.reset();
       clearSyncUrlInputs();
+      // Show auto sync URL group
+      const syncGroup = document.querySelector('.sync-url-group');
+      if (syncGroup) syncGroup.style.display = 'block';
     });
   }
 
