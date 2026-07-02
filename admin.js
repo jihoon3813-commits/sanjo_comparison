@@ -281,6 +281,65 @@ document.addEventListener('DOMContentLoaded', async () => {
     return 'general'; // 일반가전
   };
 
+  const parseDiscountFromBenefit = (benefit) => {
+    if (!benefit) return 0;
+    const cleaned = benefit.replace(/,/g, '');
+    
+    const match = cleaned.match(/(\d+)\s*원\s*(?:청구\s*)?할인/i) || cleaned.match(/(\d+)\s*원\s*청구/i);
+    if (match) {
+      return parseInt(match[1]) || 0;
+    }
+    
+    // Fallback parser: matches all (\d+)원, skips matches followed by '이상' or '실적'
+    const allMatches = [...cleaned.matchAll(/(\d+)\s*원/gi)];
+    let bestVal = 0;
+    for (const m of allMatches) {
+      const val = parseInt(m[1]);
+      const index = m.index;
+      const postText = cleaned.substring(index + m[0].length).trim();
+      if (!postText.startsWith('이상') && !postText.startsWith('실적')) {
+        bestVal = Math.max(bestVal, val);
+      }
+    }
+    return bestVal;
+  };
+
+  const calculateProductPrices = (planId, accounts) => {
+    const plans = getPlans();
+    const plan = plans.find(p => p.id === planId);
+    
+    let monthlyPrice = 0;
+    let cardBenefitPrice = 0;
+    
+    if (plan) {
+      if (plan.paymentSections && plan.paymentSections.length > 0) {
+        const firstSec = plan.paymentSections[0];
+        const base1Acc = (Number(firstSec.funeralAmount) || 0) + (Number(firstSec.applianceAmount) || 0);
+        monthlyPrice = base1Acc * accounts;
+      }
+      
+      let maxDiscount = 0;
+      if (plan.cards && plan.cards.length > 0) {
+        plan.cards.forEach(card => {
+          if (card.benefits && card.benefits.length > 0) {
+            card.benefits.forEach(b => {
+              const discount = parseDiscountFromBenefit(b);
+              if (discount > maxDiscount) {
+                maxDiscount = discount;
+              }
+            });
+          }
+        });
+      }
+      cardBenefitPrice = Math.max(0, monthlyPrice - maxDiscount);
+    }
+    
+    return {
+      monthly: monthlyPrice,
+      cardBenefitPrice: cardBenefitPrice
+    };
+  };
+
   const getSellers = () => [...SELLER_DATA];
   const setSellers = async (newData) => {
     const oldData = SELLER_DATA;
@@ -1855,6 +1914,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (prodPlanIdSelect) {
     prodPlanIdSelect.addEventListener('change', () => {
       autoFillSyncUrl();
+      updateProductFormCalculatedPrices();
+    });
+  }
+
+  const prodAccountsSelect = document.getElementById('prod-accounts');
+  if (prodAccountsSelect) {
+    prodAccountsSelect.addEventListener('change', () => {
+      updateProductFormCalculatedPrices();
     });
   }
 
@@ -2860,22 +2927,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!item) return;
 
         const autoCatId = autoDetermineCategory(item.name, item.description);
-        let monthlyPrice = 39000;
-        let benefitPrice = 19000;
-        
-        if (['fridge', 'washer', 'dryer', 'aircon', 'furniture'].includes(autoCatId)) {
-          monthlyPrice = 49000;
-          benefitPrice = 29000;
-        } else if (['massage', 'tv'].includes(autoCatId)) {
-          monthlyPrice = 59000;
-          benefitPrice = 39000;
-        } else if (['water', 'cleaner', 'airpurifier', 'styler'].includes(autoCatId)) {
-          monthlyPrice = 29900;
-          benefitPrice = 12900;
-        } else if (['laptop'].includes(autoCatId)) {
-          monthlyPrice = 42900;
-          benefitPrice = 22900;
-        }
+        const { monthly, cardBenefitPrice } = calculateProductPrices(targetPlanId, targetAccounts);
 
         const newProduct = {
           id: 'prod_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
@@ -2886,8 +2938,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           thumbnail: item.thumbnail,
           planId: targetPlanId,
           accounts: targetAccounts,
-          monthly: monthlyPrice,
-          cardBenefitPrice: benefitPrice
+          monthly: monthly,
+          cardBenefitPrice: cardBenefitPrice
         };
 
         products.push(newProduct);
@@ -3380,6 +3432,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  // Update product form calculated prices dynamically
+  function updateProductFormCalculatedPrices() {
+    const planSelect = document.getElementById('prod-plan-id');
+    const accountsSelect = document.getElementById('prod-accounts');
+    const monthlyInput = document.getElementById('prod-price-monthly');
+    const cardInput = document.getElementById('prod-price-card');
+    
+    if (!planSelect || !accountsSelect || !monthlyInput || !cardInput) return;
+    
+    const planId = planSelect.value;
+    const accounts = parseInt(accountsSelect.value) || 1;
+    
+    // Style inputs as readonly/disabled visually
+    [monthlyInput, cardInput].forEach(inp => {
+      inp.readOnly = true;
+      inp.style.backgroundColor = '#f3f4f6';
+      inp.style.cursor = 'not-allowed';
+      inp.style.border = '1px solid #d1d5db';
+    });
+
+    if (!planId) {
+      monthlyInput.value = '';
+      cardInput.value = '';
+      return;
+    }
+    
+    const { monthly, cardBenefitPrice } = calculateProductPrices(planId, accounts);
+    monthlyInput.value = monthly ? monthly.toLocaleString('ko-KR') : '0';
+    cardInput.value = cardBenefitPrice ? cardBenefitPrice.toLocaleString('ko-KR') : '0';
+  }
+
   // Open Product form to edit
   function openEditProductForm(id) {
     const products = getProducts();
@@ -3402,17 +3485,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     populateProductFormPlans();
     document.getElementById('prod-plan-id').value = p.planId || '';
     
-    // Format monthly and card benefit price inputs
-    const monthlyInput = document.getElementById('prod-price-monthly');
-    const cardInput = document.getElementById('prod-price-card');
-    
-    monthlyInput.value = p.monthly ? parseInt(p.monthly).toLocaleString('ko-KR') : '';
-    cardInput.value = p.cardBenefitPrice ? parseInt(p.cardBenefitPrice).toLocaleString('ko-KR') : '';
-
     const accountsSelect = document.getElementById('prod-accounts');
     if (accountsSelect) {
       accountsSelect.value = p.accounts || 1;
     }
+
+    updateProductFormCalculatedPrices();
 
     productFormContainer.style.display = 'block';
     document.getElementById('prod-name').focus();
@@ -3455,6 +3533,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         accountsSelect.value = "1";
       }
       
+      updateProductFormCalculatedPrices();
+
       productFormContainer.style.display = 'block';
     });
   }
