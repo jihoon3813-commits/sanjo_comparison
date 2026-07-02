@@ -412,6 +412,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
       PRODUCT_DATA = prods.length > 0 ? prods : defaultProducts;
     }
+
+    // Filter BRAND_DATA to only include brands that have at least one active plan in PLAN_DATA
+    const activeBrandIds = new Set(PLAN_DATA.map(p => p.brandId));
+    BRAND_DATA = BRAND_DATA.filter(b => activeBrandIds.has(b.id));
   }
 
   const CATEGORY_DATA = [
