@@ -381,31 +381,42 @@
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
           </div>
-          <div class="layout-selector">
-            <button type="button" class="layout-btn btn-cols-1" data-layout="1" title="1열 보기">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-              1열
-            </button>
-            <button type="button" class="layout-btn btn-cols-2" data-layout="2" title="2열 보기">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18"></rect><rect x="14" y="3" width="7" height="18"></rect></svg>
-              2열
-            </button>
-            <button type="button" class="layout-btn btn-cols-3 active" data-layout="3" title="3열 보기">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="5" height="18"></rect><rect x="9.5" y="3" width="5" height="18"></rect><rect x="17" y="3" width="5" height="18"></rect></svg>
-              3열
-            </button>
-            <button type="button" class="layout-btn btn-cols-4" data-layout="4" title="4열 보기">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="3.5" height="18"></rect><rect x="7.5" y="3" width="3.5" height="18"></rect><rect x="13" y="3" width="3.5" height="18"></rect><rect x="18.5" y="3" width="3.5" height="18"></rect></svg>
-              4열
-            </button>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div class="page-size-wrapper" style="display: flex; align-items: center;">
+              <select id="appliance-page-size-select" class="page-size-select" style="padding: 6px 12px; border: 1.5px solid #e5e7eb; border-radius: 9999px; font-size: 0.8rem; font-weight: 700; color: #4b5563; background-color: #ffffff; cursor: pointer; outline: none; transition: all 0.2s;">
+                <option value="24" selected>24개 보기</option>
+                <option value="48">48개 보기</option>
+                <option value="96">96개 보기</option>
+              </select>
+            </div>
+            <div class="layout-selector">
+              <button type="button" class="layout-btn btn-cols-1" data-layout="1" title="1열 보기">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                1열
+              </button>
+              <button type="button" class="layout-btn btn-cols-2" data-layout="2" title="2열 보기">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18"></rect><rect x="14" y="3" width="7" height="18"></rect></svg>
+                2열
+              </button>
+              <button type="button" class="layout-btn btn-cols-3" data-layout="3" title="3열 보기">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="5" height="18"></rect><rect x="9.5" y="3" width="5" height="18"></rect><rect x="17" y="3" width="5" height="18"></rect></svg>
+                3열
+              </button>
+              <button type="button" class="layout-btn btn-cols-4 active" data-layout="4" title="4열 보기">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="3.5" height="18"></rect><rect x="7.5" y="3" width="3.5" height="18"></rect><rect x="13" y="3" width="3.5" height="18"></rect><rect x="18.5" y="3" width="3.5" height="18"></rect></svg>
+                4열
+              </button>
+            </div>
           </div>
         </div>
         
         <!-- Products Grid -->
         <div class="products-grid-wrapper">
-          <div class="products-grid cols-3" id="appliance-product-grid">
+          <div class="products-grid cols-4" id="appliance-product-grid">
             <!-- Dynamically populated product cards -->
           </div>
+          <!-- Pagination -->
+          <div class="pagination-container" id="appliance-pagination" style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 40px; margin-bottom: 20px;"></div>
         </div>
       </div>
 
@@ -483,29 +494,40 @@
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
             </div>
-            <div class="layout-selector">
-              <button type="button" class="layout-btn btn-cols-1" data-layout="1" title="1열 보기">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-                1열
-              </button>
-              <button type="button" class="layout-btn btn-cols-2" data-layout="2" title="2열 보기">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18"></rect><rect x="14" y="3" width="7" height="18"></rect></svg>
-                2열
-              </button>
-              <button type="button" class="layout-btn btn-cols-3 active" data-layout="3" title="3열 보기">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="5" height="18"></rect><rect x="9.5" y="3" width="5" height="18"></rect><rect x="17" y="3" width="5" height="18"></rect></svg>
-                3열
-              </button>
-              <button type="button" class="layout-btn btn-cols-4" data-layout="4" title="4열 보기">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="3.5" height="18"></rect><rect x="7.5" y="3" width="3.5" height="18"></rect><rect x="13" y="3" width="3.5" height="18"></rect><rect x="18.5" y="3" width="3.5" height="18"></rect></svg>
-                4열
-              </button>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div class="page-size-wrapper" style="display: flex; align-items: center;">
+                <select id="brand-page-size-select" class="page-size-select" style="padding: 6px 12px; border: 1.5px solid #e5e7eb; border-radius: 9999px; font-size: 0.8rem; font-weight: 700; color: #4b5563; background-color: #ffffff; cursor: pointer; outline: none; transition: all 0.2s;">
+                  <option value="24" selected>24개 보기</option>
+                  <option value="48">48개 보기</option>
+                  <option value="96">96개 보기</option>
+                </select>
+              </div>
+              <div class="layout-selector">
+                <button type="button" class="layout-btn btn-cols-1" data-layout="1" title="1열 보기">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                  1열
+                </button>
+                <button type="button" class="layout-btn btn-cols-2" data-layout="2" title="2열 보기">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18"></rect><rect x="14" y="3" width="7" height="18"></rect></svg>
+                  2열
+                </button>
+                <button type="button" class="layout-btn btn-cols-3" data-layout="3" title="3열 보기">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="5" height="18"></rect><rect x="9.5" y="3" width="5" height="18"></rect><rect x="17" y="3" width="5" height="18"></rect></svg>
+                  3열
+                </button>
+                <button type="button" class="layout-btn btn-cols-4 active" data-layout="4" title="4열 보기">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="3.5" height="18"></rect><rect x="7.5" y="3" width="3.5" height="18"></rect><rect x="13" y="3" width="3.5" height="18"></rect><rect x="18.5" y="3" width="3.5" height="18"></rect></svg>
+                  4열
+                </button>
+              </div>
             </div>
           </div>
           
-          <div class="products-grid cols-3" id="brand-product-grid">
+          <div class="products-grid cols-4" id="brand-product-grid">
             <!-- Dynamically populated products for the selected brand -->
           </div>
+          <!-- Pagination -->
+          <div class="pagination-container" id="brand-pagination" style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 40px; margin-bottom: 20px;"></div>
         </div>
       </div>
     </div>

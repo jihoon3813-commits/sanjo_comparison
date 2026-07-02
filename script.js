@@ -1092,6 +1092,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const accountsOptions = [{ id: '1', name: '1구좌' }, { id: '2', name: '2구좌' }, { id: '3', name: '3구좌' }, { id: '4', name: '4구좌' }];
 
     const updateApplianceFilters = () => {
+      currentPageAppliance = 1;
       renderApplianceProducts();
     };
 
@@ -1109,6 +1110,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         applianceFilters.brand = [];
         applianceFilters.price = [];
         applianceFilters.accounts = [];
+        currentPageAppliance = 1;
         renderFilterChips('filter-chips-mutual', mutualOptions, applianceFilters.mutual, updateApplianceFilters);
         renderFilterChips('filter-chips-category', categoryOptions, applianceFilters.category, updateApplianceFilters);
         renderFilterChips('filter-chips-brand', dynamicBrands, applianceFilters.brand, updateApplianceFilters);
@@ -1125,6 +1127,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         brandViewApplianceFilters.brand = [];
         brandViewApplianceFilters.price = [];
         brandViewApplianceFilters.accounts = [];
+        currentPageBrand = 1;
         initBrandFiltersUI();
         renderBrandSpecificProducts();
       };
@@ -1142,6 +1145,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const categoryOptions = CATEGORY_DATA.filter(c => c.id !== 'all').map(c => ({ id: c.id, name: c.name }));
     const updateBrandFilters = () => {
+      currentPageBrand = 1;
       renderBrandSpecificProducts();
     };
     renderFilterChips('filter-chips-brand-category', categoryOptions, brandViewApplianceFilters.category, updateBrandFilters);
@@ -1210,7 +1214,24 @@ document.addEventListener('DOMContentLoaded', async () => {
       return true;
     });
       
-    filteredProducts.forEach(product => {
+    // Sort products by custom rules
+    filteredProducts.sort(sortProductsByCustomRule);
+
+    // Paginate products
+    const totalItems = filteredProducts.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPageAppliance);
+    if (currentPageAppliance > totalPages) {
+      currentPageAppliance = totalPages || 1;
+    }
+    if (currentPageAppliance < 1) {
+      currentPageAppliance = 1;
+    }
+
+    const startIndex = (currentPageAppliance - 1) * itemsPerPageAppliance;
+    const endIndex = startIndex + itemsPerPageAppliance;
+    const pagedProducts = filteredProducts.slice(startIndex, endIndex);
+
+    pagedProducts.forEach(product => {
       const plan = PLAN_DATA.find(p => p.id === product.planId);
       const monthlyTxt = product.monthly ? Number(product.monthly).toLocaleString() + '원' : '0원';
       const benefitTxt = product.cardBenefitPrice ? Number(product.cardBenefitPrice).toLocaleString() + '원' : '0원';
@@ -1288,6 +1309,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       gridApplianceProducts.appendChild(card);
     });
+
+    renderPaginationControls('appliance-pagination', totalPages, currentPageAppliance, (newPage) => {
+      currentPageAppliance = newPage;
+      renderApplianceProducts();
+      const targetEl = document.querySelector('.products-list-header');
+      if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   }
 
   /* ==========================================================================
@@ -1322,6 +1350,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         brandViewApplianceFilters.category = [];
         brandViewApplianceFilters.brand = [];
         brandViewApplianceFilters.price = [];
+        currentPageBrand = 1;
         initBrandFiltersUI();
         
         renderBrandSpecificProducts();
@@ -1394,7 +1423,24 @@ document.addEventListener('DOMContentLoaded', async () => {
       return true;
     });
     
-    filteredProducts.forEach(product => {
+    // Sort products by custom rules
+    filteredProducts.sort(sortProductsByCustomRule);
+
+    // Paginate products
+    const totalItems = filteredProducts.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPageBrand);
+    if (currentPageBrand > totalPages) {
+      currentPageBrand = totalPages || 1;
+    }
+    if (currentPageBrand < 1) {
+      currentPageBrand = 1;
+    }
+
+    const startIndex = (currentPageBrand - 1) * itemsPerPageBrand;
+    const endIndex = startIndex + itemsPerPageBrand;
+    const pagedProducts = filteredProducts.slice(startIndex, endIndex);
+
+    pagedProducts.forEach(product => {
       const plan = PLAN_DATA.find(planItem => planItem.id === product.planId);
       const monthlyTxt = product.monthly ? Number(product.monthly).toLocaleString() + '원' : '0원';
       const benefitTxt = product.cardBenefitPrice ? Number(product.cardBenefitPrice).toLocaleString() + '원' : '0원';
@@ -1466,13 +1512,24 @@ document.addEventListener('DOMContentLoaded', async () => {
       gridBrandProducts.appendChild(card);
     });
 
+    renderPaginationControls('brand-pagination', totalPages, currentPageBrand, (newPage) => {
+      currentPageBrand = newPage;
+      renderBrandSpecificProducts();
+      const targetEl = document.querySelector('.brand-products-header');
+      if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
     containerBrandProducts.style.display = 'block';
   }
 
   /* ==========================================================================
      Products Layout Switching (1 Col vs 2/3/4 Cols)
      ========================================================================== */
-  let currentProductLayout = 3; // Default is 3 columns
+  let currentProductLayout = 4; // Default is 4 columns
+  let itemsPerPageAppliance = 24;
+  let itemsPerPageBrand = 24;
+  let currentPageAppliance = 1;
+  let currentPageBrand = 1;
 
   function initLayoutControls() {
     const layoutButtons = document.querySelectorAll('.layout-btn');
@@ -1495,6 +1552,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateGridClasses();
       });
     });
+
+    const appliancePageSizeSelect = document.getElementById('appliance-page-size-select');
+    if (appliancePageSizeSelect) {
+      appliancePageSizeSelect.addEventListener('change', (e) => {
+        itemsPerPageAppliance = Number(e.target.value) || 24;
+        currentPageAppliance = 1;
+        renderApplianceProducts();
+      });
+    }
+
+    const brandPageSizeSelect = document.getElementById('brand-page-size-select');
+    if (brandPageSizeSelect) {
+      brandPageSizeSelect.addEventListener('change', (e) => {
+        itemsPerPageBrand = Number(e.target.value) || 24;
+        currentPageBrand = 1;
+        renderBrandSpecificProducts();
+      });
+    }
   }
 
   function updateGridClasses() {
@@ -1507,6 +1582,120 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  function sortProductsByCustomRule(a, b) {
+    // 1. 상조사 (소노아임레디 -> 보람상조 -> 기타)
+    const planA = PLAN_DATA.find(p => p.id === a.planId);
+    const planB = PLAN_DATA.find(p => p.id === b.planId);
+    const brandA = planA ? getBrandName(planA.brandId) : '';
+    const brandB = planB ? getBrandName(planB.brandId) : '';
+    
+    const getBrandSortIndex = (name) => {
+      if (name.includes('소노')) return 0;
+      if (name.includes('보람')) return 1;
+      return 2;
+    };
+    
+    const bIdxA = getBrandSortIndex(brandA);
+    const bIdxB = getBrandSortIndex(brandB);
+    if (bIdxA !== bIdxB) return bIdxA - bIdxB;
+    
+    // 2. 카테고리 (노트북 -> TV -> 에어컨 -> 정수기 -> 안마의자 -> 건조기 -> 세탁기 -> 기타)
+    const getCategorySortIndex = (catId) => {
+      const mapping = {
+        'laptop': 0,
+        'tv': 1,
+        'aircon': 2,
+        'water': 3,
+        'massage': 4,
+        'dryer': 5,
+        'washer': 6
+      };
+      return catId in mapping ? mapping[catId] : 7;
+    };
+    const cIdxA = getCategorySortIndex(a.categoryId);
+    const cIdxB = getCategorySortIndex(b.categoryId);
+    if (cIdxA !== cIdxB) return cIdxA - cIdxB;
+    
+    // 3. 제조 브랜드 (LG -> 삼성 -> 애플 -> SK매직 -> 세라젬 -> 바디프랜드 -> 쿠쿠 -> 기타)
+    const getApplBrandSortIndex = (prodName) => {
+      const appBrand = getApplianceBrand(prodName);
+      const mapping = {
+        'LG': 0,
+        '삼성': 1,
+        '애플': 2,
+        'SK매직': 3,
+        '세라젬': 4,
+        '바디프랜드': 5,
+        '쿠쿠': 6
+      };
+      return appBrand in mapping ? mapping[appBrand] : 7;
+    };
+    const abIdxA = getApplBrandSortIndex(a.name);
+    const abIdxB = getApplBrandSortIndex(b.name);
+    if (abIdxA !== abIdxB) return abIdxA - abIdxB;
+    
+    // 4. 구좌수 (3 -> 4 -> 2 -> 1)
+    const getAccountsSortIndex = (acc) => {
+      const accStr = String(acc || 1);
+      const mapping = {
+        '3': 0,
+        '4': 1,
+        '2': 2,
+        '1': 3
+      };
+      return accStr in mapping ? mapping[accStr] : 4;
+    };
+    const aIdxA = getAccountsSortIndex(a.accounts);
+    const aIdxB = getAccountsSortIndex(b.accounts);
+    if (aIdxA !== aIdxB) return aIdxA - aIdxB;
+    
+    return a.id.localeCompare(b.id);
+  }
+
+  function renderPaginationControls(containerId, totalPages, currentPage, onPageChange) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = '';
+    
+    if (totalPages <= 1) {
+      container.style.display = 'none';
+      return;
+    }
+    container.style.display = 'flex';
+    
+    // Prev button
+    const prevBtn = document.createElement('button');
+    prevBtn.type = 'button';
+    prevBtn.className = 'pagination-btn';
+    prevBtn.disabled = currentPage === 1;
+    prevBtn.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    `;
+    prevBtn.onclick = () => onPageChange(currentPage - 1);
+    container.appendChild(prevBtn);
+    
+    // Page buttons
+    for (let i = 1; i <= totalPages; i++) {
+      const pageBtn = document.createElement('button');
+      pageBtn.type = 'button';
+      pageBtn.className = `pagination-btn ${currentPage === i ? 'active' : ''}`;
+      pageBtn.textContent = i;
+      pageBtn.onclick = () => onPageChange(i);
+      container.appendChild(pageBtn);
+    }
+    
+    // Next button
+    const nextBtn = document.createElement('button');
+    nextBtn.type = 'button';
+    nextBtn.className = 'pagination-btn';
+    nextBtn.disabled = currentPage === totalPages;
+    nextBtn.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    `;
+    nextBtn.onclick = () => onPageChange(currentPage + 1);
+    container.appendChild(nextBtn);
+  }
+
   function initSearchControls() {
     const applianceSearchInput = document.getElementById('landing-product-search-input');
     const applianceSearchClear = document.getElementById('landing-product-search-clear');
@@ -1516,6 +1705,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (applianceSearchClear) {
           applianceSearchClear.style.display = landingProductSearchQuery ? 'flex' : 'none';
         }
+        currentPageAppliance = 1;
         renderApplianceProducts();
       });
     }
@@ -1524,6 +1714,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         applianceSearchInput.value = '';
         landingProductSearchQuery = '';
         applianceSearchClear.style.display = 'none';
+        currentPageAppliance = 1;
         renderApplianceProducts();
       });
     }
@@ -1536,6 +1727,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (brandSearchClear) {
           brandSearchClear.style.display = landingBrandProductSearchQuery ? 'flex' : 'none';
         }
+        currentPageBrand = 1;
         renderBrandSpecificProducts();
       });
     }
@@ -1544,6 +1736,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         brandSearchInput.value = '';
         landingBrandProductSearchQuery = '';
         brandSearchClear.style.display = 'none';
+        currentPageBrand = 1;
         renderBrandSpecificProducts();
       });
     }
