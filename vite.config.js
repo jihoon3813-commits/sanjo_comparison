@@ -21,6 +21,13 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         admin: resolve(__dirname, 'admin.html'),
       },
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/convex')) {
+            return 'convex';
+          }
+        }
+      }
     },
   },
 });
