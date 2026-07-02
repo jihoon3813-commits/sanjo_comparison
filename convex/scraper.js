@@ -113,7 +113,7 @@ async function fetchLifenuriProducts(url, accountsOverride) {
   const html = await resHtml.text();
   
   // Extract theme ID using regex
-  const themeNoMatch = html.match(/var\s+first_theme\s*=\s*(\d+)/i) || 
+  const themeNoMatch = html.match(/first_theme\s*=\s*['"]?(\d+)['"]?/i) || 
                        html.match(/onclick="listdata\('(\d+)'\);?"/i) ||
                        html.match(/listdata\('(\d+)'\)/i);
   const themeNo = themeNoMatch ? themeNoMatch[1] : null;

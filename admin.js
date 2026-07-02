@@ -2940,7 +2940,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log("[Lifenuri Scanner] HTML Response Status:", resHtml.status);
         if (resHtml.ok) {
           const html = await resHtml.text();
-          const themeNoMatch = html.match(/var\s+first_theme\s*=\s*(\d+)/i) || 
+          const themeNoMatch = html.match(/first_theme\s*=\s*['"]?(\d+)['"]?/i) || 
                                html.match(/onclick="listdata\('(\d+)'\);?"/i) ||
                                html.match(/listdata\('(\d+)'\)/i);
           const themeNo = themeNoMatch ? themeNoMatch[1] : null;
