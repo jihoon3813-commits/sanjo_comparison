@@ -850,8 +850,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     btnCloseProductModal.addEventListener('click', closeProductModal);
   }
 
-  // Close modal when clicking on backdrop overlay (Disabled per user request: do not close when clicked outside)
-  /*
+  // Close modal when clicking on backdrop overlay
   if (modalProductDetail) {
     modalProductDetail.addEventListener('click', (e) => {
       if (e.target === modalProductDetail) {
@@ -859,7 +858,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
   }
-  */
+
+  if (consultFormModal) {
+    consultFormModal.addEventListener('click', (e) => {
+      if (e.target === consultFormModal) {
+        consultFormModal.classList.remove('active');
+      }
+    });
+  }
 
   function populateBrandSelects() {
     const selects = [
