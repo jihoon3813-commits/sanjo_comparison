@@ -637,6 +637,7 @@ a {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow: hidden;
 }
 
 @keyframes fadeInHeroProd {
@@ -659,36 +660,36 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .hero-card-header-badge .badge-tag {
   background: #0088ff;
   color: #ffffff;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 800;
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0, 136, 255, 0.25);
 }
 
 .hero-card-header-badge .badge-count {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: #475569;
 }
 
 .hero-card-img-wrap {
   width: 100%;
-  height: 190px;
+  height: 175px;
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 14px;
-  margin-bottom: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
   box-sizing: border-box;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
   flex-shrink: 0;
@@ -708,25 +709,25 @@ a {
 .hero-card-body-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   flex-grow: 1;
 }
 
 .hero-card-brand-tag {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   color: #0284c7;
   font-weight: 700;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 
 .hero-card-title {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 800;
   margin: 0;
   color: #0f172a;
   line-height: 1.35;
   word-break: keep-all;
-  height: 3.2rem;
+  height: 3.1rem;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
