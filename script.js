@@ -2362,6 +2362,20 @@ async function initApp() {
   let currentHeroIndex = 0;
   let heroRotateTimer = null;
 
+  function loadHeroProductsFromLocalSync() {
+    const localProds = JSON.parse(localStorage.getItem('lifemoa_products')) || defaultProducts;
+    const localHeroIds = JSON.parse(localStorage.getItem('lifemoa_hero_products') || '[]');
+    let matched = [];
+    if (localHeroIds.length > 0) {
+      matched = localHeroIds.map(id => localProds.find(p => p.id === id)).filter(Boolean);
+    }
+    if (matched.length > 0) {
+      heroProductsList = matched;
+    } else {
+      heroProductsList = localProds.slice(0, 4);
+    }
+  }
+
   async function loadHeroProductsForLanding() {
     try {
       if (convex) {
@@ -2378,18 +2392,7 @@ async function initApp() {
     }
 
     if (!heroProductsList || heroProductsList.length === 0) {
-      const local = localStorage.getItem('lifemoa_hero_products');
-      if (local) {
-        try {
-          const ids = JSON.parse(local);
-          const matched = ids.map(id => PRODUCT_DATA.find(p => p.id === id)).filter(Boolean);
-          if (matched.length > 0) heroProductsList = matched;
-        } catch(e){}
-      }
-    }
-
-    if (!heroProductsList || heroProductsList.length === 0) {
-      heroProductsList = PRODUCT_DATA.slice(0, 4);
+      loadHeroProductsFromLocalSync();
     }
   }
 
@@ -2528,7 +2531,16 @@ async function initApp() {
     }, 1500); // Change product every 1.5 seconds
   }
 
-  // Initialize Selection UI rendering after loading Convex data
+  // Immediate synchronous first render (0ms delay)
+  try {
+    BRAND_DATA = JSON.parse(localStorage.getItem('lifemoa_brands')) || defaultBrands;
+    PLAN_DATA = JSON.parse(localStorage.getItem('lifemoa_plans')) || defaultPlans;
+    PRODUCT_DATA = JSON.parse(localStorage.getItem('lifemoa_products')) || defaultProducts;
+    loadHeroProductsFromLocalSync();
+    renderHeroProducts();
+  } catch(e) {}
+
+  // Async backend sync and update
   async function init() {
     await initData();
     await loadHeroProductsForLanding();

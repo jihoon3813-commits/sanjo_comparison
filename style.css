@@ -624,6 +624,7 @@ a {
 
 .hero-product-card-display {
   width: 100%;
+  height: 520px;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 24px;
@@ -633,6 +634,9 @@ a {
   transition: all 1.5s ease;
   position: relative;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 @keyframes fadeInHeroProd {
@@ -655,7 +659,7 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .hero-card-header-badge .badge-tag {
@@ -676,17 +680,18 @@ a {
 
 .hero-card-img-wrap {
   width: 100%;
-  height: 210px;
+  height: 190px;
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
-  margin-bottom: 16px;
+  padding: 14px;
+  margin-bottom: 12px;
   box-sizing: border-box;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  flex-shrink: 0;
 }
 
 .hero-prod-main-img {
@@ -704,6 +709,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  flex-grow: 1;
 }
 
 .hero-card-brand-tag {
@@ -714,18 +720,27 @@ a {
 }
 
 .hero-card-title {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: 800;
   margin: 0;
   color: #0f172a;
   line-height: 1.35;
   word-break: keep-all;
+  height: 3.2rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .hero-card-model {
   font-size: 0.85rem;
   color: #94a3b8;
-  margin: 0 0 10px 0;
+  margin: 0 0 8px 0;
+  height: 1.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .hero-card-price-row {
