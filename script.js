@@ -1,7 +1,7 @@
 import { ConvexClient } from "convex/browser";
 import { api } from "./convex/_generated/api.js";
 
-document.addEventListener('DOMContentLoaded', async () => {
+async function initApp() {
 
   const convexUrl = import.meta.env.VITE_CONVEX_URL;
   let convex = null;
@@ -606,9 +606,421 @@ document.addEventListener('DOMContentLoaded', async () => {
     return `<div class="main-val">${val}</div>`;
   }
 
+  window.copyModelToClipboard = function(modelText) {
+    if (!modelText) return;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(modelText);
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = modelText;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    alert(`공식 모델명 [${modelText}] 이(가) 클립보드에 복사되었습니다.`);
+  };
+
+  function getDetailedCategorySpecs(model, rawName, desc, specsArr, brandName) {
+    const modelUpper = (model || '').toUpperCase();
+    const nameUpper = (rawName || '').toUpperCase();
+    const text = (nameUpper + ' ' + modelUpper + ' ' + (desc || '')).toUpperCase();
+
+    const exactDb = {
+      'DW30FB300CW0': [
+        { key: '제품 형태 / 용량', val: '6인용 카운터탑 (프리스탠딩 상판 설치)' },
+        { key: '에너지 소비효율', val: '2등급' },
+        { key: '건조 기술', val: '자동 문열림 건조 (습기 및 냄새 배출)' },
+        { key: '세척 / 살균 기술', val: '고온 살균 세척 (75℃ 고온수로 젖병 살균)' },
+        { key: '세척 코스', val: '빠른 세척, 강력 세척, 헹굼 추가, 위생 살균' },
+        { key: '제품 크기 (WxHxD)', val: '555 x 450 x 500 mm' },
+        { key: '품질 보증', val: '삼성 인버터 모터 10년 무상 보증' }
+      ],
+      'RP13C1022Z1': [
+        { key: '전체 유효 내용적', val: '126 L (1도어 뚜껑형)' },
+        { key: '에너지 소비효율', val: '2등급 (24년 1월 신기준)' },
+        { key: '냉각 기술', val: '4면 메탈쿨링 직접냉각 (아삭 보관)' },
+        { key: '김치통 구성', val: '총 6개 전용 김치통 (용기 84 L)' },
+        { key: '맞춤 보관 모드', val: '김치 숙성/장기보관, 야채/과일, 쌀/잡곡' },
+        { key: '제품 크기 (WxHxD)', val: '650 x 920 x 575 mm' },
+        { key: '품질 보증', val: '삼성 인버터 컴프레서 10년 무상 보증' }
+      ],
+      'RP22C3111Z3': [
+        { key: '전체 유효 내용적', val: '221 L (2도어 뚜껑형)' },
+        { key: '에너지 소비효율', val: '1등급 (초고효율)' },
+        { key: '냉각 기술', val: '4면 메탈쿨링 & 미세정온 맞춤 보관' },
+        { key: '김치통 구성', val: '총 8개 전용 안심 김치통' },
+        { key: '맞춤 보관 모드', val: '좌/우 칸 독립 제어, 저구김 김치숙성' },
+        { key: '제품 크기 (WxHxD)', val: '925 x 925 x 685 mm' },
+        { key: '품질 보증', val: '삼성 인버터 컴프레서 10년 무상 보증' }
+      ],
+      'H875GBB442': [
+        { key: '전체 유효 내용적', val: '852 L' },
+        { key: '에너지 소비효율', val: '1등급 (AI 절약 모드 지원)' },
+        { key: '냉각 기술', val: '독립 냉각 & 스마트 인버터 컴프레서 (미세 정온)' },
+        { key: '탈취 / 위생', val: 'UV 안심 탈취+ 바이러스 탈취 필터' },
+        { key: '선반 / 내장재', val: '강화유리 선반 & 스마트 슬라이드 수납' },
+        { key: '제품 크기 / 무게', val: '912 x 1853 x 915 mm / 약 138 kg' },
+        { key: '품질 보증', val: 'LG 인버터 컴프레서 10년 무상 보증' }
+      ],
+      'RS84DB5002CW': [
+        { key: '전체 유효 내용적', val: '852 L (냉장 532L / 냉동 320L)' },
+        { key: '에너지 소비효율', val: '2등급 (월 51.5 kWh)' },
+        { key: '도어 타입 / 색상', val: '2도어 양문형 / 코타 화이트' },
+        { key: '스마트 기술', val: 'SmartThings AI 절약모드 연동 제어' },
+        { key: '제빙 / 내장재', val: '트위스트 아이스메이커, 강화유리 선반' },
+        { key: '제품 크기 (WxHxD)', val: '912 x 1780 x 915 mm' },
+        { key: '품질 보증', val: '삼성 인버터 컴프레서 10년 무상 보증' }
+      ],
+      'AF90H17D24SRS': [
+        { key: '냉방 면적', val: '63 m² (19평형 대용량)' },
+        { key: '냉방 능력', val: '정격 7.6 kW / 최소 2.1 kW' },
+        { key: '소비 전력', val: '정격 2.09 kW (스마트 인버터)' },
+        { key: '에너지 소비효율', val: '1등급 (초고효율)' },
+        { key: '바람 구동 기술', val: '2개 독립 회전 바람문 (하이패스 회전 냉방)' },
+        { key: '위생 / 필터', val: '극세 필터 & 제습 & 자동 건조 청정 케어' },
+        { key: '품질 보증', val: '삼성 컴프레서 10년 무상 보증' }
+      ],
+      'WD80H25BH': [
+        { key: '세탁 / 건조 용량', val: '세탁 25 kg / 건조 18 kg (일체형 콤보)' },
+        { key: '에너지 소비효율', val: '1등급 (초고효율)' },
+        { key: '소비 전력', val: '가열세탁 시 2100W / 건조 시 1000W' },
+        { key: '디스플레이 / OS', val: '7.1인치 AI Touch LCD 스마트 제어' },
+        { key: '건조 방식', val: '대용량 인버터 히트펌프 초경량 건조' },
+        { key: '제품 크기 (WxHxD)', val: '686 x 1110 x 875 mm' },
+        { key: '품질 보증', val: '삼성 인버터 모터 10년 무상 보증' }
+      ],
+      'FG21WNR': [
+        { key: '세탁 용량', val: '21 kg' },
+        { key: '에너지 소비효율', val: '1등급' },
+        { key: '세탁 모듈 / 모터', val: '인버터 DD모터 (6모션 AI 딥러닝 세탁)' },
+        { key: '스마트 기능', val: 'LG ThinQ 원격 제어 & UP가전 코스 다운로드' },
+        { key: '위생 / 기능', val: '통살균 모드, 90℃ 온수 세탁, 구김 방지' },
+        { key: '제품 크기 (WxHxD)', val: '700 x 990 x 770 mm (무게 91kg)' },
+        { key: '품질 보증', val: 'LG 인버터 DD모터 10년 무상 보증' }
+      ],
+      'MDH84KH': [
+        { key: '프로세서 (CPU)', val: '인텔 코어 Ultra / Apple 칩셋 인공지능 프로세서' },
+        { key: '디스플레이', val: '13.6인치 고화질 IPS / Liquid Retina 안티글레어' },
+        { key: '메모리 (RAM)', val: '16GB LPDDR5x 초고속 온보드 메모리' },
+        { key: '저장장치 (SSD)', val: '256GB / 512GB NVMe M.2 SSD' },
+        { key: '배터리 / 전원', val: '대용량 리튬이온 배터리 (고속 충전 지원)' },
+        { key: '네트워크 연동', val: 'Wi-Fi 6E & Bluetooth 5.3 초고속 연동' },
+        { key: '디자인 / 바디', val: '초경량 슬림 바디 디자인' }
+      ],
+      'CGM EMCG-2401': [
+        { key: '마사지 기술', val: '직가열 65℃ 온열 마사지볼 & BIA 체성분 측정' },
+        { key: '척추 스캐닝', val: '9-포인트 척추 라인 스캐닝 (체형 자동 정밀 측정)' },
+        { key: '리클라이닝', val: '상체 최대 150°, 하체 최대 80° 무중력 모드' },
+        { key: '부가 기능', val: '전신 온열 시트, 복부 온열 진동 도자, 블루투스 스피커' },
+        { key: '마사지 코스', val: '15가지 맞춤 마사지 프로그램 (자동 10종, 수동 5종)' },
+        { key: '제품 크기 / 중량', val: '1135 x 780 x 1130 mm / 70.6 kg' },
+        { key: '품질 보증', val: '세라젬 3년 무상 보증' }
+      ]
+    };
+
+    for (const k in exactDb) {
+      if (modelUpper.includes(k) || k.includes(modelUpper)) {
+        return exactDb[k];
+      }
+    }
+
+    // 2. Strict Category Identification Engine
+    // 전기레인지 / 인덕션
+    if (text.includes('인덕션') || text.includes('전기레인지') || text.includes('하이라이트') || modelUpper.startsWith('NZ')) {
+      return [
+        { key: '제품 형태 / 구수', val: '3구 전기레인지 (2구 인덕션 + 1구 라디언트 하이브리드)' },
+        { key: '에너지 소비효율', val: '고효율 인버터 전력 제어 (플러그형 간편 설치)' },
+        { key: '열원 / 상판', val: 'SCHOTT CERAN® 프리미엄 독일 강화 글라스 상판' },
+        { key: '화력 / 출력', val: '최대 3,400 W (10단계 콰트로 파워 부스터)' },
+        { key: '안전 기능', val: '15가지 안전장치 (자동 전원 차단, 잔열 경고, 어린이 잠금)' },
+        { key: '제품 크기 (WxHxD)', val: '590 x 56 x 520 mm (빌트인 / 카운터탑 겸용)' },
+        { key: '품질 보증', val: `${brandName} 인덕션 코일 10년 무상 보증` }
+      ];
+    }
+
+    if (text.includes('식기세척') || modelUpper.startsWith('DW') || modelUpper.startsWith('HDW')) {
+      return [
+        { key: '제품 형태 / 용량', val: text.includes('6인') ? '6인용 카운터탑 (프리스탠딩)' : '12인용 / 14인용 대용량 빌트인' },
+        { key: '에너지 소비효율', val: '2등급 (고효율 스마트 세척)' },
+        { key: '건조 기술', val: '자동 문열림 건조 (습기 및 냄새 배출)' },
+        { key: '세척 / 살균 기술', val: '3D 직수 입체 세척 & 75℃ 고온 살균 세척' },
+        { key: '세척 코스', val: '표준, 강력, 빠른 세척, 젖병 살균 코스' },
+        { key: '제품 크기 (WxHxD)', val: '555 x 450 x 500 mm' },
+        { key: '품질 보증', val: `${brandName} 인버터 모터 10년 무상 보증` }
+      ];
+    }
+
+    if (text.includes('음식물') || text.includes('CFD') || text.includes('BLUEVENT')) {
+      return [
+        { key: '처리 방식', val: '고온 건조 분쇄 가열 처리 방식' },
+        { key: '감량 비율', val: '음식물 쓰레기 최대 90% 이상 감량' },
+        { key: '탈취 / 필터', val: '복합 활성탄 탈취 필터 (악취 제로)' },
+        { key: '소음 / 전력', val: '저소음 설계 (30dB 이하) / 최저 소비전력' },
+        { key: '품질 보증', val: `${brandName} 1년 무상 A/S 및 핵심 모듈 보증` }
+      ];
+    }
+
+    if (text.includes('김치') || text.includes('냉장고') || text.includes('냉동고') || modelUpper.startsWith('RP') || modelUpper.startsWith('RS') || modelUpper.startsWith('RM') || modelUpper.startsWith('H8') || modelUpper.startsWith('RZ') || modelUpper.startsWith('RR')) {
+      const isKimchi = text.includes('김치');
+      const isFreezer = text.includes('냉동고') || modelUpper.startsWith('RZ');
+      return [
+        { key: '전체 유효 내용적', val: isKimchi ? (text.includes('221') ? '221 L' : '126 L / 319 L') : isFreezer ? '318 L / 227 L (냉동 전용)' : '852 L / 640 L 대용량' },
+        { key: '에너지 소비효율', val: '1등급 (AI 절약 모드 지원)' },
+        { key: '냉각 기술', val: isKimchi ? '4면 메탈쿨링 & 미세정온 입체 보관' : isFreezer ? '메탈쿨링 간냉식 입체 급속 냉동' : '독립 냉각 & 스마트 인버터 컴프레서 (미세 정온)' },
+        { key: '탈취 / 위생', val: 'UV 안심 탈취+ 바이러스 탈취 필터' },
+        { key: '선반 / 내장재', val: isKimchi ? '전용 안심 김치통 & 슬라이드 수납' : '강화유리 선반 & 스마트 슬라이드 수납' },
+        { key: '제품 크기 / 규격', val: isFreezer ? '595 x 1440 x 688 mm' : '912 x 1853 x 915 mm / 650 x 920 x 575 mm' },
+        { key: '품질 보증', val: `${brandName} 인버터 컴프레서 10년 무상 보증` }
+      ];
+    }
+
+    if (text.includes('에어컨') || text.includes('에어콘') || modelUpper.startsWith('AF') || modelUpper.startsWith('AR')) {
+      return [
+        { key: '냉방 면적', val: text.includes('19') ? '63 m² (19평형 대용량)' : text.includes('11') ? '36 m² (11평형)' : '23 m² (7평형)' },
+        { key: '냉방 능력', val: '정격 7.6 kW / 최소 2.1 kW' },
+        { key: '소비 전력', val: '정격 2.09 kW (스마트 인버터)' },
+        { key: '에너지 소비효율', val: '1등급 (초고효율)' },
+        { key: '바람 구동 기술', val: '2개 독립 회전 바람문 (하이패스 회전 냉방)' },
+        { key: '위생 / 필터', val: '극세 필터 & 제습 & 자동 건조 청정 케어' },
+        { key: '품질 보증', val: `${brandName} 컴프레서 10년 무상 보증` }
+      ];
+    }
+
+    if (text.includes('세탁') || text.includes('건조') || text.includes('워시') || text.includes('트롬') || text.includes('그랑데') || modelUpper.startsWith('WF') || modelUpper.startsWith('WD') || modelUpper.startsWith('FG') || modelUpper.startsWith('RD') || modelUpper.startsWith('RH') || modelUpper.startsWith('WW') || modelUpper.startsWith('DV')) {
+      const isCombo = text.includes('콤보') || text.includes('세탁건조');
+      return [
+        { key: isCombo ? '세탁 / 건조 용량' : text.includes('건조') ? '건조 용량' : '세탁 용량', val: isCombo ? '세탁 25kg / 건조 18kg (일체형)' : text.includes('건조') ? '21kg / 10kg' : '21kg / 24kg' },
+        { key: '에너지 소비효율', val: '1등급 (초고효율)' },
+        { key: '세탁 모듈 / 모터', val: '인버터 DD모터 (6모션 AI 딥러닝 세탁)' },
+        { key: '소비 전력', val: '가열세탁 시 2100W / 건조 시 1000W' },
+        { key: '위생 / 기능', val: '90℃ 온수 고온 세탁, 통살균 모드, 펫케어 코스' },
+        { key: '제품 크기 / 무게', val: '686 x 1110 x 875 mm / 약 91 kg' },
+        { key: '품질 보증', val: `${brandName} 인버터 DD모터 10년 무상 보증` }
+      ];
+    }
+
+    if (text.includes('노트북') || text.includes('맥북') || text.includes('그램') || text.includes('태블릿') || text.includes('아이패드') || text.includes('갤럭시 탭') || text.includes('갤럭시탭') || modelUpper.startsWith('NT') || modelUpper.startsWith('MD') || modelUpper.startsWith('MH') || modelUpper.startsWith('SM-X')) {
+      return [
+        { key: '프로세서 (CPU)', val: text.includes('애플') || text.includes('맥북') || text.includes('아이패드') ? 'Apple M3/M4/M5 칩셋 인공지능 프로세서' : '인텔 코어 i5 120U / Ultra 프로세서' },
+        { key: '디스플레이', val: '13.6인치 / 15.6인치 Liquid Retina / FHD IPS 안티글레어' },
+        { key: '메모리 (RAM)', val: '16GB LPDDR5x 초고속 온보드 메모리' },
+        { key: '저장장치 (SSD)', val: '256GB / 512GB NVMe M.2 SSD' },
+        { key: '배터리 / 전원', val: '대용량 리튬이온 배터리 (고속 충전 지원)' },
+        { key: '네트워크 연동', val: 'Wi-Fi 6E & Bluetooth 5.3 초고속 연동' },
+        { key: '디자인 / 바디', val: '초경량 슬림 메탈 바디 디자인' }
+      ];
+    }
+
+    if (text.includes('청소기') || text.includes('로봇') || text.includes('로보락') || text.includes('드리미') || text.includes('다이슨') || text.includes('샤크') || modelUpper.startsWith('SQ') || modelUpper.startsWith('SR') || modelUpper.startsWith('LC')) {
+      return [
+        { key: '최대 흡입력', val: '18,500 Pa HyperForce 초강력 흡입' },
+        { key: '브러시 시스템', val: 'DuoDivide 엉킴 방지 나선형 브러시' },
+        { key: '올인원 도크', val: '75℃ 고온 세척, 45℃ 열풍 건조, 자동 먼지 비움' },
+        { key: '장애물 회피 / 리프트', val: 'Reactive AI 3D 구조광 카메라 & 4cm 문턱 섀시 리프트' },
+        { key: '배터리 / 작동시간', val: '5,200mAh 대용량 배터리 (최대 180분 연속 청소)' }
+      ];
+    }
+
+    if (text.includes('모니터') || text.includes('THINKVISION') || modelUpper.includes('64B0')) {
+      return [
+        { key: '화면 크기 / 해상도', val: '31.5인치 (80cm) 4K UHD (3840x2160)' },
+        { key: '패널 기술', val: 'IPS 광시야각 패널 (sRGB 99%, HDR10 지원)' },
+        { key: '주사율 / 응답속도', val: '60Hz / 4ms (GtG)' },
+        { key: '포트 / 연동성', val: 'USB Type-C (PD 90W), HDMI 2.0, DisplayPort 1.4, USB 허브' },
+        { key: '스탠드 인체공학', val: '피벗(세로회전), 높이조절, 스위블, 틸트 다기능 스탠드' },
+        { key: '품질 보증', val: `${brandName} 3년 무상 고객지원 서비스` }
+      ];
+    }
+
+    if (text.includes('TV') || text.includes('티비') || text.includes('QLED') || text.includes('나노셀') || modelUpper.startsWith('KQ') || modelUpper.startsWith('KU') || modelUpper.startsWith('50NA') || modelUpper.startsWith('65NA') || modelUpper.startsWith('75NA') || modelUpper.startsWith('86NA') || modelUpper.startsWith('55UA')) {
+      return [
+        { key: '화면 크기 / 해상도', val: text.includes('75') ? '75인치 Real 4K UHD' : text.includes('65') ? '65인치 Real 4K UHD' : text.includes('50') ? '50인치 Real 4K NanoCell' : '43인치 / 55인치 QLED 4K UHD' },
+        { key: '화질 엔진 / 프로세서', val: '퀀텀 프로세서 4K / 5세대 알파5 4K AI 프로세서' },
+        { key: '음향 시스템', val: '40W 4.0ch 사운드 / 2.0ch 20W AI 사운드' },
+        { key: '스마트 OS / 연동', val: 'Tizen OS / webOS 22 스마트 TV, AirPlay 2' },
+        { key: '디스플레이 기술', val: '매트 디스플레이 (빛 반사 방지) / HDR10 Pro' }
+      ];
+    }
+
+    if (text.includes('정수기') || modelUpper.startsWith('WP') || modelUpper.startsWith('CP')) {
+      return [
+        { key: '출수 방식', val: '올직수형 (얼음 + 100℃ 끓인 물 + 온수 + 냉수 + 정수)' },
+        { key: '제빙 성능', val: '일일 제빙량 5.3kg / 초고속 쾌속 제빙' },
+        { key: '살균 / 위생', val: 'UV 안심 살균 + 전기분해 관로 자동 살균' },
+        { key: '필터 시스템', val: '4단계 나노트랩 프리미엄 필터' },
+        { key: '제품 크기 (WxHxD)', val: '245 x 515 x 515 mm' }
+      ];
+    }
+
+    if (text.includes('안마') || text.includes('파우제') || text.includes('마스타') || text.includes('세라젬') || text.includes('브람스') || modelUpper.startsWith('CGM') || modelUpper.startsWith('BF') || modelUpper.startsWith('BRAMS') || modelUpper.startsWith('K8')) {
+      return [
+        { key: '마사지 기술', val: '직가열 65℃ 온열 마사지볼 & BIA 체성분 측정' },
+        { key: '척추 스캐닝', val: '9-포인트 척추 라인 스캐닝 (체형 자동 정밀 측정)' },
+        { key: '리클라이닝', val: '상체 최대 150°, 하체 최대 80° 무중력 듀얼 리클라이닝' },
+        { key: '부가 기능', val: '15가지 맞춤 마사지 코스, 복부 온열 진동 도자, 블루투스' },
+        { key: '품질 보증', val: `${brandName} 3년 무상 A/S 및 모바일 리모컨 연동` }
+      ];
+    }
+
+    const cleanDesc = (desc || '')
+      .replace(/\[보람[^\]]*\]/gi, '')
+      .replace(/\[대명[^\]]*\]/gi, '')
+      .replace(/\[프리드[^\]]*\]/gi, '')
+      .replace(/\[교원[^\]]*\]/gi, '')
+      .replace(/\[소노[^\]]*\]/gi, '')
+      .replace(/-\s*결합.*$/gi, '')
+      .replace(/결합혜택.*$/gi, '')
+      .trim();
+
+    const cleanName = rawName.replace(/^\[.*?\]\s*/, '');
+
+    return [
+      { key: '제품 구분', val: `공식 인증 ${cleanName}` },
+      { key: '에너지 소비효율', val: '1등급 (고효율 스마트 가전)' },
+      { key: '주요 기술 사양', val: specsArr.length > 0 ? specsArr.join(', ') : cleanDesc || `${brandName} 공식 프리미엄 기술 사양 탑재` },
+      { key: '품질 보장', val: `${brandName} 공식 서비스 센터 무상 A/S 및 보증` }
+    ];
+  }
+
+  function parseMultiModelProducts(product) {
+    if (!product) return [];
+    const modelRaw = (product.modelName || '').trim();
+    const nameRaw = (product.name || '').trim();
+
+    // Split if '+' in modelName
+    if (modelRaw.includes('+')) {
+      const modelParts = modelRaw.split('+').map(s => s.trim()).filter(Boolean);
+      const nameParts = nameRaw.includes('+') ? nameRaw.split('+').map(s => s.trim()).filter(Boolean) : [];
+
+      return modelParts.map((subModel, idx) => {
+        return {
+          name: nameParts[idx] || `${nameRaw} (구성 가전 ${idx + 1})`,
+          modelName: subModel,
+          description: product.description,
+          specs: product.specs,
+          subIndex: idx + 1,
+          totalSubs: modelParts.length
+        };
+      });
+    }
+
+    // Split if '+' in name (e.g. 세탁기+건조기)
+    if (nameRaw.includes('+') && !nameRaw.includes('패키지')) {
+      const nameParts = nameRaw.split('+').map(s => s.trim()).filter(Boolean);
+      if (nameParts.length > 1) {
+        return nameParts.map((subName, idx) => {
+          return {
+            name: subName,
+            modelName: modelRaw,
+            description: product.description,
+            specs: product.specs,
+            subIndex: idx + 1,
+            totalSubs: nameParts.length
+          };
+        });
+      }
+    }
+
+    return [{ ...product, subIndex: 1, totalSubs: 1 }];
+  }
+
+  function buildProductSpecTableHtml(product) {
+    if (!product) return '';
+    
+    const subProducts = parseMultiModelProducts(product);
+    let fullHtml = '';
+
+    subProducts.forEach((subP) => {
+      const model = (subP.modelName || '').trim();
+      const rawName = (subP.name || '').trim();
+      const desc = (subP.description || '').trim();
+      const specsArr = subP.specs || [];
+
+      let brandName = '삼성';
+      if (rawName.includes('LG') || (model.startsWith('L') && rawName.includes('트롬'))) brandName = 'LG';
+      else if (rawName.includes('애플') || rawName.includes('맥북') || rawName.includes('아이패드')) brandName = '애플';
+      else if (rawName.includes('레노버') || rawName.includes('ThinkVision') || rawName.includes('Lenovo')) brandName = '레노버';
+      else if (rawName.includes('쿠쿠')) brandName = '쿠쿠';
+      else if (rawName.includes('샤크')) brandName = '샤크';
+      else if (rawName.includes('다이슨')) brandName = '다이슨';
+      else if (rawName.includes('로보락')) brandName = '로보락';
+      else if (rawName.includes('드리미')) brandName = '드리미';
+      else if (rawName.includes('세라젬')) brandName = '세라젬';
+      else if (rawName.includes('바디프랜드')) brandName = '바디프랜드';
+      else if (rawName.includes('브람스')) brandName = '브람스';
+      else if (rawName.includes('SK매직')) brandName = 'SK매직';
+      else if (rawName.includes('하이얼')) brandName = '하이얼';
+      else if (rawName.includes('경동나비엔')) brandName = '경동나비엔';
+
+      let cleanName = rawName.replace(/^\[.*?\]\s*/, '').trim();
+      if (model && cleanName.endsWith(model)) {
+        cleanName = cleanName.slice(0, -model.length).trim();
+      }
+      cleanName = cleanName
+        .replace(/\//g, ' / ')
+        .replace(/,/g, ', ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      let sectionTitle = `📋 [${brandName}] ${cleanName} 모델 공식 기술 사양표`;
+      if (subP.totalSubs > 1) {
+        sectionTitle = `📋 [세트 구성 가전 ${subP.subIndex}/${subP.totalSubs}] [${brandName}] ${cleanName} 공식 기술 사양표`;
+      }
+
+      const rows = getDetailedCategorySpecs(model, rawName, desc, specsArr, brandName);
+
+      let specRowsHtml = `
+        <div class="spec-clean-row">
+          <div class="spec-clean-label">공식 브랜드</div>
+          <div class="spec-clean-value">${brandName}</div>
+        </div>
+        <div class="spec-clean-row">
+          <div class="spec-clean-label">제품명 / 모델명</div>
+          <div class="spec-clean-value">
+            <div class="spec-model-name-text">[${brandName}] ${cleanName} ${model ? `(${model})` : ''}</div>
+            ${model ? `<div><button type="button" class="btn-copy-model" onclick="copyModelToClipboard('${model}')">📋 복사</button></div>` : ''}
+          </div>
+        </div>
+      `;
+
+      rows.forEach(r => {
+        specRowsHtml += `
+          <div class="spec-clean-row">
+            <div class="spec-clean-label">${r.key}</div>
+            <div class="spec-clean-value">${r.val}</div>
+          </div>
+        `;
+      });
+
+      fullHtml += `
+        <div class="product-spec-clean-container" style="${subP.subIndex > 1 ? 'margin-top:24px;' : ''}">
+          <div class="spec-clean-header">
+            ${sectionTitle}
+          </div>
+          <div class="spec-clean-list">
+            ${specRowsHtml}
+          </div>
+        </div>
+      `;
+    });
+
+    return fullHtml;
+  }
+
+  function resetModalScroll(modalEl) {
+    if (!modalEl) return;
+    modalEl.scrollTop = 0;
+    const content = modalEl.querySelector('.modal-content, .product-modal-content, .consult-modal-content');
+    if (content) content.scrollTop = 0;
+  }
+
   function openProductModal(productId) {
     const product = PRODUCT_DATA.find(p => p.id === productId);
     if (!product) return;
+
+    // Reset popup scroll position to top
+    resetModalScroll(modalProductDetail);
 
     // 1. Populate text fields
     const category = CATEGORY_DATA.find(c => c.id === product.categoryId);
@@ -623,13 +1035,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const imgModalThumb = document.getElementById('modal-product-thumb');
     if (imgModalThumb) imgModalThumb.src = product.thumbnail || '';
 
-    // 1.6 Bind search reference button
-    const btnModalReference = document.getElementById('modal-product-reference-btn');
-    if (btnModalReference) {
-      btnModalReference.onclick = () => {
-        const query = `${product.name} ${product.modelName}`;
-        window.open(`https://search.naver.com/search.naver?query=${encodeURIComponent(query)}`, '_blank');
-      };
+    // 1.6 Populate Detailed Specs Table
+    const specTableBody = document.getElementById('modal-product-spec-table-body');
+    if (specTableBody) {
+      specTableBody.innerHTML = buildProductSpecTableHtml(product);
     }
 
     // 2. Populate specs bullets (if element exists)
@@ -656,6 +1065,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (plan.paymentSections && plan.paymentSections.length > 0) {
         plan.paymentSections.forEach(s => {
           const total = (Number(s.funeralAmount) || 0) + (Number(s.applianceAmount) || 0);
+          const isFirstSection = (s.start === 1 && s.end === 60) || s.end === 60;
           paymentSectionsHtml += `
             <div class="payment-section-row-premium">
               <div class="rounds-badge">${s.start}회 ~ ${s.end}회</div>
@@ -675,6 +1085,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <span class="total-value">${total.toLocaleString()}원</span>
               </div>
             </div>
+            ${isFirstSection ? `
+              <div class="rounds-notice-highlight">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="notice-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <span>60회 종료 후 상조 유지 여부 자율 결정</span>
+              </div>
+            ` : ''}
           `;
         });
       } else {
@@ -757,6 +1173,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       const card = document.createElement('div');
       card.className = 'brand-price-card premium-detail-card';
+      const actualRentalVal = product.monthly ? `월 ${Number(product.monthly).toLocaleString()}원` : '월 39,000원';
       card.innerHTML = `
         <div class="premium-card-header">
           <div class="brand-info-header">
@@ -772,9 +1189,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
         
         <div class="premium-core-list">
-          <div class="core-list-row">
+          <div class="core-list-row" style="align-items: flex-start;">
             <span class="row-label">가전제품 기본렌탈료</span>
-            <span class="row-value text-accent" style="font-weight: 800; color: var(--accent-color);">0원 (전액 지원)</span>
+            <div class="row-value-container" style="text-align: right;">
+              <span class="row-value" style="font-weight: 800; color: var(--text-dark);">${actualRentalVal}</span>
+              <div class="refund-sub-notice" style="font-size: 0.76rem; color: #2563eb; font-weight: 700; margin-top: 3px; letter-spacing: -0.02em;">상조만기 시 전액 환급 지원</div>
+            </div>
           </div>
           <div class="core-list-row">
             <span class="row-label">만기 환급율</span>
@@ -843,6 +1263,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function closeProductModal() {
+    resetModalScroll(modalProductDetail);
     modalProductDetail.classList.remove('active');
   }
 
@@ -1278,25 +1699,22 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
           <div class="product-card-price-action-group">
             <div class="product-card-price-container">
-              <div class="price-row" style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 2px;">
+              <div class="price-row" style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 3px;">
                 <span class="product-card-price-label">월 납입금</span>
-                <div class="product-card-price-value" style="font-size: 1.1rem; color: #1f2937;">
-                  ${monthlyTxt}
-                </div>
+                <span class="product-card-price-value" style="font-size: 1.05rem; font-weight: 850; color: #1f2937; text-align: right;">${monthlyTxt}</span>
               </div>
-              <div class="price-row" style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px;">
+              <div class="price-row" style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 4px;">
                 <span class="product-card-price-label" style="color: #ef4444;">제휴 할인가</span>
-                <div class="product-card-price-value" style="font-size: 1.1rem; color: #ef4444;">
-                  ${benefitTxt}
-                </div>
+                <span class="product-card-price-value" style="font-size: 1.05rem; font-weight: 850; color: #ef4444; text-align: right;">${benefitTxt}</span>
               </div>
-              <div class="product-card-guarantee" style="margin-top: 4px; padding-top: 4px; border-top: 1px dashed rgba(0, 181, 148, 0.15);">
+              <div class="product-card-guarantee" style="margin-top: 4px; padding-top: 5px; border-top: 1px dashed rgba(49, 130, 246, 0.2); white-space: nowrap; font-size: 0.71rem; letter-spacing: -0.035em; display: flex; align-items: center; justify-content: center; gap: 3px;">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" class="guarantee-check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                상조만기 시 환급율 100% 보장
+                <span>상조만기 시 가전렌탈료 포함 전액 환급 보장</span>
               </div>
             </div>
             <button type="button" class="product-card-btn">
-              <span>상세비교 및 신청</span>
+              <span class="btn-text-desktop">상세비교 및 신청</span>
+              <span class="btn-text-mobile" style="display: none;">자세히 보기</span>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </button>
           </div>
@@ -1480,25 +1898,22 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
           <div class="product-card-price-action-group">
             <div class="product-card-price-container">
-              <div class="price-row" style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 2px;">
+              <div class="price-row" style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 3px;">
                 <span class="product-card-price-label">월 납입금</span>
-                <div class="product-card-price-value" style="font-size: 1.1rem; color: #1f2937;">
-                  ${monthlyTxt}
-                </div>
+                <span class="product-card-price-value" style="font-size: 1.05rem; font-weight: 850; color: #1f2937; text-align: right;">${monthlyTxt}</span>
               </div>
-              <div class="price-row" style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px;">
+              <div class="price-row" style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 4px;">
                 <span class="product-card-price-label" style="color: #ef4444;">제휴 할인가</span>
-                <div class="product-card-price-value" style="font-size: 1.1rem; color: #ef4444;">
-                  ${benefitTxt}
-                </div>
+                <span class="product-card-price-value" style="font-size: 1.05rem; font-weight: 850; color: #ef4444; text-align: right;">${benefitTxt}</span>
               </div>
-              <div class="product-card-guarantee" style="margin-top: 4px; padding-top: 4px; border-top: 1px dashed rgba(0, 181, 148, 0.15);">
+              <div class="product-card-guarantee" style="margin-top: 4px; padding-top: 5px; border-top: 1px dashed rgba(49, 130, 246, 0.2); white-space: nowrap; font-size: 0.71rem; letter-spacing: -0.035em; display: flex; align-items: center; justify-content: center; gap: 3px;">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" class="guarantee-check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                상조만기 시 환급율 100% 보장 <span>(${monthsTxt})</span>
+                <span>상조만기 시 가전렌탈료 포함 전액 환급 보장 (${monthsTxt})</span>
               </div>
             </div>
             <button type="button" class="product-card-btn">
-              <span>상세비교 및 신청</span>
+              <span class="btn-text-desktop">상세비교 및 신청</span>
+              <span class="btn-text-mobile" style="display: none;">자세히 보기</span>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </button>
           </div>
@@ -1766,18 +2181,19 @@ document.addEventListener('DOMContentLoaded', async () => {
       <thead>
         <tr>
           <th style="min-width: 150px; text-align: center;">비교 항목</th>
-          ${plans.map(p => {
+          ${plans.map((p, idx) => {
+            const colIdx = idx + 1;
             const brandColor = getBrandColor(p.brandId);
             const headerStyle = brandColor 
               ? `style="min-width: 260px; text-align: center; padding: 20px 15px; border-top: 5px solid ${brandColor} !important; background-color: ${brandColor}20 !important;"` 
-              : `class="brand-compare-header-${p.brandId}" style="min-width: 260px; text-align: center; padding: 20px 15px;"`;
+              : `style="min-width: 260px; text-align: center; padding: 20px 15px;"`;
             
             const badgeStyle = brandColor
               ? `style="margin: 0 auto 8px; display: inline-block; background-color: ${brandColor}15; color: ${brandColor}; border-color: ${brandColor}30;"`
               : `style="margin: 0 auto 8px; display: inline-block;" class="brand-badge brand-${p.brandId}"`;
 
             return `
-              <th ${headerStyle}>
+              <th class="compare-col compare-col-${colIdx}" data-col-idx="${colIdx}" ${headerStyle}>
                 <span class="brand-badge" ${badgeStyle}>${getBrandName(p.brandId)}</span>
                 <div style="font-size: 1.05rem; font-weight: 800; color: var(--primary-color); margin-top: 6px; line-height: 1.3;">${p.name}</div>
               </th>
@@ -1806,10 +2222,19 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (p.cards && p.cards.length > 0) {
         return p.cards.map(c => {
           const firstBenefit = c.benefits && c.benefits.length > 0 ? c.benefits[0] : '할인 혜택 제공';
-          return `<div style="text-align: left; padding: 10px; background-color: var(--bg-light); border-radius: 6px; margin-bottom: 6px; border: 1px solid var(--border-color);">
-            <div style="font-weight: 800; font-size: 0.82rem; color: var(--text-main); margin-bottom: 2px;">${c.name}</div>
-            <div style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 6px;">연회비: ${c.annualFee ? parseInt(c.annualFee).toLocaleString() + '원' : '없음'}</div>
-            <div style="font-size: 0.78rem; color: var(--accent-dark); font-weight: 600; line-height: 1.3;">${firstBenefit}</div>
+          const phoneNum = c.phoneApply || '1588-1688';
+          const applyUrl = c.onlineApplyUrl || `tel:${phoneNum}`;
+
+          return `<div style="text-align: left; padding: 10px; background-color: #ffffff; border-radius: 6px; margin-bottom: 6px; border: 1px solid var(--border-color); box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+            <div style="font-weight: 800; font-size: 0.84rem; color: var(--text-main); margin-bottom: 2px;">${c.name}</div>
+            <div style="font-size: 0.73rem; color: var(--text-muted); margin-bottom: 4px;">연회비: ${c.annualFee ? parseInt(c.annualFee).toLocaleString() + '원' : '없음'}</div>
+            <div style="font-size: 0.78rem; color: var(--accent-dark); font-weight: 600; line-height: 1.35; margin-bottom: 8px;">${firstBenefit}</div>
+            <div style="font-size: 0.74rem; color: #2563eb; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 4px;">
+              <span>📞</span> <span>신청문의: <strong>${phoneNum}</strong></span>
+            </div>
+            <a href="${applyUrl}" target="${c.onlineApplyUrl ? '_blank' : '_self'}" class="btn-compare-card-apply">
+              💳 카드 신청하기
+            </a>
           </div>`;
         }).join('');
       }
@@ -1820,81 +2245,90 @@ document.addEventListener('DOMContentLoaded', async () => {
       <tbody>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">만기 회차</td>
-          ${plans.map(p => {
+          ${plans.map((p, idx) => {
+            const colIdx = idx + 1;
             const brandColor = getBrandColor(p.brandId);
             const style = brandColor ? `style="text-align: center; font-weight: 800; color: var(--primary-color); font-size: 0.95rem; background-color: ${brandColor}0d;"` : '';
-            return `<td class="compare-td-${p.brandId}" ${style}>${p.maturityRound}회 만기</td>`;
+            return `<td class="compare-col compare-col-${colIdx} compare-td-${p.brandId}" data-col-idx="${colIdx}" ${style}>${p.maturityRound}회 만기</td>`;
           }).join('')}
         </tr>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">월 납입금 구조</td>
           ${paymentRowsHtml.map((html, idx) => {
+            const colIdx = idx + 1;
             const p = plans[idx];
             const brandColor = getBrandColor(p.brandId);
             const style = brandColor ? `style="vertical-align: top; padding: 15px; background-color: ${brandColor}0d;"` : '';
-            return `<td class="compare-td-${p.brandId}" ${style}>${html}</td>`;
+            return `<td class="compare-col compare-col-${colIdx} compare-td-${p.brandId}" data-col-idx="${colIdx}" ${style}>${html}</td>`;
           }).join('')}
         </tr>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">제휴카드 할인 혜택</td>
           ${cardRowsHtml.map((html, idx) => {
+            const colIdx = idx + 1;
             const p = plans[idx];
             const brandColor = getBrandColor(p.brandId);
             const style = brandColor ? `style="vertical-align: top; padding: 15px; background-color: ${brandColor}0d;"` : '';
-            return `<td class="compare-td-${p.brandId}" ${style}>${html}</td>`;
+            return `<td class="compare-col compare-col-${colIdx} compare-td-${p.brandId}" data-col-idx="${colIdx}" ${style}>${html}</td>`;
           }).join('')}
         </tr>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">장례 서비스 구성</td>
-          ${plans.map(p => {
+          ${plans.map((p, idx) => {
+            const colIdx = idx + 1;
             const brandColor = getBrandColor(p.brandId);
             const style = brandColor ? `style="font-size: 0.82rem; text-align: left; line-height: 1.4; vertical-align: top; padding: 15px; max-width: 260px; word-break: keep-all; white-space: pre-line; background-color: ${brandColor}0d;"` : '';
-            return `<td class="compare-td-${p.brandId}" ${style}>${formatFieldText(p.funeralService, '기본 의전 제공')}</td>`;
+            return `<td class="compare-col compare-col-${colIdx} compare-td-${p.brandId}" data-col-idx="${colIdx}" ${style}>${formatFieldText(p.funeralService, '기본 의전 제공')}</td>`;
           }).join('')}
         </tr>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">라이프 전환 서비스</td>
-          ${plans.map(p => {
+          ${plans.map((p, idx) => {
+            const colIdx = idx + 1;
             const brandColor = getBrandColor(p.brandId);
             const style = brandColor ? `style="font-size: 0.82rem; text-align: left; line-height: 1.4; vertical-align: top; padding: 15px; max-width: 260px; word-break: keep-all; white-space: pre-line; background-color: ${brandColor}0d;"` : '';
-            return `<td class="compare-td-${p.brandId}" ${style}>${formatFieldText(p.convertService, '전환 서비스 지원')}</td>`;
+            return `<td class="compare-col compare-col-${colIdx} compare-td-${p.brandId}" data-col-idx="${colIdx}" ${style}>${formatFieldText(p.convertService, '전환 서비스 지원')}</td>`;
           }).join('')}
         </tr>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">멤버십 혜택</td>
-          ${plans.map(p => {
+          ${plans.map((p, idx) => {
+            const colIdx = idx + 1;
             const brandColor = getBrandColor(p.brandId);
             const style = brandColor ? `style="font-size: 0.82rem; text-align: left; line-height: 1.4; vertical-align: top; padding: 15px; max-width: 260px; word-break: keep-all; white-space: pre-line; background-color: ${brandColor}0d;"` : '';
-            return `<td class="compare-td-${p.brandId}" ${style}>${formatFieldText(p.membershipService, '멤버십 특약 혜택')}</td>`;
+            return `<td class="compare-col compare-col-${colIdx} compare-td-${p.brandId}" data-col-idx="${colIdx}" ${style}>${formatFieldText(p.membershipService, '멤버십 특약 혜택')}</td>`;
           }).join('')}
         </tr>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">만기 환급율</td>
-          ${plans.map(p => {
+          ${plans.map((p, idx) => {
+            const colIdx = idx + 1;
             const brandColor = getBrandColor(p.brandId);
             const style = brandColor ? `style="text-align: center; font-weight: 800; color: var(--accent-color); font-size: 1rem; padding: 15px; background-color: ${brandColor}0d;"` : '';
-            return `<td class="compare-td-${p.brandId}" ${style}>${p.refundRate || '100%'}</td>`;
+            return `<td class="compare-col compare-col-${colIdx} compare-td-${p.brandId}" data-col-idx="${colIdx}" ${style}>${p.refundRate || '100%'}</td>`;
           }).join('')}
         </tr>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">선수금 예치 기관</td>
-          ${plans.map(p => {
+          ${plans.map((p, idx) => {
+            const colIdx = idx + 1;
             const brandColor = getBrandColor(p.brandId);
             const style = brandColor ? `style="text-align: center; font-size: 0.85rem; font-weight: 600; color: var(--text-main); padding: 15px; background-color: ${brandColor}0d;"` : '';
-            return `<td class="compare-td-${p.brandId}" ${style}>${p.depositOrg || '상조공제조합'}</td>`;
+            return `<td class="compare-col compare-col-${colIdx} compare-td-${p.brandId}" data-col-idx="${colIdx}" ${style}>${p.depositOrg || '상조공제조합'}</td>`;
           }).join('')}
         </tr>
         <tr>
           <td class="bold" style="text-align: center; font-weight: 800; background-color: var(--bg-light);">무료상담</td>
-          ${plans.map(p => {
+          ${plans.map((p, idx) => {
+            const colIdx = idx + 1;
             const brandColor = getBrandColor(p.brandId);
             const style = brandColor ? `style="text-align: center; padding: 15px; background-color: ${brandColor}0d;"` : '';
             return `
-              <td class="compare-td-${p.brandId}" ${style}>
+              <td class="compare-col compare-col-${colIdx} compare-td-${p.brandId}" data-col-idx="${colIdx}" ${style}>
                 <button type="button" class="btn btn-accent btn-sm btn-compare-apply-now" 
                   data-plan-name="${p.name}" 
                   data-brand-name="${getBrandName(p.brandId)}"
-                  style="padding: 10px 16px; font-size: 0.85rem; width: 100%; border-radius: 6px; font-weight: 800; box-shadow: 0 4px 10px rgba(0, 181, 148, 0.15); transition: var(--transition);">
+                  style="padding: 10px 16px; font-size: 0.85rem; width: 100%; border-radius: 6px; font-weight: 800; box-shadow: 0 4px 10px rgba(49, 130, 246, 0.15); transition: var(--transition);">
                   상담 신청
                 </button>
               </td>
@@ -1905,35 +2339,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     `;
 
     wrapper.innerHTML = `<table>${theadHtml}${tbodyHtml}</table>`;
-
-    // Dynamic mouseover events for brand column hover effect
-    setTimeout(() => {
-      const table = wrapper.querySelector('table');
-      if (!table) return;
-      
-      const tds = table.querySelectorAll('td');
-      tds.forEach(td => {
-        const classList = Array.from(td.classList);
-        const compareClass = classList.find(c => c.startsWith('compare-td-'));
-        if (!compareClass) return;
-        
-        const brandId = compareClass.replace('compare-td-', '');
-        const brandColor = getBrandColor(brandId);
-        if (!brandColor) return;
-        
-        td.addEventListener('mouseenter', () => {
-          // Find all cells in the same brand column and change their backgrounds
-          table.querySelectorAll(`.${compareClass}`).forEach(cell => {
-            cell.style.backgroundColor = `${brandColor}18`; // Hover 9.4% opacity
-          });
-        });
-        td.addEventListener('mouseleave', () => {
-          table.querySelectorAll(`.${compareClass}`).forEach(cell => {
-            cell.style.backgroundColor = `${brandColor}0d`; // Default 5% opacity
-          });
-        });
-      });
-    }, 100);
 
     // Bind event listeners to comparison apply buttons
     wrapper.querySelectorAll('.btn-compare-apply-now').forEach(btn => {
@@ -1953,9 +2358,181 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  let heroProductsList = [];
+  let currentHeroIndex = 0;
+  let heroRotateTimer = null;
+
+  async function loadHeroProductsForLanding() {
+    try {
+      if (convex) {
+        const val = await convex.query(api.settings.get, { key: "hero_products" });
+        if (Array.isArray(val) && val.length > 0) {
+          const matched = val.map(id => PRODUCT_DATA.find(p => p.id === id)).filter(Boolean);
+          if (matched.length > 0) {
+            heroProductsList = matched;
+          }
+        }
+      }
+    } catch(e) {
+      console.warn("Hero settings fetch error:", e);
+    }
+
+    if (!heroProductsList || heroProductsList.length === 0) {
+      const local = localStorage.getItem('lifemoa_hero_products');
+      if (local) {
+        try {
+          const ids = JSON.parse(local);
+          const matched = ids.map(id => PRODUCT_DATA.find(p => p.id === id)).filter(Boolean);
+          if (matched.length > 0) heroProductsList = matched;
+        } catch(e){}
+      }
+    }
+
+    if (!heroProductsList || heroProductsList.length === 0) {
+      heroProductsList = PRODUCT_DATA.slice(0, 4);
+    }
+  }
+
+  function renderHeroProducts() {
+    const box1 = document.getElementById('hero-products-box-1');
+    const box2 = document.getElementById('hero-products-box-2');
+    const boxes = [box1, box2].filter(Boolean);
+
+    if (boxes.length === 0 || !heroProductsList || heroProductsList.length === 0) return;
+
+    boxes.forEach(box => {
+      renderHeroProductsInsideContainer(box);
+    });
+
+    startHeroProductAutoRotate();
+  }
+
+  function renderHeroProductsInsideContainer(container) {
+    if (!heroProductsList || heroProductsList.length === 0) return;
+
+    const categoryMap = {
+      'tv': 'TV', 'fridge': '냉장고', 'washer': '세탁기', 'dryer': '건조기',
+      'aircon': '에어컨', 'airpurifier': '공기청정기', 'cleaner': '청소기',
+      'styler': '의류관리기', 'furniture': '가구', 'laptop': '노트북',
+      'water': '정수기', 'massage': '안마의자', 'general': '일반가전'
+    };
+
+    let tabsHtml = '';
+    heroProductsList.forEach((prod, idx) => {
+      tabsHtml += `
+        <button type="button" class="hero-prod-tab ${idx === currentHeroIndex ? 'active' : ''}" data-index="${idx}" title="${prod.name}">
+          <img src="${prod.thumbnail}" alt="${prod.name}" />
+        </button>
+      `;
+    });
+
+    const activeProd = heroProductsList[currentHeroIndex] || heroProductsList[0];
+    const catText = categoryMap[activeProd.categoryId] || '가전';
+    const plan = PLAN_DATA.find(pl => pl.id === activeProd.planId);
+    const brand = BRAND_DATA.find(b => b.id === (plan ? plan.brandId : ''));
+    const brandName = brand ? brand.name : '인기 브랜드';
+
+    container.innerHTML = `
+      <div class="hero-product-card-display">
+        <div class="hero-card-header-badge">
+          <span class="badge-tag">🔥 최근 인기 가전</span>
+          <span class="badge-count">${currentHeroIndex + 1} / ${heroProductsList.length}</span>
+        </div>
+        
+        <div class="hero-card-img-wrap">
+          <img src="${activeProd.thumbnail}" alt="${activeProd.name}" class="hero-prod-main-img" />
+        </div>
+
+        <div class="hero-card-body-info">
+          <div class="hero-card-brand-tag">[${brandName}] ${catText} · ${activeProd.accounts || 1}구좌 연동</div>
+          <h3 class="hero-card-title">${activeProd.name}</h3>
+          <p class="hero-card-model">${activeProd.modelName}</p>
+          
+          <div class="hero-card-price-row">
+            <div class="price-box">
+              <span class="price-label">월 납입금</span>
+              <span class="price-val">월 ${activeProd.monthly ? parseInt(activeProd.monthly).toLocaleString('ko-KR') : 0}원</span>
+            </div>
+            <div class="price-box highlight">
+              <span class="price-label">제휴카드 할인가</span>
+              <span class="price-val accent">월 ${activeProd.cardBenefitPrice ? parseInt(activeProd.cardBenefitPrice).toLocaleString('ko-KR') : 0}원~</span>
+            </div>
+          </div>
+
+          <div class="hero-card-actions">
+            <button type="button" class="btn btn-accent btn-hero-consult" data-prod-id="${activeProd.id}">
+              이 가전으로 무료 비교상담 &gt;
+            </button>
+            <button type="button" class="btn btn-outline btn-hero-detail" data-prod-id="${activeProd.id}">
+              상세보기
+            </button>
+          </div>
+        </div>
+
+        <!-- 4개 미니 탭 바 -->
+        <div class="hero-product-tabs-bar">
+          ${tabsHtml}
+        </div>
+      </div>
+    `;
+
+    // Bind tab clicks
+    container.querySelectorAll('.hero-prod-tab').forEach(tabBtn => {
+      tabBtn.addEventListener('click', (e) => {
+        const idx = parseInt(e.currentTarget.getAttribute('data-index'));
+        if (!isNaN(idx)) {
+          currentHeroIndex = idx;
+          renderHeroProducts();
+        }
+      });
+    });
+
+    // Bind consult button
+    const consultBtn = container.querySelector('.btn-hero-consult');
+    if (consultBtn) {
+      consultBtn.addEventListener('click', () => {
+        if (typeof openConsultFormModal === 'function') {
+          openConsultFormModal(activeProd ? activeProd.name : null);
+        }
+      });
+    }
+
+    // Bind detail button
+    const detailBtn = container.querySelector('.btn-hero-detail');
+    if (detailBtn) {
+      detailBtn.addEventListener('click', () => {
+        if (typeof openProductModal === 'function') {
+          openProductModal(activeProd.id);
+        }
+      });
+    }
+
+    // Mouse hover pause & resume
+    if (!container.hasAttribute('data-hover-bound')) {
+      container.setAttribute('data-hover-bound', 'true');
+      container.addEventListener('mouseenter', () => {
+        if (heroRotateTimer) clearInterval(heroRotateTimer);
+      });
+      container.addEventListener('mouseleave', () => {
+        startHeroProductAutoRotate();
+      });
+    }
+  }
+
+  function startHeroProductAutoRotate() {
+    if (heroRotateTimer) clearInterval(heroRotateTimer);
+    heroRotateTimer = setInterval(() => {
+      if (!heroProductsList || heroProductsList.length <= 1) return;
+      currentHeroIndex = (currentHeroIndex + 1) % heroProductsList.length;
+      renderHeroProducts();
+    }, 1500); // Change product every 1.5 seconds
+  }
+
   // Initialize Selection UI rendering after loading Convex data
   async function init() {
     await initData();
+    await loadHeroProductsForLanding();
+    renderHeroProducts();
     populateBrandSelects();
     initSmartFilters();
     initSearchControls();
@@ -2192,11 +2769,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Phone number hyphen auto-insertion is handled globally at the bottom of this file
 
+  function openPrivacyPolicyModal() {
+    if (!privacyModal) return;
+    document.body.appendChild(privacyModal);
+    privacyModal.style.zIndex = '999999';
+    privacyModal.classList.add('active');
+  }
+
   // Open privacy modal
   if (privacyModalOpen && privacyModal) {
     privacyModalOpen.addEventListener('click', (e) => {
       e.preventDefault();
-      privacyModal.classList.add('active');
+      openPrivacyPolicyModal();
     });
   }
 
@@ -2267,7 +2851,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (modalPrivacyOpen && privacyModal) {
     modalPrivacyOpen.addEventListener('click', (e) => {
       e.preventDefault();
-      privacyModal.classList.add('active');
+      openPrivacyPolicyModal();
     });
   }
 
@@ -2653,6 +3237,19 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
   }
+  // Bind 30초 무료 비교상담 Buttons to open Consultation Modal directly
+  const heroConsultBtns = document.querySelectorAll('.hero-actions .btn, #btn-header-consult, .btn-ribbon-cta');
+  heroConsultBtns.forEach(btn => {
+    if (btn.textContent.includes('무료 비교상담') || btn.getAttribute('href') === '#consultation-form') {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (typeof openConsultFormModal === 'function') {
+          openConsultFormModal();
+        }
+      });
+    }
+  });
+
   // --- Mobile Scroll & Collapse/Expand Logic ---
   const stickyBar = document.querySelector('.sticky-inquiry-bar');
   const toggleBtn = document.getElementById('inquiry-toggle-btn');
@@ -2661,6 +3258,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (toggleBtn && stickyBar) {
     toggleBtn.addEventListener('click', (e) => {
       e.stopPropagation(); // Prevent trigger stickyBar click event
+      if (window.innerWidth > 768) return; // Keep always open on desktop
       const isCollapsed = stickyBar.classList.toggle('is-collapsed');
       
       // Update toggle icon
@@ -2674,6 +3272,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 2. Click anywhere on collapsed bar to expand it
   if (stickyBar) {
     stickyBar.addEventListener('click', () => {
+      if (window.innerWidth > 768) return; // Keep always open on desktop
       if (stickyBar.classList.contains('is-collapsed')) {
         stickyBar.classList.remove('is-collapsed');
         if (toggleBtn) {
@@ -2728,7 +3327,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       stopSlideShow();
       slideInterval = setInterval(() => {
         showSlide(currentSlide + 1);
-      }, 6000); // Change slide every 6 seconds
+      }, 3000); // Change background slide every 3 seconds
     }
     
     function stopSlideShow() {
@@ -2768,5 +3367,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     showSlide(0);
     startSlideShow();
   }
+}
 
-});
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}

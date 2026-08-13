@@ -3,6 +3,7 @@ import { resolve } from 'path';
 
 export default defineConfig({
   server: {
+    port: 5180,
     proxy: {
       '/lifenuri-proxy': {
         target: 'https://boram.lifenuri.com',

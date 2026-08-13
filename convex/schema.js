@@ -91,4 +91,9 @@ export default defineSchema({
     status: v.string(), // "지급대기", "지급완료", "취소/반송"
     date: v.string(),
   }).index("by_custom_id", ["id"]).index("by_sellerId", ["sellerId"]),
+
+  site_settings: defineTable({
+    key: v.string(),
+    value: v.any(),
+  }).index("by_key", ["key"]),
 });

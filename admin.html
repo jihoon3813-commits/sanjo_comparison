@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2300b594'/%3E%3Ctext y='72' x='17' font-size='72' font-family='Inter, sans-serif' font-weight='900' fill='%23ffffff'%3EM%3C/text%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%233182f6'/%3E%3Ctext y='72' x='17' font-size='72' font-family='Inter, sans-serif' font-weight='900' fill='%23ffffff'%3EM%3C/text%3E%3C/svg%3E">
   <title>라이프모아 - 관리자 센터</title>
   <meta property="og:type" content="website">
   <meta property="og:title" content="라이프모아 | 관리자 센터">
@@ -245,6 +245,30 @@
 
         <!-- [TAB] Product Management (HQ Only) -->
         <section class="tab-panel" id="panel-products">
+          <!-- 히어로 섹션 노출 제품 관리 카드 (최대 4개) -->
+          <div class="hero-products-admin-card" style="margin-bottom: 24px; padding: 20px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 12px; color: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+              <div>
+                <h3 style="margin: 0; font-size: 1.15rem; color: #f8fafc; display: flex; align-items: center; gap: 8px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                  히어로 섹션 노출 제품 설정 <span style="font-size: 0.8rem; font-weight: 500; background: rgba(56, 189, 248, 0.2); color: #38bdf8; padding: 2px 8px; border-radius: 12px;">최대 4개</span>
+                </h3>
+                <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: #94a3b8;">
+                  메인 홈페이지 히어로(Hero) 섹션 우측 카드 뷰어에 노출할 제품을 설정하고 저장하세요.
+                </p>
+              </div>
+              <button type="button" class="btn btn-primary" id="btn-save-hero-products" style="padding: 8px 18px; font-weight: 700; background-color: #0284c7; border: none; color: #fff;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                히어로 노출 제품 저장
+              </button>
+            </div>
+
+            <!-- 4개 슬롯 미리보기 그리드 -->
+            <div class="hero-slots-grid" id="hero-slots-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 16px;">
+              <!-- 1번 슬롯 ~ 4번 슬롯 동적 렌더링 -->
+            </div>
+          </div>
+
           <!-- 플랜 탭 바 -->
           <div class="product-plan-tabs-wrapper" style="margin-bottom: 20px;">
             <div class="product-plan-tabs" id="product-plan-tabs-bar" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; border-bottom: 2px solid var(--border-color);">

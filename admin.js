@@ -1,7 +1,7 @@
 import { ConvexClient } from "convex/browser";
 import { api } from "./convex/_generated/api.js";
 
-document.addEventListener('DOMContentLoaded', async () => {
+async function initAdminApp() {
 
   const convexUrl = import.meta.env.VITE_CONVEX_URL;
   let convex = null;
@@ -574,6 +574,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       CONSULTATION_DATA = await convex.query(api.consultations.get);
       SETTLEMENT_DATA = await convex.query(api.settlements.get);
 
+      await loadHeroProductsData();
+
       if (BRAND_DATA.length === 0 && PRODUCT_DATA.length === 0 && PLAN_DATA.length === 0) {
         console.log("Convex DB is empty. Seeding local/default data...");
         const localBrands = JSON.parse(localStorage.getItem('lifemoa_brands')) || defaultBrands;
@@ -1066,8 +1068,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         datasets: [{
           label: userSession.role === 'HQ' ? '전체 상담접수' : '내 유치상담',
           data: userSession.role === 'HQ' ? leadsCounts : sellerLeadsCounts,
-          borderColor: '#00b594',
-          backgroundColor: 'rgba(0, 181, 148, 0.05)',
+          borderColor: '#3182f6',
+          backgroundColor: 'rgba(49, 130, 246, 0.05)',
           borderWidth: 3,
           fill: true,
           tension: 0.3
@@ -1101,7 +1103,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         labels: pieLabels.length > 0 ? pieLabels : ['데이터 없음'],
         datasets: [{
           data: pieData.length > 0 ? pieData : [1],
-          backgroundColor: ['#001A3D', '#00b594', '#60A5FA', '#F59E0B', '#EF4444', '#8B5CF6'],
+          backgroundColor: ['#001A3D', '#3182f6', '#60A5FA', '#F59E0B', '#EF4444', '#8B5CF6'],
           borderWidth: 1
         }]
       },
@@ -2140,9 +2142,111 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  let HERO_PRODUCTS_DATA = [];
+
+  async function loadHeroProductsData() {
+    try {
+      if (convex) {
+        const val = await convex.query(api.settings.get, { key: "hero_products" });
+        if (Array.isArray(val) && val.length > 0) {
+          HERO_PRODUCTS_DATA = val;
+        }
+      }
+    } catch(e) {
+      console.warn("Convex get hero settings error:", e);
+    }
+    if (!HERO_PRODUCTS_DATA || HERO_PRODUCTS_DATA.length === 0) {
+      const local = localStorage.getItem('lifemoa_hero_products');
+      if (local) {
+        try { HERO_PRODUCTS_DATA = JSON.parse(local); } catch(e){}
+      }
+    }
+    if (!HERO_PRODUCTS_DATA || HERO_PRODUCTS_DATA.length === 0) {
+      const allProds = getProducts();
+      HERO_PRODUCTS_DATA = allProds.slice(0, 4).map(p => p.id);
+    }
+  }
+
+  async function saveHeroProductsData(newIds, silent = false) {
+    if (newIds.length > 4) {
+      alert("히어로 노출 제품은 최대 4개까지만 설정할 수 있습니다.");
+      return false;
+    }
+    HERO_PRODUCTS_DATA = [...newIds];
+    localStorage.setItem('lifemoa_hero_products', JSON.stringify(HERO_PRODUCTS_DATA));
+    if (convex) {
+      try {
+        await convex.mutation(api.settings.set, { key: "hero_products", value: HERO_PRODUCTS_DATA });
+      } catch(e) {
+        console.error("Convex set hero settings error:", e);
+      }
+    }
+    if (!silent) {
+      alert("히어로 노출 제품 설정이 성공적으로 저장되었습니다!");
+    }
+    renderHeroSlotsAdmin();
+    renderProductsManagementList();
+    return true;
+  }
+
+  function renderHeroSlotsAdmin() {
+    const container = document.getElementById('hero-slots-container');
+    if (!container) return;
+
+    const products = getProducts();
+    let html = '';
+
+    for (let i = 0; i < 4; i++) {
+      const prodId = HERO_PRODUCTS_DATA[i];
+      const prod = prodId ? products.find(p => p.id === prodId) : null;
+
+      if (prod) {
+        html += `
+          <div class="hero-slot-item" style="background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px; display: flex; align-items: center; gap: 10px; position: relative;">
+            <span style="position: absolute; top: 6px; left: 6px; background: #38bdf8; color: #0f172a; font-size: 0.7rem; font-weight: 800; padding: 1px 6px; border-radius: 4px;">슬롯 ${i+1}</span>
+            <img src="${prod.thumbnail}" style="width: 44px; height: 44px; object-fit: contain; background: #fff; border-radius: 6px; margin-top: 14px;" alt="">
+            <div style="flex: 1; min-width: 0; margin-top: 14px;">
+              <div style="font-size: 0.82rem; font-weight: 700; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${prod.name}</div>
+              <div style="font-size: 0.72rem; color: #38bdf8;">월 ${prod.monthly ? parseInt(prod.monthly).toLocaleString('ko-KR') : 0}원 (${prod.accounts || 1}구좌)</div>
+            </div>
+            <button type="button" class="btn-remove-hero-slot" data-id="${prod.id}" style="background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.4); border-radius: 4px; padding: 4px 8px; font-size: 0.75rem; cursor: pointer; white-space: nowrap; margin-top: 14px;">
+              해제
+            </button>
+          </div>
+        `;
+      } else {
+        html += `
+          <div class="hero-slot-item empty" style="background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.2); border-radius: 8px; padding: 14px 10px; text-align: center; color: #64748b; font-size: 0.8rem;">
+            <div style="font-weight: 700; color: #94a3b8; margin-bottom: 2px;">슬롯 ${i+1} (비어있음)</div>
+            <div style="font-size: 0.72rem;">아래 목록에서 '히어로 설정' 클릭</div>
+          </div>
+        `;
+      }
+    }
+
+    container.innerHTML = html;
+
+    container.querySelectorAll('.btn-remove-hero-slot').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const idToRemove = e.currentTarget.getAttribute('data-id');
+        const updated = HERO_PRODUCTS_DATA.filter(id => id !== idToRemove);
+        saveHeroProductsData(updated, true);
+      });
+    });
+
+    const btnSaveHero = document.getElementById('btn-save-hero-products');
+    if (btnSaveHero && !btnSaveHero.hasAttribute('data-bound')) {
+      btnSaveHero.setAttribute('data-bound', 'true');
+      btnSaveHero.addEventListener('click', () => {
+        saveHeroProductsData(HERO_PRODUCTS_DATA, false);
+      });
+    }
+  }
+
   function renderProductsManagement() {
     renderProductPlanTabs();
     renderProductAccountsTabs();
+    renderHeroSlotsAdmin();
     renderProductsManagementList();
   }
 
@@ -2222,6 +2326,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       item.setAttribute('data-id', p.id);
       
       const categoryText = categoryMap[p.categoryId] || '가전';
+      const isHero = HERO_PRODUCTS_DATA.includes(p.id);
 
       item.innerHTML = `
         <div class="drag-handle" title="드래그하여 순서 변경">
@@ -2242,11 +2347,30 @@ document.addEventListener('DOMContentLoaded', async () => {
             월 ${p.monthly ? parseInt(p.monthly).toLocaleString('ko-KR') : 0}원 | 제휴 할인가 월 ${p.cardBenefitPrice ? parseInt(p.cardBenefitPrice).toLocaleString('ko-KR') : 0}원
           </div>
         </div>
-        <div class="p-actions">
-          <button class="btn btn-outline btn-xs btn-edit" data-id="${p.id}">수정</button>
-          <button class="btn btn-cancelled btn-xs btn-delete" data-id="${p.id}">삭제</button>
+        <div class="p-actions" style="display: flex; flex-direction: column; gap: 4px; align-items: flex-end;">
+          <button class="btn btn-xs ${isHero ? 'btn-primary' : 'btn-outline'} btn-toggle-hero" data-id="${p.id}" style="${isHero ? 'background-color: #0284c7; color: #fff; border-color: #0284c7; font-weight: 700;' : ''}">
+            ${isHero ? '★ 히어로 노출중' : '+ 히어로 설정'}
+          </button>
+          <div style="display: flex; gap: 4px;">
+            <button class="btn btn-outline btn-xs btn-edit" data-id="${p.id}">수정</button>
+            <button class="btn btn-cancelled btn-xs btn-delete" data-id="${p.id}">삭제</button>
+          </div>
         </div>
       `;
+
+      item.querySelector('.btn-toggle-hero').addEventListener('click', () => {
+        if (HERO_PRODUCTS_DATA.includes(p.id)) {
+          const updated = HERO_PRODUCTS_DATA.filter(id => id !== p.id);
+          saveHeroProductsData(updated, true);
+        } else {
+          if (HERO_PRODUCTS_DATA.length >= 4) {
+            alert("히어로 노출 제품은 최대 4개까지만 설정할 수 있습니다.\n기존에 노출 지정된 제품을 해제한 후 추가해주세요.");
+            return;
+          }
+          const updated = [...HERO_PRODUCTS_DATA, p.id];
+          saveHeroProductsData(updated, true);
+        }
+      });
 
       item.querySelector('.btn-edit').addEventListener('click', () => {
         openEditProductForm(p.id);
@@ -4554,8 +4678,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       target.setSelectionRange(selectionStart + diff, selectionStart + diff);
     }
   });
+}
 
-});
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initAdminApp);
+} else {
+  initAdminApp();
+}
 
 const LIFENURI_FALLBACK_DATA = {
   "135": [
