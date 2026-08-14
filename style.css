@@ -427,7 +427,26 @@ a {
 }
 .nav-seller-apply:hover {
   background-color: var(--accent-color) !important;
-  color: var(--primary-color) !important;
+  color: #ffffff !important;
+}
+
+.nav-seller-admin {
+  background-color: var(--primary-color) !important;
+  color: #ffffff !important;
+  padding: 6px 14px !important;
+  border-radius: 4px;
+  font-weight: 700;
+  opacity: 1 !important;
+  border: 1px solid var(--primary-color) !important;
+  transition: var(--transition);
+}
+.nav-seller-admin::after {
+  display: none !important;
+}
+.nav-seller-admin:hover {
+  background-color: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
+  color: #ffffff !important;
 }
 
 .mobile-nav-toggle {

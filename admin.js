@@ -1146,7 +1146,7 @@ async function initAdminApp() {
         <td class="bold">${s.username}</td>
         <td>${s.name}</td>
         <td>${s.phone}</td>
-        <td class="bold font-navy">${s.subdomain}</td>
+        <td class="bold font-navy">/${s.username}</td>
         <td class="small-text text-muted">${s.address}</td>
         <td>${regDate}</td>
         <td><span class="badge ${badgeClass}">${s.status}</span></td>
@@ -1252,7 +1252,7 @@ async function initAdminApp() {
       passwordInput.value = s.password;
       nameInput.value = s.name;
       phoneInput.value = s.phone;
-      subdomainInput.value = s.subdomain;
+      if (subdomainInput) subdomainInput.value = s.subdomain || s.username;
       statusInput.value = s.status;
 
       // Parse address
@@ -1274,6 +1274,14 @@ async function initAdminApp() {
 
       usernameInput.disabled = false; 
       if (btnDeleteSellerModal) btnDeleteSellerModal.style.display = 'inline-block';
+
+      const sellerAdminLink = document.getElementById('modal-seller-admin-link');
+      if (sellerAdminLink) {
+        sellerAdminLink.style.display = 'inline-flex';
+        // Pass seller username and auth token to allow direct login from HQ admin
+        const token = btoa(`${s.username}:${s.password}`);
+        sellerAdminLink.href = `seller-admin.html?seller=${encodeURIComponent(s.username)}&token=${encodeURIComponent(token)}`;
+      }
     } else {
       // Add Mode
       titleText.textContent = "신규 셀러 직접 등록";
@@ -1282,6 +1290,11 @@ async function initAdminApp() {
       statusInput.value = "승인"; // Default to approved for admin registration
       usernameInput.disabled = false;
       if (btnDeleteSellerModal) btnDeleteSellerModal.style.display = 'none';
+
+      const sellerAdminLink = document.getElementById('modal-seller-admin-link');
+      if (sellerAdminLink) {
+        sellerAdminLink.style.display = 'none';
+      }
     }
 
     sellerModal.classList.add('active');
@@ -1337,7 +1350,8 @@ async function initAdminApp() {
       const password = document.getElementById('modal-seller-password').value;
       const name = document.getElementById('modal-seller-name').value.trim();
       const phone = document.getElementById('modal-seller-phone').value;
-      const subdomain = document.getElementById('modal-seller-subdomain').value.trim().toLowerCase();
+      const rawSub = document.getElementById('modal-seller-subdomain')?.value;
+      const subdomain = (rawSub || username).trim().toLowerCase();
       const zipcode = document.getElementById('modal-seller-zipcode').value;
       const address = document.getElementById('modal-seller-address').value;
       const addressDetail = document.getElementById('modal-seller-address-detail').value.trim();
@@ -1348,23 +1362,12 @@ async function initAdminApp() {
         return;
       }
 
-      if (!/^[a-z0-9-]+$/.test(subdomain)) {
-        alert("서브도메인은 영문 소문자, 숫자, 하이픈(-)만 포함할 수 있습니다.");
-        return;
-      }
-
       const sellers = getSellers();
 
       // Check duplicates
       const isIdDup = sellers.some(s => s.id !== id && s.username === username) || username === 'admin';
       if (isIdDup) {
         alert("이미 존재하거나 사용할 수 없는 ID입니다.");
-        return;
-      }
-
-      const isSubdomainDup = sellers.some(s => s.id !== id && s.subdomain === subdomain) || subdomain === 'www';
-      if (isSubdomainDup) {
-        alert("이미 사용 중인 서브도메인 명칭입니다.");
         return;
       }
 
@@ -4584,7 +4587,6 @@ async function initAdminApp() {
       
       document.getElementById('profile-name').textContent = userSession.name;
       document.getElementById('profile-phone').textContent = userSession.phone;
-      document.getElementById('profile-subdomain').textContent = `${userSession.subdomain}.lifemoa.co.kr`;
       document.getElementById('profile-address').textContent = userSession.address;
     } else {
       sellerInfoSettingsCard.style.display = 'none';

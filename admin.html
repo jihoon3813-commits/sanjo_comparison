@@ -150,7 +150,7 @@
                   <th>셀러 ID</th>
                   <th>이름</th>
                   <th>연락처</th>
-                  <th>서브도메인</th>
+                  <th>랜딩 경로</th>
                   <th>가입 주소</th>
                   <th>신청일</th>
                   <th>상태</th>
@@ -493,10 +493,6 @@
                   <span class="val" id="profile-phone">010-0000-0000</span>
                 </div>
                 <div class="profile-row">
-                  <span class="label">서브도메인 주소:</span>
-                  <span class="val bold" id="profile-subdomain">sub.lifemoa.co.kr</span>
-                </div>
-                <div class="profile-row">
                   <span class="label">가입 주소:</span>
                   <span class="val" id="profile-address">도로명 주소</span>
                 </div>
@@ -521,6 +517,7 @@
       <form id="seller-modal-form">
         <input type="hidden" id="modal-seller-action" value="edit"> <!-- 'edit' or 'add' -->
         <input type="hidden" id="modal-seller-id">
+        <input type="hidden" id="modal-seller-subdomain">
         
         <div class="modal-form-grid">
           <!-- ID (Username) -->
@@ -547,15 +544,6 @@
             <input type="tel" id="modal-seller-phone" required placeholder="010-0000-0000">
           </div>
           
-          <!-- Subdomain -->
-          <div class="form-group span-2">
-            <label for="modal-seller-subdomain">서브도메인 명 <span class="required">*</span></label>
-            <div class="subdomain-input-wrapper" style="display: flex; align-items: center; gap: 4px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0 12px; background-color: #ffffff;">
-              <input type="text" id="modal-seller-subdomain" required placeholder="ex) mybiz" style="flex-grow: 1; border: none; padding: 12px 0; margin-bottom: 0; outline: none; box-shadow: none;">
-              <span style="font-weight: 700; color: var(--primary-color); font-size: 0.9rem; white-space: nowrap;">.lifemoa.co.kr</span>
-            </div>
-          </div>
-          
           <!-- Address -->
           <div class="form-group span-2">
             <label>도로명 주소 <span class="required">*</span></label>
@@ -578,8 +566,12 @@
           </div>
         </div>
         
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" id="modal-seller-delete" style="display: none; margin-right: auto;">삭제</button>
+        <div class="modal-footer" style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
+          <a href="#" id="modal-seller-admin-link" class="btn btn-accent" target="_blank" style="display: none; margin-right: auto; text-decoration: none; align-items: center; gap: 6px; font-weight: 700;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            셀러 어드민 바로가기
+          </a>
+          <button type="button" class="btn btn-danger" id="modal-seller-delete" style="display: none;">삭제</button>
           <button type="button" class="btn btn-outline" id="modal-seller-cancel">취소</button>
           <button type="submit" class="btn btn-primary" id="modal-seller-save">저장하기</button>
         </div>

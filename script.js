@@ -2747,12 +2747,19 @@ async function initApp() {
     });
   }
 
-  // URL ?seller=XXX 파라미터 감지 및 세션 저장
+  // URL /아이디 (Path) 또는 ?seller=XXX (Query) 감지 및 활성 셀러 세션 저장
+  const pathSegment = window.location.pathname.replace(/^\/+|\/+$/g, '');
+  const reservedSegments = ['admin', 'admin.html', 'seller-admin', 'seller-admin.html', 'index.html', 'api', 'assets'];
+
   const urlParams = new URLSearchParams(window.location.search);
   const sellerId = urlParams.get('seller');
+
   if (sellerId) {
     sessionStorage.setItem('lifemoa_active_seller', sellerId);
-    console.log('Active seller tracked:', sellerId);
+    console.log('Active seller tracked from query:', sellerId);
+  } else if (pathSegment && !reservedSegments.includes(pathSegment.toLowerCase()) && !pathSegment.includes('.')) {
+    sessionStorage.setItem('lifemoa_active_seller', pathSegment);
+    console.log('Active seller tracked from pathname:', pathSegment);
   } else {
     const host = window.location.hostname;
     const parts = host.split('.');
@@ -3150,10 +3157,10 @@ async function initApp() {
       const addressDetail = document.getElementById('seller-address-detail').value.trim();
       const username = document.getElementById('seller-username').value.trim();
       const password = document.getElementById('seller-password').value;
-      const subdomain = document.getElementById('seller-subdomain').value.trim().toLowerCase();
+      const subdomain = username.toLowerCase();
       const agree = document.getElementById('seller-privacy-agree').checked;
 
-      if (!name || !phone || !zipcode || !address || !addressDetail || !username || !password || !subdomain) {
+      if (!name || !phone || !zipcode || !address || !addressDetail || !username || !password) {
         alert("모든 필수 항목을 입력해주세요.");
         return;
       }
@@ -3168,11 +3175,6 @@ async function initApp() {
         return;
       }
 
-      if (!/^[a-z0-9-]+$/.test(subdomain)) {
-        alert("서브도메인은 영문 소문자, 숫자, 하이픈(-)만 포함할 수 있습니다.");
-        return;
-      }
-
       if (!agree) {
         alert("약관 동의에 체크해주셔야 파트너 신청이 가능합니다.");
         return;
@@ -3183,12 +3185,6 @@ async function initApp() {
       const isIdDup = sellers.some(s => s.username === username) || username === 'admin';
       if (isIdDup) {
         alert("이미 존재하거나 사용할 수 없는 ID입니다.");
-        return;
-      }
-
-      const isSubdomainDup = sellers.some(s => s.subdomain === subdomain) || subdomain === 'www';
-      if (isSubdomainDup) {
-        alert("이미 사용 중인 서브도메인 명칭입니다.");
         return;
       }
 
