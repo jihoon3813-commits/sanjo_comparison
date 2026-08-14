@@ -2543,37 +2543,15 @@ async function initApp() {
         </div>
       </div>
 
-      <!-- 4개 미니 탭 바 + 좌우 화살표 버튼 (1줄 고정) -->
+      <!-- 4개 미니 탭 바 (1줄 고정) -->
       <div class="hero-product-tabs-bar">
-        <button type="button" class="hero-card-nav-btn prev-prod-btn" aria-label="이전 가전">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="15 18 9 12 15 6"></polyline></svg>
-        </button>
         ${tabsHtml}
-        <button type="button" class="hero-card-nav-btn next-prod-btn" aria-label="다음 가전">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </button>
       </div>
     `;
 
     let cardDisplay = container.querySelector('.hero-product-card-display');
 
     const bindCardEvents = (cardEl) => {
-      // Prev / Next button clicks
-      const prevBtn = cardEl.querySelector('.prev-prod-btn');
-      if (prevBtn) {
-        prevBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          changeHeroProduct((currentHeroIndex - 1 + heroProductsList.length) % heroProductsList.length, 'right');
-        });
-      }
-      const nextBtn = cardEl.querySelector('.next-prod-btn');
-      if (nextBtn) {
-        nextBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          changeHeroProduct((currentHeroIndex + 1) % heroProductsList.length, 'left');
-        });
-      }
-
       // Thumbnail Tab clicks
       cardEl.querySelectorAll('.hero-prod-tab').forEach(tabBtn => {
         tabBtn.addEventListener('click', (e) => {
@@ -2687,6 +2665,18 @@ async function initApp() {
 
   // Async backend sync and update
   async function init() {
+    // Cache Migration: Purge stale test product fallback history from localStorage
+    try {
+      const rawHero = localStorage.getItem('lifemoa_hero_products');
+      if (rawHero && (rawHero.includes('prod1') || rawHero.includes('prod2') || rawHero.includes('prod3') || rawHero.includes('prod4') || rawHero.includes('prod5'))) {
+        localStorage.removeItem('lifemoa_hero_products');
+      }
+      const rawProds = localStorage.getItem('lifemoa_products');
+      if (rawProds && (rawProds.includes('prod1') || rawProds.includes('prod2') || rawProds.includes('prod3'))) {
+        localStorage.removeItem('lifemoa_products');
+      }
+    } catch(e) {}
+
     await initData();
     await loadHeroProductsForLanding();
     renderHeroProducts();

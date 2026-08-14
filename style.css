@@ -559,16 +559,12 @@ a {
   filter: drop-shadow(0 20px 45px rgba(0, 26, 61, 0.15));
 }
 
-/* Slider Controls (Arrows & Dots) */
+/* Slider Controls (Hidden as requested) */
 .slider-controls {
-  position: absolute;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  z-index: 10;
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 .slide-arrow {
