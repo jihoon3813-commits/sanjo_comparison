@@ -1127,7 +1127,7 @@ async function initApp() {
           cardsBenefitsHtml += `
             <div class="cards-benefit-card" style="align-items: stretch;">
               <div class="card-main-content" style="align-items: center; gap: 16px;">
-                ${c.image ? `<img src="${c.image}" alt="${c.name}" class="benefit-card-img" style="width: 100px; height: 63px; margin-top: 0; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=300&q=80'">` : ''}
+                ${c.image ? `<img src="${c.image}" alt="${c.name}" class="benefit-card-img" style="width: 100px; height: 63px; margin-top: 0; object-fit: cover;" onerror="this.style.display='none';">` : ''}
                 <div class="benefit-card-info" style="gap: 4px; flex-grow: 1;">
                   <div class="benefit-card-name" style="font-size: 0.95rem; font-weight: 800; color: var(--text-dark); line-height: 1.3;">${c.name}</div>
                   <div class="benefit-card-fee" style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700;">연회비: ${c.annualFee ? parseInt(c.annualFee).toLocaleString() + '원' : '없음'}</div>
@@ -3370,9 +3370,10 @@ async function initApp() {
     
     function startSlideShow() {
       stopSlideShow();
+      if (window.innerWidth <= 768) return; // Disable background slide auto-rotation on mobile to prevent layout jumps & flickering
       slideInterval = setInterval(() => {
         showSlide(currentSlide + 1);
-      }, 3000); // Change background slide every 3 seconds
+      }, 5000); // Change background slide every 5 seconds on desktop
     }
     
     function stopSlideShow() {
