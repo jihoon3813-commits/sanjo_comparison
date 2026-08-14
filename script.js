@@ -154,59 +154,52 @@ async function initApp() {
 
   const defaultProducts = [
     {
-      id: 'prod1',
-      name: '삼성 갤럭시북4 프리미엄',
-      categoryId: 'digital',
-      modelName: 'NT750XGK-K51A',
-      description: '최신 인텔 코어 프로세서 탑재, 초슬림 초경량의 고성능 비즈니스 노트북',
-      thumbnail: 'https://images.unsplash.com/photo-1496181130204-755241524eab?auto=format&fit=crop&w=600&q=80',
-      planId: 'plan_daemyung_429',
-      monthly: 42900,
-      cardBenefitPrice: 25900
+      id: 'prod_1786522478554_6s95a',
+      name: '[보람B299 1호] 레노버 ThinkVision T32UD-40 31.5-inch UHD 모니터 64B0GAR1KR',
+      categoryId: 'general',
+      modelName: '64B0GAR1KR',
+      description: '[보람B299 1호] 레노버 ThinkVision T32UD-40 31.5-inch UHD 모니터 64B0GAR1KR (64B0GAR1KR) - 결합 상조상품: 스마트케어5싱글',
+      thumbnail: 'https://snpartners.speedgabia.com/SJ/B.P/64B0GAR1KR_T.jpg',
+      planId: 'plan_1786520860970',
+      accounts: 1,
+      monthly: 29900,
+      cardBenefitPrice: 2900
     },
     {
-      id: 'prod2',
-      name: '바디프랜드 다빈치 안마의자',
-      categoryId: 'health',
-      modelName: 'BF-DAVINCI',
-      description: '체성분 측정 분석 기능 및 맞춤형 마사지 알고리즘 탑재 프리미엄 안마의자',
-      thumbnail: 'https://images.unsplash.com/photo-1598550476439-6847785fce6e?auto=format&fit=crop&w=600&q=80',
-      planId: 'plan_boram_55',
-      monthly: 59000,
-      cardBenefitPrice: 42000
+      id: 'prod_1786522478554_2cl1f',
+      name: '[보람B299 1호] 삼성 Crystal UHD TV 50인치 스탠드 KU50UH8000FXKR',
+      categoryId: 'tv',
+      modelName: 'KU50UH8000FXKR',
+      description: '[보람B299 1호] 삼성 Crystal UHD TV 50인치 스탠드 KU50UH8000FXKR (KU50UH8000FXKR) - 결합 상조상품: 스마트케어5싱글',
+      thumbnail: 'https://snpartners.speedgabia.com/SJ/B.P/B299/KU50UH8000FXKR_T.jpg',
+      planId: 'plan_1786520860970',
+      accounts: 1,
+      monthly: 29900,
+      cardBenefitPrice: 2900
     },
     {
-      id: 'prod3',
-      name: '쿠쿠 인앤아웃 얼음정수기',
-      categoryId: 'living',
-      modelName: 'CP-SS100HW',
-      description: '직수형 얼음 정수기, 자동 살균 시스템 및 초고속 직수 제빙 기능 제공',
-      thumbnail: 'https://images.unsplash.com/photo-1585837575652-267c041d77d4?auto=format&fit=crop&w=600&q=80',
-      planId: 'plan_preed_396',
-      monthly: 33000,
-      cardBenefitPrice: 13000
+      id: 'prod_1786522478554_app76',
+      name: '[보람B299 1호] LG 꼬망스 플러스 8kg',
+      categoryId: 'general',
+      modelName: 'F8WVR',
+      description: '[보람B299 1호] LG 꼬망스 플러스 8kg (F8WVR) - 결합 상조상품: 스마트케어5싱글',
+      thumbnail: 'https://dmnk02.hubweb.net/lg_brandswell/main/washing-machines/F8WVR.jpg',
+      planId: 'plan_1786520860970',
+      accounts: 1,
+      monthly: 29900,
+      cardBenefitPrice: 2900
     },
     {
-      id: 'prod4',
-      name: 'LG gram 17인치 프리미엄',
-      categoryId: 'digital',
-      modelName: '17Z90S-GA56K',
-      description: '초대형 17인치 화면에 1.35kg 초경량, 하루 종일 지속되는 대용량 배터리 장착',
-      thumbnail: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=600&q=80',
-      planId: 'plan_kyowon_299',
-      monthly: 39000,
-      cardBenefitPrice: 19000
-    },
-    {
-      id: 'prod5',
-      name: '자코모 베니 4인 가죽소파',
-      categoryId: 'furniture',
-      modelName: 'JKM-BENI',
-      description: '천연 가죽의 명품 자코모 소파, 고밀도 폼 충전재로 최고의 안락함 선사',
-      thumbnail: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=600&q=80',
-      planId: 'plan_daemyung_429',
-      monthly: 49000,
-      cardBenefitPrice: 32000
+      id: 'prod_1786522478554_9z5b4',
+      name: '[보람B299 1호] LG 통돌이 세탁기18kg',
+      categoryId: 'washer',
+      modelName: 'T18MX7',
+      description: '[보람B299 1호] LG 통돌이 세탁기18kg (T18MX7) - 결합 상조상품: 스마트케어5싱글',
+      thumbnail: 'https://dmnk02.hubweb.net/lg_brandswell/main/washing-machines/T18MX7.png',
+      planId: 'plan_1786520860970',
+      accounts: 1,
+      monthly: 29900,
+      cardBenefitPrice: 2900
     }
   ];
 
