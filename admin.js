@@ -1163,6 +1163,7 @@ async function initAdminApp() {
             <button class="btn btn-approved btn-xs" data-id="${s.id}" data-action="승인" ${s.status === '승인' ? 'disabled' : ''}>승인</button>
             <button class="btn btn-pending btn-xs" data-id="${s.id}" data-action="보류" ${s.status === '보류' ? 'disabled' : ''}>보류</button>
             <button class="btn btn-cancelled btn-xs" data-id="${s.id}" data-action="취소" ${s.status === '취소' ? 'disabled' : ''}>취소</button>
+            <button class="btn btn-danger btn-xs btn-seller-delete" data-id="${s.id}">삭제</button>
           </div>
         </td>
       `;
@@ -1172,7 +1173,14 @@ async function initAdminApp() {
         openSellerModal(s.id);
       });
 
-      tr.querySelectorAll('.btn-group button:not(.btn-seller-detail)').forEach(btn => {
+      const btnDelete = tr.querySelector('.btn-seller-delete');
+      if (btnDelete) {
+        btnDelete.addEventListener('click', () => {
+          deleteSeller(s.id);
+        });
+      }
+
+      tr.querySelectorAll('.btn-group button:not(.btn-seller-detail):not(.btn-seller-delete)').forEach(btn => {
         btn.addEventListener('click', (e) => {
           const sellerId = btn.getAttribute('data-id');
           const newStatus = btn.getAttribute('data-action');
@@ -1198,10 +1206,24 @@ async function initAdminApp() {
     }
   }
 
+  function deleteSeller(id) {
+    const sellers = getSellers();
+    const target = sellers.find(s => s.id === id);
+    if (!target) return;
+
+    if (confirm(`[${target.name}] (${target.username}) 셀러 파트너를 정말 삭제하시겠습니까?\n삭제된 셀러 데이터는 복구할 수 없습니다.`)) {
+      const updated = sellers.filter(s => s.id !== id);
+      setSellers(updated);
+      closeSellerModal();
+      renderSellersTable();
+    }
+  }
+
   // --- Seller Modal Control (Detail/Edit & Registration) ---
   const sellerModal = document.getElementById('seller-modal');
   const btnCloseSellerModal = document.getElementById('seller-modal-close');
   const btnCancelSellerModal = document.getElementById('modal-seller-cancel');
+  const btnDeleteSellerModal = document.getElementById('modal-seller-delete');
   const btnAddSellerToggle = document.getElementById('btn-add-seller-toggle');
   const sellerModalForm = document.getElementById('seller-modal-form');
   const btnModalAddressSearch = document.getElementById('modal-seller-address-btn');
@@ -1258,6 +1280,7 @@ async function initAdminApp() {
       addressDetailInput.value = detailAddress;
 
       usernameInput.disabled = false; 
+      if (btnDeleteSellerModal) btnDeleteSellerModal.style.display = 'inline-block';
     } else {
       // Add Mode
       titleText.textContent = "신규 셀러 직접 등록";
@@ -1265,6 +1288,7 @@ async function initAdminApp() {
       idInput.value = "";
       statusInput.value = "승인"; // Default to approved for admin registration
       usernameInput.disabled = false;
+      if (btnDeleteSellerModal) btnDeleteSellerModal.style.display = 'none';
     }
 
     sellerModal.classList.add('active');
@@ -1276,6 +1300,14 @@ async function initAdminApp() {
 
   if (btnCloseSellerModal) btnCloseSellerModal.addEventListener('click', closeSellerModal);
   if (btnCancelSellerModal) btnCancelSellerModal.addEventListener('click', closeSellerModal);
+  if (btnDeleteSellerModal) {
+    btnDeleteSellerModal.addEventListener('click', () => {
+      const id = document.getElementById('modal-seller-id').value;
+      if (id) {
+        deleteSeller(id);
+      }
+    });
+  }
   if (sellerModal) {
     sellerModal.addEventListener('click', (e) => {
       if (e.target === sellerModal) closeSellerModal();
