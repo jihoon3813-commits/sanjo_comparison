@@ -3684,14 +3684,35 @@ html {
     font-size: 14px !important;
   }
   
-  /* Mobile Hero Section Center Alignment & Header Clearance */
+  /* Reduced Mobile Header Height */
+  .main-header {
+    height: 52px !important;
+  }
+
+  .main-header.scrolled {
+    height: 46px !important;
+  }
+
+  .main-header .header-container {
+    padding: 0 14px !important;
+  }
+
+  .logo.text-logo .brand-name {
+    font-size: 1.18rem !important;
+  }
+
+  .logo.text-logo .brand-sub {
+    font-size: 0.78rem !important;
+  }
+
+  /* Mobile Hero Section Center Alignment & Compact Header Spacing */
   .hero-section {
     padding: 0;
     overflow: hidden;
   }
   
   #slide-1, #slide-2 {
-    padding: 75px 16px 35px !important;
+    padding: 60px 16px 30px !important;
     box-sizing: border-box !important;
   }
 
@@ -3720,30 +3741,31 @@ html {
     box-sizing: border-box !important;
   }
   
+  /* Hero Text Scaled 1.2x (Buttons excluded) */
   .hero-badge {
     margin: 0 auto 10px !important;
-    font-size: 0.78rem !important;
-    padding: 4px 12px !important;
+    font-size: 0.94rem !important; /* 0.78rem * 1.2 */
+    padding: 5px 14px !important;
     display: inline-block !important;
   }
 
   .hero-title {
-    font-size: 1.55rem !important;
-    line-height: 1.38 !important;
+    font-size: 1.86rem !important; /* 1.55rem * 1.2 */
+    line-height: 1.35 !important;
     text-align: center !important;
     margin: 0 auto 12px !important;
     width: 100% !important;
-    max-width: 340px !important;
+    max-width: 360px !important;
     word-break: keep-all !important;
   }
 
   .hero-subtitle {
-    font-size: 0.82rem !important;
+    font-size: 0.98rem !important; /* 0.82rem * 1.2 */
     line-height: 1.48 !important;
     text-align: center !important;
     margin: 0 auto 18px !important;
     word-break: keep-all !important;
-    max-width: 320px !important;
+    max-width: 340px !important;
   }
 
   .hero-actions {
@@ -3752,7 +3774,7 @@ html {
     align-items: center !important;
     justify-content: center !important;
     width: 100% !important;
-    max-width: 320px !important;
+    max-width: 340px !important;
     margin: 0 auto !important;
     gap: 8px !important;
   }
@@ -3762,7 +3784,7 @@ html {
     justify-content: center !important;
     text-align: center !important;
     padding: 11px 16px !important;
-    font-size: 0.85rem !important;
+    font-size: 0.85rem !important; /* Kept button font size unchanged as requested */
   }
 
   .hero-features {
@@ -3770,9 +3792,14 @@ html {
     flex-wrap: wrap !important;
     justify-content: center !important;
     align-items: center !important;
-    gap: 8px !important;
+    gap: 10px !important;
     margin: 14px auto 0 !important;
     width: 100% !important;
+  }
+
+  .hero-features .feature-item {
+    font-size: 0.95rem !important; /* Scaled 1.2x */
+    padding: 6px 12px !important;
   }
 
   .hero-products-wrapper {
