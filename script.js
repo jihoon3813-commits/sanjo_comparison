@@ -2435,6 +2435,7 @@ async function initApp() {
           if (matched.length > 0) {
             heroProductsList = matched;
             localStorage.setItem('lifemoa_hero_products', JSON.stringify(val));
+            renderHeroProducts();
             return;
           }
         }
@@ -2443,11 +2444,7 @@ async function initApp() {
         const defaultMatched = validProds.slice(0, 4);
         if (defaultMatched.length > 0) {
           heroProductsList = defaultMatched;
-          const defaultIds = defaultMatched.map(p => p.id || p._id);
-          localStorage.setItem('lifemoa_hero_products', JSON.stringify(defaultIds));
-          try {
-            await convex.mutation(api.settings.set, { key: "hero_products", value: defaultIds });
-          } catch(e) {}
+          renderHeroProducts();
           return;
         }
       }
@@ -2456,6 +2453,7 @@ async function initApp() {
     }
 
     loadHeroProductsFromLocalSync();
+    renderHeroProducts();
   }
 
   function renderHeroProducts(direction = 'left') {
@@ -2510,7 +2508,7 @@ async function initApp() {
           </div>
 
           <div class="hero-card-body-info">
-            <div class="hero-card-brand-tag">[${brandName}] ${catText} · ${prod.accounts || 1}구좌 연동</div>
+            <div class="hero-card-brand-tag">[${brandName}] ${catText}</div>
             <h3 class="hero-card-title">${prod.name}</h3>
             <p class="hero-card-model">${prod.modelName}</p>
             
