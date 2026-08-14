@@ -6078,3 +6078,108 @@ body {
   border-color: #e5e7eb;
   color: #9ca3af;
 }
+
+
+/* Clean Blue Theme Hero Section without product image card */
+.hero-section.hero-blue-theme {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #EBF3FE 0%, #D6E6FF 100%);
+  color: var(--primary-color, #001A3D);
+  padding: 60px 0 70px;
+}
+
+.hero-blue-theme .hero-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center !important;
+  max-width: 900px !important;
+  margin: 0 auto !important;
+  padding: 0 20px !important;
+  gap: 0 !important;
+}
+
+.hero-blue-theme .hero-text-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+.hero-blue-theme .badge-blue {
+  background-color: #E6F4FA !important;
+  color: var(--primary-color, #001A3D) !important;
+  border: 1px solid rgba(0, 26, 61, 0.12) !important;
+  padding: 8px 18px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+.hero-blue-theme .hero-title {
+  color: var(--primary-color, #001A3D) !important;
+  font-size: 2.6rem;
+  font-weight: 900;
+  line-height: 1.35;
+  margin-bottom: 20px;
+  letter-spacing: -0.03em;
+}
+
+.hero-blue-theme .hero-title .highlight {
+  color: var(--accent-color, #3182F6) !important;
+}
+
+.hero-blue-theme .hero-subtitle {
+  color: #334155 !important;
+  font-size: 1.15rem;
+  line-height: 1.65;
+  margin-bottom: 32px;
+}
+
+.hero-blue-theme .hero-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.hero-blue-theme .hero-actions .btn-outline {
+  border-color: var(--primary-color, #001A3D) !important;
+  color: var(--primary-color, #001A3D) !important;
+  background-color: transparent !important;
+}
+
+.hero-blue-theme .hero-actions .btn-outline:hover {
+  background-color: rgba(0, 26, 61, 0.05) !important;
+}
+
+.hero-blue-theme .hero-features {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.hero-blue-theme .feature-item {
+  background-color: rgba(0, 26, 61, 0.04) !important;
+  border: 1px solid rgba(0, 26, 61, 0.1) !important;
+  color: var(--primary-color, #001A3D) !important;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hero-blue-theme .check-icon {
+  color: var(--accent-color, #3182F6) !important;
+}
