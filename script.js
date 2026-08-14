@@ -2397,11 +2397,21 @@ async function initApp() {
       ? PRODUCT_DATA
       : (JSON.parse(localStorage.getItem('lifemoa_products')) || defaultProducts);
 
-    const localHeroIds = JSON.parse(localStorage.getItem('lifemoa_hero_products') || '[]');
+    let localHeroIds = [];
+    try {
+      const raw = localStorage.getItem('lifemoa_hero_products');
+      if (raw) localHeroIds = typeof raw === 'string' && raw.startsWith('[') ? JSON.parse(raw) : raw;
+    } catch(e) {}
+
     let matched = [];
-    if (localHeroIds.length > 0) {
+    if (Array.isArray(localHeroIds) && localHeroIds.length > 0) {
       matched = localHeroIds.map(id => validProds.find(p => p.id === id)).filter(Boolean);
     }
+
+    if (matched.length === 0) {
+      matched = validProds.filter(p => p.isHero);
+    }
+
     if (matched.length > 0) {
       heroProductsList = matched;
     } else {
@@ -2413,7 +2423,10 @@ async function initApp() {
     try {
       const validProds = (PRODUCT_DATA && PRODUCT_DATA.length > 0) ? PRODUCT_DATA : (JSON.parse(localStorage.getItem('lifemoa_products')) || []);
       if (convex && validProds.length > 0) {
-        const val = await convex.query(api.settings.get, { key: "hero_products" });
+        let val = await convex.query(api.settings.get, { key: "hero_products" });
+        if (typeof val === 'string') {
+          try { val = JSON.parse(val); } catch(e) {}
+        }
         if (Array.isArray(val) && val.length > 0) {
           const matched = val.map(id => validProds.find(p => p.id === id)).filter(Boolean);
           if (matched.length > 0) {
@@ -2475,12 +2488,8 @@ async function initApp() {
       `;
     });
 
-    const cardContentHtml = `
-      <div class="hero-card-header-badge">
-        <span class="badge-tag">🔥 최근 인기 가전</span>
-        <span class="badge-count">${currentHeroIndex + 1} / ${heroProductsList.length}</span>
-      </div>
-      
+    // Content inner HTML (only this container slides left/right, outer card box stays STATIONARY)
+    const sliderContentHtml = `
       <div class="hero-card-img-wrap">
         <img src="${activeProd.thumbnail}" alt="${activeProd.name}" class="hero-prod-main-img" />
       </div>
@@ -2503,15 +2512,27 @@ async function initApp() {
 
         <div class="hero-card-actions">
           <button type="button" class="btn btn-accent btn-hero-consult" data-prod-id="${activeProd.id}">
-            이 가전으로 무료 비교상담 &gt;
+            이 가전으로 상담신청
           </button>
           <button type="button" class="btn btn-outline btn-hero-detail" data-prod-id="${activeProd.id}">
             상세보기
           </button>
         </div>
       </div>
+    `;
 
-      <!-- 4개 미니 탭 바 + 좌우 화살표 버튼 -->
+    // Outer Card Layout HTML (Stationary border box)
+    const cardFullHtml = `
+      <div class="hero-card-header-badge">
+        <span class="badge-tag">🔥 최근 인기 가전</span>
+        <span class="badge-count">${currentHeroIndex + 1} / ${heroProductsList.length}</span>
+      </div>
+      
+      <div class="hero-card-content-slider">
+        ${sliderContentHtml}
+      </div>
+
+      <!-- 4개 미니 탭 바 + 좌우 화살표 버튼 (1줄 고정) -->
       <div class="hero-product-tabs-bar">
         <button type="button" class="hero-card-nav-btn prev-prod-btn" aria-label="이전 가전">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="15 18 9 12 15 6"></polyline></svg>
@@ -2524,8 +2545,7 @@ async function initApp() {
     `;
 
     let cardDisplay = container.querySelector('.hero-product-card-display');
-    
-    // Bind click handlers & gestures onto card container
+
     const bindCardEvents = (cardEl) => {
       // Prev / Next button clicks
       const prevBtn = cardEl.querySelector('.prev-prod-btn');
@@ -2575,27 +2595,48 @@ async function initApp() {
     };
 
     if (cardDisplay) {
-      // Smooth slide animation
-      const outClass = direction === 'left' ? 'slide-out-left' : 'slide-out-right';
-      const inClass = direction === 'left' ? 'slide-in-right' : 'slide-in-left';
+      // Outer box remains 100% still! Only inner content slider moves left/right!
+      const contentSlider = cardDisplay.querySelector('.hero-card-content-slider');
+      const badgeCount = cardDisplay.querySelector('.badge-count');
+      const tabsBar = cardDisplay.querySelector('.hero-product-tabs-bar');
 
-      cardDisplay.classList.add(outClass);
+      if (badgeCount) badgeCount.textContent = `${currentHeroIndex + 1} / ${heroProductsList.length}`;
+      if (tabsBar) {
+        tabsBar.innerHTML = `
+          <button type="button" class="hero-card-nav-btn prev-prod-btn" aria-label="이전 가전">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+          ${tabsHtml}
+          <button type="button" class="hero-card-nav-btn next-prod-btn" aria-label="다음 가전">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        `;
+      }
 
-      setTimeout(() => {
-        cardDisplay.innerHTML = cardContentHtml;
+      if (contentSlider) {
+        const outClass = direction === 'left' ? 'slide-out-left' : 'slide-out-right';
+        const inClass = direction === 'left' ? 'slide-in-right' : 'slide-in-left';
+
+        contentSlider.classList.add(outClass);
+
+        setTimeout(() => {
+          contentSlider.innerHTML = sliderContentHtml;
+          bindCardEvents(cardDisplay);
+
+          contentSlider.classList.remove(outClass);
+          contentSlider.classList.add(inClass);
+
+          void contentSlider.offsetWidth;
+
+          contentSlider.classList.remove(inClass);
+        }, 120);
+      } else {
+        cardDisplay.innerHTML = cardFullHtml;
         bindCardEvents(cardDisplay);
-
-        cardDisplay.classList.remove(outClass);
-        cardDisplay.classList.add(inClass);
-
-        // Force browser reflow to trigger smooth transition
-        void cardDisplay.offsetWidth;
-
-        cardDisplay.classList.remove(inClass);
-      }, 140);
+      }
     } else {
       // Initial render
-      container.innerHTML = `<div class="hero-product-card-display">${cardContentHtml}</div>`;
+      container.innerHTML = `<div class="hero-product-card-display">${cardFullHtml}</div>`;
       cardDisplay = container.querySelector('.hero-product-card-display');
       bindCardEvents(cardDisplay);
     }

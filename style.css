@@ -283,45 +283,51 @@ a {
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
-  transition: transform 0.32s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.32s ease;
+}
+
+/* Outer box stays 100% still. Only inner content slider moves left/right */
+.hero-card-content-slider {
+  transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.28s ease;
   will-change: transform, opacity;
   backface-visibility: hidden;
 }
 
-.hero-product-card-display.slide-out-left {
-  transform: translateX(-40px);
-  opacity: 0.1;
+.hero-card-content-slider.slide-out-left {
+  transform: translateX(-35px);
+  opacity: 0;
 }
 
-.hero-product-card-display.slide-out-right {
-  transform: translateX(40px);
-  opacity: 0.1;
+.hero-card-content-slider.slide-out-right {
+  transform: translateX(35px);
+  opacity: 0;
 }
 
-.hero-product-card-display.slide-in-right {
-  transform: translateX(40px);
-  opacity: 0.1;
+.hero-card-content-slider.slide-in-right {
+  transform: translateX(35px);
+  opacity: 0;
 }
 
-.hero-product-card-display.slide-in-left {
-  transform: translateX(-40px);
-  opacity: 0.1;
+.hero-card-content-slider.slide-in-left {
+  transform: translateX(-35px);
+  opacity: 0;
 }
 
 .hero-product-tabs-bar {
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  margin-top: 14px;
+  margin-top: 12px;
+  width: 100%;
 }
 
 .hero-card-nav-btn {
   background: rgba(241, 245, 249, 0.9);
   border: 1px solid var(--border-color, #cbd5e1);
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -3787,7 +3793,7 @@ html {
   }
   
   #slide-1, #slide-2 {
-    padding: 60px 16px 30px !important;
+    padding: 48px 12px 16px !important;
     box-sizing: border-box !important;
   }
 
@@ -3797,12 +3803,39 @@ html {
     align-items: center !important;
     justify-content: center !important;
     text-align: center !important;
-    gap: 16px !important;
+    gap: 12px !important;
     width: 100% !important;
     max-width: 100% !important;
     padding: 0 !important;
     margin: 0 auto !important;
     box-sizing: border-box !important;
+  }
+
+  .hero-product-card-display {
+    padding: 12px 10px !important;
+  }
+
+  .hero-product-tabs-bar {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    width: 100% !important;
+    margin-top: 8px !important;
+  }
+
+  .hero-prod-tab {
+    width: 44px !important;
+    height: 44px !important;
+    flex-shrink: 0 !important;
+    padding: 2px !important;
+  }
+
+  .hero-card-nav-btn {
+    width: 26px !important;
+    height: 26px !important;
+    flex-shrink: 0 !important;
   }
   
   .hero-text-content {
