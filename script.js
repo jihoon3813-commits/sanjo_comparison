@@ -2077,38 +2077,68 @@ async function initApp() {
       return;
     }
     container.style.display = 'flex';
+    container.style.flexWrap = 'wrap';
     
+    const createBtn = (content, pageNum, isActive = false, isDisabled = false) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `pagination-btn ${isActive ? 'active' : ''}`;
+      btn.disabled = isDisabled;
+      btn.innerHTML = content;
+      if (!isDisabled && pageNum) {
+        btn.onclick = () => onPageChange(pageNum);
+      }
+      return btn;
+    };
+
     // Prev button
-    const prevBtn = document.createElement('button');
-    prevBtn.type = 'button';
-    prevBtn.className = 'pagination-btn';
-    prevBtn.disabled = currentPage === 1;
-    prevBtn.innerHTML = `
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-    `;
-    prevBtn.onclick = () => onPageChange(currentPage - 1);
-    container.appendChild(prevBtn);
+    const prevSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
+    container.appendChild(createBtn(prevSvg, currentPage - 1, false, currentPage === 1));
     
-    // Page buttons
-    for (let i = 1; i <= totalPages; i++) {
-      const pageBtn = document.createElement('button');
-      pageBtn.type = 'button';
-      pageBtn.className = `pagination-btn ${currentPage === i ? 'active' : ''}`;
-      pageBtn.textContent = i;
-      pageBtn.onclick = () => onPageChange(i);
-      container.appendChild(pageBtn);
+    // Smart windowed page numbers with ellipsis
+    let pages = [];
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      let start = Math.max(2, currentPage - 1);
+      let end = Math.min(totalPages - 1, currentPage + 1);
+
+      if (currentPage <= 3) {
+        end = 4;
+      } else if (currentPage >= totalPages - 2) {
+        start = totalPages - 3;
+      }
+
+      if (start > 2) {
+        pages.push('...');
+      }
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+
+      if (end < totalPages - 1) {
+        pages.push('...');
+      }
+      pages.push(totalPages);
     }
-    
+
+    pages.forEach(p => {
+      if (p === '...') {
+        const dots = document.createElement('span');
+        dots.className = 'pagination-ellipsis';
+        dots.textContent = '...';
+        dots.style.cssText = 'padding: 0 4px; color: #94a3b8; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem;';
+        container.appendChild(dots);
+      } else {
+        container.appendChild(createBtn(p, p, currentPage === p));
+      }
+    });
+
     // Next button
-    const nextBtn = document.createElement('button');
-    nextBtn.type = 'button';
-    nextBtn.className = 'pagination-btn';
-    nextBtn.disabled = currentPage === totalPages;
-    nextBtn.innerHTML = `
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-    `;
-    nextBtn.onclick = () => onPageChange(currentPage + 1);
-    container.appendChild(nextBtn);
+    const nextSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+    container.appendChild(createBtn(nextSvg, currentPage + 1, false, currentPage === totalPages));
   }
 
   function initSearchControls() {
@@ -2363,7 +2393,10 @@ async function initApp() {
   let heroRotateTimer = null;
 
   function loadHeroProductsFromLocalSync() {
-    const localProds = JSON.parse(localStorage.getItem('lifemoa_products')) || defaultProducts;
+    const localProds = (PRODUCT_DATA && PRODUCT_DATA.length > 0)
+      ? PRODUCT_DATA
+      : (JSON.parse(localStorage.getItem('lifemoa_products')) || defaultProducts);
+
     const localHeroIds = JSON.parse(localStorage.getItem('lifemoa_hero_products') || '[]');
     let matched = [];
     if (localHeroIds.length > 0) {
@@ -2380,7 +2413,7 @@ async function initApp() {
     try {
       if (convex) {
         const val = await convex.query(api.settings.get, { key: "hero_products" });
-        if (Array.isArray(val) && val.length > 0) {
+        if (Array.isArray(val) && val.length > 0 && PRODUCT_DATA && PRODUCT_DATA.length > 0) {
           const matched = val.map(id => PRODUCT_DATA.find(p => p.id === id)).filter(Boolean);
           if (matched.length > 0) {
             heroProductsList = matched;

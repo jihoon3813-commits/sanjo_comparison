@@ -3436,10 +3436,14 @@ tbody tr:last-child td {
 /* ==========================================================================
    Footer
    ========================================================================== */
+html {
+  background-color: #000E21;
+}
+
 .main-footer {
   background-color: #000E21;
   color: #94A3B8;
-  padding: 80px 0 60px;
+  padding: 60px 0 210px;
 }
 
 .footer-container {
@@ -4524,6 +4528,9 @@ tbody tr:last-child td {
   .vs-header .vs-col {
     width: 100%;
   }
+  .vs-header .vs-col {
+    width: 100%;
+  }
   .vs-row {
     flex-direction: column;
     padding: 15px 0;
@@ -5429,7 +5436,7 @@ table.card-benefits-table td {
    Sticky Bottom Inquiry Bar
    ========================================================================== */
 body {
-  padding-bottom: 210px; /* Mobile baseline */
+  padding-bottom: 0 !important;
 }
 
 /* ==========================================================================
@@ -5638,7 +5645,11 @@ body {
    ========================================================================== */
 @media (min-width: 769px) {
   body {
-    padding-bottom: 80px;
+    padding-bottom: 0 !important;
+  }
+
+  .main-footer {
+    padding: 80px 0 100px;
   }
 
   /* Always keep inquiry bar expanded on desktop */
