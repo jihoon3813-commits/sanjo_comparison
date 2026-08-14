@@ -285,31 +285,24 @@ a {
   overflow: hidden;
 }
 
-/* Outer box stays 100% still. Only inner content slider moves left/right */
-.hero-card-content-slider {
-  transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.28s ease;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
+/* Outer box stays 100% still. Inner track slides continuously so outgoing & incoming cards move together */
+.hero-card-track-wrapper {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
 }
 
-.hero-card-content-slider.slide-out-left {
-  transform: translateX(-35px);
-  opacity: 0;
+.hero-card-track {
+  display: flex;
+  width: 100%;
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
 }
 
-.hero-card-content-slider.slide-out-right {
-  transform: translateX(35px);
-  opacity: 0;
-}
-
-.hero-card-content-slider.slide-in-right {
-  transform: translateX(35px);
-  opacity: 0;
-}
-
-.hero-card-content-slider.slide-in-left {
-  transform: translateX(-35px);
-  opacity: 0;
+.hero-card-slide-item {
+  width: 100%;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .hero-product-tabs-bar {
@@ -3812,7 +3805,15 @@ html {
   }
 
   .hero-product-card-display {
-    padding: 12px 10px !important;
+    padding: 10px 8px !important;
+  }
+
+  /* Reduce main appliance thumbnail image size by 30% on mobile */
+  .hero-card-img-wrap {
+    width: 70% !important;
+    max-height: 165px !important;
+    margin: 0 auto 6px !important;
+    aspect-ratio: 1 / 1 !important;
   }
 
   .hero-product-tabs-bar {

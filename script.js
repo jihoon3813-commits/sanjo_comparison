@@ -411,6 +411,7 @@ async function initApp() {
         localStorage.setItem('lifemoa_products', JSON.stringify(prods));
       }
       PRODUCT_DATA = prods.length > 0 ? prods : defaultProducts;
+      loadHeroProductsFromLocalSync();
     }
 
     // Filter BRAND_DATA to only include brands that have at least one active plan in PLAN_DATA
@@ -2400,12 +2401,15 @@ async function initApp() {
     let localHeroIds = [];
     try {
       const raw = localStorage.getItem('lifemoa_hero_products');
-      if (raw) localHeroIds = typeof raw === 'string' && raw.startsWith('[') ? JSON.parse(raw) : raw;
+      if (raw) localHeroIds = typeof raw === 'string' ? JSON.parse(raw) : raw;
     } catch(e) {}
 
     let matched = [];
     if (Array.isArray(localHeroIds) && localHeroIds.length > 0) {
-      matched = localHeroIds.map(id => validProds.find(p => p.id === id)).filter(Boolean);
+      matched = localHeroIds.map(item => {
+        const tid = (typeof item === 'object' && item !== null) ? (item.id || item._id) : item;
+        return validProds.find(p => p.id === tid || p._id === tid || String(p.id) === String(tid));
+      }).filter(Boolean);
     }
 
     if (matched.length === 0) {
@@ -2428,7 +2432,11 @@ async function initApp() {
           try { val = JSON.parse(val); } catch(e) {}
         }
         if (Array.isArray(val) && val.length > 0) {
-          const matched = val.map(id => validProds.find(p => p.id === id)).filter(Boolean);
+          const matched = val.map(item => {
+            const tid = (typeof item === 'object' && item !== null) ? (item.id || item._id) : item;
+            return validProds.find(p => p.id === tid || p._id === tid || String(p.id) === String(tid));
+          }).filter(Boolean);
+
           if (matched.length > 0) {
             heroProductsList = matched;
             localStorage.setItem('lifemoa_hero_products', JSON.stringify(val));
@@ -2473,63 +2481,66 @@ async function initApp() {
       'water': '정수기', 'massage': '안마의자', 'general': '일반가전'
     };
 
-    const activeProd = heroProductsList[currentHeroIndex] || heroProductsList[0];
-    const catText = categoryMap[activeProd.categoryId] || '가전';
-    const plan = PLAN_DATA.find(pl => pl.id === activeProd.planId);
-    const brand = BRAND_DATA.find(b => b.id === (plan ? plan.brandId : ''));
-    const brandName = brand ? brand.name : '인기 브랜드';
-
     let tabsHtml = '';
+    let slidesTrackHtml = '';
+
     heroProductsList.forEach((prod, idx) => {
       tabsHtml += `
         <button type="button" class="hero-prod-tab ${idx === currentHeroIndex ? 'active' : ''}" data-index="${idx}" title="${prod.name}">
           <img src="${prod.thumbnail}" alt="${prod.name}" />
         </button>
       `;
+
+      const catText = categoryMap[prod.categoryId] || '가전';
+      const plan = PLAN_DATA.find(pl => pl.id === prod.planId);
+      const brand = BRAND_DATA.find(b => b.id === (plan ? plan.brandId : ''));
+      const brandName = brand ? brand.name : '인기 브랜드';
+
+      slidesTrackHtml += `
+        <div class="hero-card-slide-item" data-index="${idx}">
+          <div class="hero-card-img-wrap">
+            <img src="${prod.thumbnail}" alt="${prod.name}" class="hero-prod-main-img" />
+          </div>
+
+          <div class="hero-card-body-info">
+            <div class="hero-card-brand-tag">[${brandName}] ${catText} · ${prod.accounts || 1}구좌 연동</div>
+            <h3 class="hero-card-title">${prod.name}</h3>
+            <p class="hero-card-model">${prod.modelName}</p>
+            
+            <div class="hero-card-price-row">
+              <div class="price-box">
+                <span class="price-label">월 납입금</span>
+                <span class="price-val">월 ${prod.monthly ? parseInt(prod.monthly).toLocaleString('ko-KR') : 0}원</span>
+              </div>
+              <div class="price-box highlight">
+                <span class="price-label">제휴카드 할인가</span>
+                <span class="price-val accent">월 ${prod.cardBenefitPrice ? parseInt(prod.cardBenefitPrice).toLocaleString('ko-KR') : 0}원~</span>
+              </div>
+            </div>
+
+            <div class="hero-card-actions">
+              <button type="button" class="btn btn-accent btn-hero-consult" data-prod-name="${prod.name}">
+                이 가전으로 상담신청
+              </button>
+              <button type="button" class="btn btn-outline btn-hero-detail" data-prod-id="${prod.id}">
+                상세보기
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
     });
 
-    // Content inner HTML (only this container slides left/right, outer card box stays STATIONARY)
-    const sliderContentHtml = `
-      <div class="hero-card-img-wrap">
-        <img src="${activeProd.thumbnail}" alt="${activeProd.name}" class="hero-prod-main-img" />
-      </div>
-
-      <div class="hero-card-body-info">
-        <div class="hero-card-brand-tag">[${brandName}] ${catText} · ${activeProd.accounts || 1}구좌 연동</div>
-        <h3 class="hero-card-title">${activeProd.name}</h3>
-        <p class="hero-card-model">${activeProd.modelName}</p>
-        
-        <div class="hero-card-price-row">
-          <div class="price-box">
-            <span class="price-label">월 납입금</span>
-            <span class="price-val">월 ${activeProd.monthly ? parseInt(activeProd.monthly).toLocaleString('ko-KR') : 0}원</span>
-          </div>
-          <div class="price-box highlight">
-            <span class="price-label">제휴카드 할인가</span>
-            <span class="price-val accent">월 ${activeProd.cardBenefitPrice ? parseInt(activeProd.cardBenefitPrice).toLocaleString('ko-KR') : 0}원~</span>
-          </div>
-        </div>
-
-        <div class="hero-card-actions">
-          <button type="button" class="btn btn-accent btn-hero-consult" data-prod-id="${activeProd.id}">
-            이 가전으로 상담신청
-          </button>
-          <button type="button" class="btn btn-outline btn-hero-detail" data-prod-id="${activeProd.id}">
-            상세보기
-          </button>
-        </div>
-      </div>
-    `;
-
-    // Outer Card Layout HTML (Stationary border box)
     const cardFullHtml = `
       <div class="hero-card-header-badge">
         <span class="badge-tag">🔥 최근 인기 가전</span>
         <span class="badge-count">${currentHeroIndex + 1} / ${heroProductsList.length}</span>
       </div>
       
-      <div class="hero-card-content-slider">
-        ${sliderContentHtml}
+      <div class="hero-card-track-wrapper">
+        <div class="hero-card-track" style="transform: translateX(-${currentHeroIndex * 100}%);">
+          ${slidesTrackHtml}
+        </div>
       </div>
 
       <!-- 4개 미니 탭 바 + 좌우 화살표 버튼 (1줄 고정) -->
@@ -2576,95 +2587,72 @@ async function initApp() {
       });
 
       // Consult & Detail button clicks
-      const consultBtn = cardEl.querySelector('.btn-hero-consult');
-      if (consultBtn) {
-        consultBtn.addEventListener('click', () => {
+      cardEl.querySelectorAll('.btn-hero-consult').forEach(consultBtn => {
+        consultBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const prodName = e.currentTarget.getAttribute('data-prod-name');
           if (typeof openConsultFormModal === 'function') {
-            openConsultFormModal(activeProd ? activeProd.name : null);
+            openConsultFormModal(prodName);
           }
         });
-      }
-      const detailBtn = cardEl.querySelector('.btn-hero-detail');
-      if (detailBtn) {
-        detailBtn.addEventListener('click', () => {
+      });
+
+      cardEl.querySelectorAll('.btn-hero-detail').forEach(detailBtn => {
+        detailBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const prodId = e.currentTarget.getAttribute('data-prod-id');
           if (typeof openProductModal === 'function') {
-            openProductModal(activeProd.id);
+            openProductModal(prodId);
           }
         });
-      }
+      });
     };
 
     if (cardDisplay) {
-      // Outer box remains 100% still! Only inner content slider moves left/right!
-      const contentSlider = cardDisplay.querySelector('.hero-card-content-slider');
+      const trackEl = cardDisplay.querySelector('.hero-card-track');
       const badgeCount = cardDisplay.querySelector('.badge-count');
-      const tabsBar = cardDisplay.querySelector('.hero-product-tabs-bar');
 
       if (badgeCount) badgeCount.textContent = `${currentHeroIndex + 1} / ${heroProductsList.length}`;
-      if (tabsBar) {
-        tabsBar.innerHTML = `
-          <button type="button" class="hero-card-nav-btn prev-prod-btn" aria-label="이전 가전">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="15 18 9 12 15 6"></polyline></svg>
-          </button>
-          ${tabsHtml}
-          <button type="button" class="hero-card-nav-btn next-prod-btn" aria-label="다음 가전">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg>
-          </button>
-        `;
+      if (trackEl) {
+        trackEl.style.transform = `translateX(-${currentHeroIndex * 100}%)`;
       }
 
-      if (contentSlider) {
-        const outClass = direction === 'left' ? 'slide-out-left' : 'slide-out-right';
-        const inClass = direction === 'left' ? 'slide-in-right' : 'slide-in-left';
-
-        contentSlider.classList.add(outClass);
-
-        setTimeout(() => {
-          contentSlider.innerHTML = sliderContentHtml;
-          bindCardEvents(cardDisplay);
-
-          contentSlider.classList.remove(outClass);
-          contentSlider.classList.add(inClass);
-
-          void contentSlider.offsetWidth;
-
-          contentSlider.classList.remove(inClass);
-        }, 120);
-      } else {
-        cardDisplay.innerHTML = cardFullHtml;
-        bindCardEvents(cardDisplay);
-      }
+      // Update active tab highlight
+      cardDisplay.querySelectorAll('.hero-prod-tab').forEach((tBtn, i) => {
+        if (i === currentHeroIndex) {
+          tBtn.classList.add('active');
+        } else {
+          tBtn.classList.remove('active');
+        }
+      });
     } else {
-      // Initial render
       container.innerHTML = `<div class="hero-product-card-display">${cardFullHtml}</div>`;
       cardDisplay = container.querySelector('.hero-product-card-display');
       bindCardEvents(cardDisplay);
-    }
 
-    // Touch Swipe Gestures (Mobile)
-    if (cardDisplay && !cardDisplay.hasAttribute('data-touch-bound')) {
-      cardDisplay.setAttribute('data-touch-bound', 'true');
-      let startX = 0;
-      cardDisplay.addEventListener('touchstart', (e) => {
-        if (e.touches && e.touches[0]) {
-          startX = e.touches[0].clientX;
-        }
-      }, { passive: true });
+      // Touch Swipe Gestures
+      if (cardDisplay && !cardDisplay.hasAttribute('data-touch-bound')) {
+        cardDisplay.setAttribute('data-touch-bound', 'true');
+        let startX = 0;
+        cardDisplay.addEventListener('touchstart', (e) => {
+          if (e.touches && e.touches[0]) {
+            startX = e.touches[0].clientX;
+          }
+        }, { passive: true });
 
-      cardDisplay.addEventListener('touchend', (e) => {
-        if (e.changedTouches && e.changedTouches[0]) {
-          const diff = startX - e.changedTouches[0].clientX;
-          if (Math.abs(diff) > 40) {
-            if (diff > 0) {
-              // Swipe left -> Next product
-              changeHeroProduct((currentHeroIndex + 1) % heroProductsList.length, 'left');
-            } else {
-              // Swipe right -> Prev product
-              changeHeroProduct((currentHeroIndex - 1 + heroProductsList.length) % heroProductsList.length, 'right');
+        cardDisplay.addEventListener('touchend', (e) => {
+          if (e.changedTouches && e.changedTouches[0]) {
+            const diff = startX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 40) {
+              if (diff > 0) {
+                changeHeroProduct((currentHeroIndex + 1) % heroProductsList.length, 'left');
+              } else {
+                changeHeroProduct((currentHeroIndex - 1 + heroProductsList.length) % heroProductsList.length, 'right');
+              }
             }
           }
-        }
-      }, { passive: true });
+        }, { passive: true });
+      }
     }
 
     // Mouse hover pause & resume
