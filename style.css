@@ -361,7 +361,11 @@ a {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 10px;
+  padding: 6px;
+  color: var(--primary-color);
+  align-items: center;
+  justify-content: center;
+  outline: none;
 }
 
 /* ==========================================================================
@@ -4618,37 +4622,30 @@ html {
     display: none;
   }
   
-  /* Hamburger Animation */
-  .hamburger {
+  /* Hamburger SVG Icon Animation */
+  .hamburger-svg {
     display: block;
-    width: 24px;
-    height: 2px;
-    background-color: var(--primary-color);
-    position: relative;
-    transition: var(--transition);
+    width: 26px;
+    height: 26px;
+    color: var(--primary-color);
+    transition: transform 0.3s ease;
   }
-  .hamburger::before,
-  .hamburger::after {
-    content: '';
-    position: absolute;
-    width: 24px;
-    height: 2px;
-    background-color: var(--primary-color);
-    transition: var(--transition);
+
+  .hamburger-svg line {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform-origin: center;
   }
-  .hamburger::before { top: -8px; }
-  .hamburger::after { top: 8px; }
-  
-  .mobile-nav-toggle.active .hamburger {
-    background-color: transparent;
+
+  .mobile-nav-toggle.active .hamburger-svg .line-mid {
+    opacity: 0;
   }
-  .mobile-nav-toggle.active .hamburger::before {
-    transform: rotate(45deg);
-    top: 0;
+
+  .mobile-nav-toggle.active .hamburger-svg .line-top {
+    transform: translateY(6px) rotate(45deg);
   }
-  .mobile-nav-toggle.active .hamburger::after {
-    transform: rotate(-45deg);
-    top: 0;
+
+  .mobile-nav-toggle.active .hamburger-svg .line-bot {
+    transform: translateY(-6px) rotate(-45deg);
   }
 }
 
