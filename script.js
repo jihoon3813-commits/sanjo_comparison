@@ -2396,7 +2396,7 @@ async function initApp() {
   function loadHeroProductsFromLocalSync() {
     const validProds = (PRODUCT_DATA && PRODUCT_DATA.length > 0)
       ? PRODUCT_DATA
-      : (JSON.parse(localStorage.getItem('lifemoa_products')) || defaultProducts);
+      : (JSON.parse(localStorage.getItem('lifemoa_products')) || []);
 
     let localHeroIds = [];
     try {
@@ -2413,13 +2413,15 @@ async function initApp() {
     }
 
     if (matched.length === 0) {
-      matched = validProds.filter(p => p.isHero);
+      matched = validProds.filter(p => p && p.isHero);
     }
 
     if (matched.length > 0) {
       heroProductsList = matched;
-    } else {
+    } else if (validProds.length > 0) {
       heroProductsList = validProds.slice(0, 4);
+    } else {
+      heroProductsList = defaultProducts.slice(0, 4);
     }
   }
 
@@ -2442,6 +2444,18 @@ async function initApp() {
             localStorage.setItem('lifemoa_hero_products', JSON.stringify(val));
             return;
           }
+        }
+        
+        // If settings:get returned null/empty or matched items were not found, default to top 4 products from Convex DB
+        const defaultMatched = validProds.slice(0, 4);
+        if (defaultMatched.length > 0) {
+          heroProductsList = defaultMatched;
+          const defaultIds = defaultMatched.map(p => p.id || p._id);
+          localStorage.setItem('lifemoa_hero_products', JSON.stringify(defaultIds));
+          try {
+            await convex.mutation(api.settings.set, { key: "hero_products", value: defaultIds });
+          } catch(e) {}
+          return;
         }
       }
     } catch(e) {
@@ -2655,6 +2669,18 @@ async function initApp() {
 
   // Immediate synchronous first render (0ms delay)
   try {
+    // Cache Migration: Purge stale test product fallback history from localStorage
+    try {
+      const rawHero = localStorage.getItem('lifemoa_hero_products');
+      if (rawHero && (rawHero.includes('prod1') || rawHero.includes('prod2') || rawHero.includes('prod3') || rawHero.includes('prod4') || rawHero.includes('prod5') || rawHero.includes('unsplash'))) {
+        localStorage.removeItem('lifemoa_hero_products');
+      }
+      const rawProds = localStorage.getItem('lifemoa_products');
+      if (rawProds && (rawProds.includes('prod1') || rawProds.includes('prod2') || rawProds.includes('prod3') || rawProds.includes('unsplash'))) {
+        localStorage.removeItem('lifemoa_products');
+      }
+    } catch(e) {}
+
     BRAND_DATA = JSON.parse(localStorage.getItem('lifemoa_brands')) || defaultBrands;
     PLAN_DATA = JSON.parse(localStorage.getItem('lifemoa_plans')) || defaultPlans;
     PRODUCT_DATA = JSON.parse(localStorage.getItem('lifemoa_products')) || defaultProducts;
@@ -2665,18 +2691,6 @@ async function initApp() {
 
   // Async backend sync and update
   async function init() {
-    // Cache Migration: Purge stale test product fallback history from localStorage
-    try {
-      const rawHero = localStorage.getItem('lifemoa_hero_products');
-      if (rawHero && (rawHero.includes('prod1') || rawHero.includes('prod2') || rawHero.includes('prod3') || rawHero.includes('prod4') || rawHero.includes('prod5'))) {
-        localStorage.removeItem('lifemoa_hero_products');
-      }
-      const rawProds = localStorage.getItem('lifemoa_products');
-      if (rawProds && (rawProds.includes('prod1') || rawProds.includes('prod2') || rawProds.includes('prod3'))) {
-        localStorage.removeItem('lifemoa_products');
-      }
-    } catch(e) {}
-
     await initData();
     await loadHeroProductsForLanding();
     renderHeroProducts();
