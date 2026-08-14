@@ -649,18 +649,19 @@ a {
 
 @keyframes fadeInHeroProd {
   from {
-    opacity: 0.3;
-    transform: scale(0.97);
+    opacity: 0.94;
   }
   to {
     opacity: 1;
-    transform: scale(1);
   }
 }
 
 .hero-card-img-wrap,
 .hero-card-body-info {
-  animation: fadeInHeroProd 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInHeroProd 0.2s ease-out;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .hero-card-header-badge {

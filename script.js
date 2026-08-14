@@ -2406,8 +2406,6 @@ async function initApp() {
     boxes.forEach(box => {
       renderHeroProductsInsideContainer(box);
     });
-
-    startHeroProductAutoRotate();
   }
 
   function renderHeroProductsInsideContainer(container) {
@@ -2486,6 +2484,7 @@ async function initApp() {
         if (!isNaN(idx)) {
           currentHeroIndex = idx;
           renderHeroProducts();
+          startHeroProductAutoRotate();
         }
       });
     });
@@ -2528,7 +2527,7 @@ async function initApp() {
       if (!heroProductsList || heroProductsList.length <= 1) return;
       currentHeroIndex = (currentHeroIndex + 1) % heroProductsList.length;
       renderHeroProducts();
-    }, 1500); // Change product every 1.5 seconds
+    }, 4000); // Change product every 4 seconds smoothly
   }
 
   // Immediate synchronous first render (0ms delay)
@@ -2538,6 +2537,7 @@ async function initApp() {
     PRODUCT_DATA = JSON.parse(localStorage.getItem('lifemoa_products')) || defaultProducts;
     loadHeroProductsFromLocalSync();
     renderHeroProducts();
+    startHeroProductAutoRotate();
   } catch(e) {}
 
   // Async backend sync and update
