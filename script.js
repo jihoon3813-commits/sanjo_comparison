@@ -2393,30 +2393,33 @@ async function initApp() {
   let heroRotateTimer = null;
 
   function loadHeroProductsFromLocalSync() {
-    const localProds = (PRODUCT_DATA && PRODUCT_DATA.length > 0)
+    const validProds = (PRODUCT_DATA && PRODUCT_DATA.length > 0)
       ? PRODUCT_DATA
       : (JSON.parse(localStorage.getItem('lifemoa_products')) || defaultProducts);
 
     const localHeroIds = JSON.parse(localStorage.getItem('lifemoa_hero_products') || '[]');
     let matched = [];
     if (localHeroIds.length > 0) {
-      matched = localHeroIds.map(id => localProds.find(p => p.id === id)).filter(Boolean);
+      matched = localHeroIds.map(id => validProds.find(p => p.id === id)).filter(Boolean);
     }
     if (matched.length > 0) {
       heroProductsList = matched;
     } else {
-      heroProductsList = localProds.slice(0, 4);
+      heroProductsList = validProds.slice(0, 4);
     }
   }
 
   async function loadHeroProductsForLanding() {
     try {
-      if (convex) {
+      const validProds = (PRODUCT_DATA && PRODUCT_DATA.length > 0) ? PRODUCT_DATA : (JSON.parse(localStorage.getItem('lifemoa_products')) || []);
+      if (convex && validProds.length > 0) {
         const val = await convex.query(api.settings.get, { key: "hero_products" });
-        if (Array.isArray(val) && val.length > 0 && PRODUCT_DATA && PRODUCT_DATA.length > 0) {
-          const matched = val.map(id => PRODUCT_DATA.find(p => p.id === id)).filter(Boolean);
+        if (Array.isArray(val) && val.length > 0) {
+          const matched = val.map(id => validProds.find(p => p.id === id)).filter(Boolean);
           if (matched.length > 0) {
             heroProductsList = matched;
+            localStorage.setItem('lifemoa_hero_products', JSON.stringify(val));
+            return;
           }
         }
       }
@@ -2424,12 +2427,10 @@ async function initApp() {
       console.warn("Hero settings fetch error:", e);
     }
 
-    if (!heroProductsList || heroProductsList.length === 0) {
-      loadHeroProductsFromLocalSync();
-    }
+    loadHeroProductsFromLocalSync();
   }
 
-  function renderHeroProducts() {
+  function renderHeroProducts(direction = 'left') {
     const box1 = document.getElementById('hero-products-box-1');
     const box2 = document.getElementById('hero-products-box-2');
     const boxes = [box1, box2].filter(Boolean);
@@ -2437,11 +2438,19 @@ async function initApp() {
     if (boxes.length === 0 || !heroProductsList || heroProductsList.length === 0) return;
 
     boxes.forEach(box => {
-      renderHeroProductsInsideContainer(box);
+      renderHeroProductsInsideContainer(box, direction);
     });
   }
 
-  function renderHeroProductsInsideContainer(container) {
+  function changeHeroProduct(newIndex, direction = 'left') {
+    if (!heroProductsList || heroProductsList.length === 0) return;
+    if (newIndex === currentHeroIndex) return;
+    currentHeroIndex = (newIndex + heroProductsList.length) % heroProductsList.length;
+    renderHeroProducts(direction);
+    startHeroProductAutoRotate();
+  }
+
+  function renderHeroProductsInsideContainer(container, direction = 'left') {
     if (!heroProductsList || heroProductsList.length === 0) return;
 
     const categoryMap = {
@@ -2450,6 +2459,12 @@ async function initApp() {
       'styler': '의류관리기', 'furniture': '가구', 'laptop': '노트북',
       'water': '정수기', 'massage': '안마의자', 'general': '일반가전'
     };
+
+    const activeProd = heroProductsList[currentHeroIndex] || heroProductsList[0];
+    const catText = categoryMap[activeProd.categoryId] || '가전';
+    const plan = PLAN_DATA.find(pl => pl.id === activeProd.planId);
+    const brand = BRAND_DATA.find(b => b.id === (plan ? plan.brandId : ''));
+    const brandName = brand ? brand.name : '인기 브랜드';
 
     let tabsHtml = '';
     heroProductsList.forEach((prod, idx) => {
@@ -2460,86 +2475,155 @@ async function initApp() {
       `;
     });
 
-    const activeProd = heroProductsList[currentHeroIndex] || heroProductsList[0];
-    const catText = categoryMap[activeProd.categoryId] || '가전';
-    const plan = PLAN_DATA.find(pl => pl.id === activeProd.planId);
-    const brand = BRAND_DATA.find(b => b.id === (plan ? plan.brandId : ''));
-    const brandName = brand ? brand.name : '인기 브랜드';
+    const cardContentHtml = `
+      <div class="hero-card-header-badge">
+        <span class="badge-tag">🔥 최근 인기 가전</span>
+        <span class="badge-count">${currentHeroIndex + 1} / ${heroProductsList.length}</span>
+      </div>
+      
+      <div class="hero-card-img-wrap">
+        <img src="${activeProd.thumbnail}" alt="${activeProd.name}" class="hero-prod-main-img" />
+      </div>
 
-    container.innerHTML = `
-      <div class="hero-product-card-display">
-        <div class="hero-card-header-badge">
-          <span class="badge-tag">🔥 최근 인기 가전</span>
-          <span class="badge-count">${currentHeroIndex + 1} / ${heroProductsList.length}</span>
-        </div>
+      <div class="hero-card-body-info">
+        <div class="hero-card-brand-tag">[${brandName}] ${catText} · ${activeProd.accounts || 1}구좌 연동</div>
+        <h3 class="hero-card-title">${activeProd.name}</h3>
+        <p class="hero-card-model">${activeProd.modelName}</p>
         
-        <div class="hero-card-img-wrap">
-          <img src="${activeProd.thumbnail}" alt="${activeProd.name}" class="hero-prod-main-img" />
-        </div>
-
-        <div class="hero-card-body-info">
-          <div class="hero-card-brand-tag">[${brandName}] ${catText} · ${activeProd.accounts || 1}구좌 연동</div>
-          <h3 class="hero-card-title">${activeProd.name}</h3>
-          <p class="hero-card-model">${activeProd.modelName}</p>
-          
-          <div class="hero-card-price-row">
-            <div class="price-box">
-              <span class="price-label">월 납입금</span>
-              <span class="price-val">월 ${activeProd.monthly ? parseInt(activeProd.monthly).toLocaleString('ko-KR') : 0}원</span>
-            </div>
-            <div class="price-box highlight">
-              <span class="price-label">제휴카드 할인가</span>
-              <span class="price-val accent">월 ${activeProd.cardBenefitPrice ? parseInt(activeProd.cardBenefitPrice).toLocaleString('ko-KR') : 0}원~</span>
-            </div>
+        <div class="hero-card-price-row">
+          <div class="price-box">
+            <span class="price-label">월 납입금</span>
+            <span class="price-val">월 ${activeProd.monthly ? parseInt(activeProd.monthly).toLocaleString('ko-KR') : 0}원</span>
           </div>
-
-          <div class="hero-card-actions">
-            <button type="button" class="btn btn-accent btn-hero-consult" data-prod-id="${activeProd.id}">
-              이 가전으로 무료 비교상담 &gt;
-            </button>
-            <button type="button" class="btn btn-outline btn-hero-detail" data-prod-id="${activeProd.id}">
-              상세보기
-            </button>
+          <div class="price-box highlight">
+            <span class="price-label">제휴카드 할인가</span>
+            <span class="price-val accent">월 ${activeProd.cardBenefitPrice ? parseInt(activeProd.cardBenefitPrice).toLocaleString('ko-KR') : 0}원~</span>
           </div>
         </div>
 
-        <!-- 4개 미니 탭 바 -->
-        <div class="hero-product-tabs-bar">
-          ${tabsHtml}
+        <div class="hero-card-actions">
+          <button type="button" class="btn btn-accent btn-hero-consult" data-prod-id="${activeProd.id}">
+            이 가전으로 무료 비교상담 &gt;
+          </button>
+          <button type="button" class="btn btn-outline btn-hero-detail" data-prod-id="${activeProd.id}">
+            상세보기
+          </button>
         </div>
+      </div>
+
+      <!-- 4개 미니 탭 바 + 좌우 화살표 버튼 -->
+      <div class="hero-product-tabs-bar">
+        <button type="button" class="hero-card-nav-btn prev-prod-btn" aria-label="이전 가전">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        ${tabsHtml}
+        <button type="button" class="hero-card-nav-btn next-prod-btn" aria-label="다음 가전">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
       </div>
     `;
 
-    // Bind tab clicks
-    container.querySelectorAll('.hero-prod-tab').forEach(tabBtn => {
-      tabBtn.addEventListener('click', (e) => {
-        const idx = parseInt(e.currentTarget.getAttribute('data-index'));
-        if (!isNaN(idx)) {
-          currentHeroIndex = idx;
-          renderHeroProducts();
-          startHeroProductAutoRotate();
-        }
-      });
-    });
+    let cardDisplay = container.querySelector('.hero-product-card-display');
+    
+    // Bind click handlers & gestures onto card container
+    const bindCardEvents = (cardEl) => {
+      // Prev / Next button clicks
+      const prevBtn = cardEl.querySelector('.prev-prod-btn');
+      if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          changeHeroProduct((currentHeroIndex - 1 + heroProductsList.length) % heroProductsList.length, 'right');
+        });
+      }
+      const nextBtn = cardEl.querySelector('.next-prod-btn');
+      if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          changeHeroProduct((currentHeroIndex + 1) % heroProductsList.length, 'left');
+        });
+      }
 
-    // Bind consult button
-    const consultBtn = container.querySelector('.btn-hero-consult');
-    if (consultBtn) {
-      consultBtn.addEventListener('click', () => {
-        if (typeof openConsultFormModal === 'function') {
-          openConsultFormModal(activeProd ? activeProd.name : null);
-        }
+      // Thumbnail Tab clicks
+      cardEl.querySelectorAll('.hero-prod-tab').forEach(tabBtn => {
+        tabBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const idx = parseInt(e.currentTarget.getAttribute('data-index'));
+          if (!isNaN(idx)) {
+            const dir = idx >= currentHeroIndex ? 'left' : 'right';
+            changeHeroProduct(idx, dir);
+          }
+        });
       });
+
+      // Consult & Detail button clicks
+      const consultBtn = cardEl.querySelector('.btn-hero-consult');
+      if (consultBtn) {
+        consultBtn.addEventListener('click', () => {
+          if (typeof openConsultFormModal === 'function') {
+            openConsultFormModal(activeProd ? activeProd.name : null);
+          }
+        });
+      }
+      const detailBtn = cardEl.querySelector('.btn-hero-detail');
+      if (detailBtn) {
+        detailBtn.addEventListener('click', () => {
+          if (typeof openProductModal === 'function') {
+            openProductModal(activeProd.id);
+          }
+        });
+      }
+    };
+
+    if (cardDisplay) {
+      // Smooth slide animation
+      const outClass = direction === 'left' ? 'slide-out-left' : 'slide-out-right';
+      const inClass = direction === 'left' ? 'slide-in-right' : 'slide-in-left';
+
+      cardDisplay.classList.add(outClass);
+
+      setTimeout(() => {
+        cardDisplay.innerHTML = cardContentHtml;
+        bindCardEvents(cardDisplay);
+
+        cardDisplay.classList.remove(outClass);
+        cardDisplay.classList.add(inClass);
+
+        // Force browser reflow to trigger smooth transition
+        void cardDisplay.offsetWidth;
+
+        cardDisplay.classList.remove(inClass);
+      }, 140);
+    } else {
+      // Initial render
+      container.innerHTML = `<div class="hero-product-card-display">${cardContentHtml}</div>`;
+      cardDisplay = container.querySelector('.hero-product-card-display');
+      bindCardEvents(cardDisplay);
     }
 
-    // Bind detail button
-    const detailBtn = container.querySelector('.btn-hero-detail');
-    if (detailBtn) {
-      detailBtn.addEventListener('click', () => {
-        if (typeof openProductModal === 'function') {
-          openProductModal(activeProd.id);
+    // Touch Swipe Gestures (Mobile)
+    if (cardDisplay && !cardDisplay.hasAttribute('data-touch-bound')) {
+      cardDisplay.setAttribute('data-touch-bound', 'true');
+      let startX = 0;
+      cardDisplay.addEventListener('touchstart', (e) => {
+        if (e.touches && e.touches[0]) {
+          startX = e.touches[0].clientX;
         }
-      });
+      }, { passive: true });
+
+      cardDisplay.addEventListener('touchend', (e) => {
+        if (e.changedTouches && e.changedTouches[0]) {
+          const diff = startX - e.changedTouches[0].clientX;
+          if (Math.abs(diff) > 40) {
+            if (diff > 0) {
+              // Swipe left -> Next product
+              changeHeroProduct((currentHeroIndex + 1) % heroProductsList.length, 'left');
+            } else {
+              // Swipe right -> Prev product
+              changeHeroProduct((currentHeroIndex - 1 + heroProductsList.length) % heroProductsList.length, 'right');
+            }
+          }
+        }
+      }, { passive: true });
     }
 
     // Mouse hover pause & resume
@@ -2558,9 +2642,8 @@ async function initApp() {
     if (heroRotateTimer) clearInterval(heroRotateTimer);
     heroRotateTimer = setInterval(() => {
       if (!heroProductsList || heroProductsList.length <= 1) return;
-      currentHeroIndex = (currentHeroIndex + 1) % heroProductsList.length;
-      renderHeroProducts();
-    }, 4000); // Change product every 4 seconds smoothly
+      changeHeroProduct((currentHeroIndex + 1) % heroProductsList.length, 'left');
+    }, 4000); // Rotate left smoothly every 4 seconds
   }
 
   // Immediate synchronous first render (0ms delay)
