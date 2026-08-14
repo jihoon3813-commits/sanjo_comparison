@@ -276,6 +276,11 @@ async function initApp() {
       PRODUCT_DATA = await convex.query(api.products.get);
       PLAN_DATA = await convex.query(api.plans.get);
 
+      // Cache to localStorage for faster initial sync render on next visit
+      if (BRAND_DATA.length > 0) localStorage.setItem('lifemoa_brands', JSON.stringify(BRAND_DATA));
+      if (PLAN_DATA.length > 0) localStorage.setItem('lifemoa_plans', JSON.stringify(PLAN_DATA));
+      if (PRODUCT_DATA.length > 0) localStorage.setItem('lifemoa_products', JSON.stringify(PRODUCT_DATA));
+
       if (BRAND_DATA.length === 0 && PRODUCT_DATA.length === 0 && PLAN_DATA.length === 0) {
         console.log("Convex DB is empty. Seeding local/default data...");
         const localBrands = JSON.parse(localStorage.getItem('lifemoa_brands')) || defaultBrands;
