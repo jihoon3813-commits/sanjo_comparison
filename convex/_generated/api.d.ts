@@ -16,6 +16,7 @@ import type * as scraper from "../scraper.js";
 import type * as sellers from "../sellers.js";
 import type * as settings from "../settings.js";
 import type * as settlements from "../settlements.js";
+import type * as visits from "../visits.js";
 
 import type {
   ApiFromModules,
@@ -32,6 +33,7 @@ declare const fullApi: ApiFromModules<{
   sellers: typeof sellers;
   settings: typeof settings;
   settlements: typeof settlements;
+  visits: typeof visits;
 }>;
 
 /**

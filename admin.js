@@ -685,24 +685,13 @@ async function initAdminApp() {
       CONSULTATION_DATA = await convex.query(api.consultations.get);
       SETTLEMENT_DATA = await convex.query(api.settlements.get);
       
-      // Load visits
+      // Load real visits
       try {
         VISIT_DATA = await convex.query(api.visits.get, {});
+        localStorage.setItem('lifemoa_visits', JSON.stringify(VISIT_DATA));
       } catch (e) {
         console.warn("Convex visits query failed:", e);
         VISIT_DATA = JSON.parse(localStorage.getItem('lifemoa_visits') || '[]');
-      }
-
-      if (VISIT_DATA.length === 0) {
-        console.log("Visits data is empty. Seeding historical visits...");
-        const seedVisits = generateHistoricalVisits();
-        VISIT_DATA = seedVisits;
-        localStorage.setItem('lifemoa_visits', JSON.stringify(seedVisits));
-        try {
-          await convex.mutation(api.visits.seed, { items: seedVisits });
-        } catch (err) {
-          console.warn("Failed to seed visits to Convex:", err);
-        }
       }
 
       await loadHeroProductsData();
@@ -857,13 +846,7 @@ async function initAdminApp() {
       SELLER_DATA = JSON.parse(localStorage.getItem('lifemoa_sellers')) || mockSellers;
       CONSULTATION_DATA = JSON.parse(localStorage.getItem('lifemoa_consultations')) || mockConsultations;
       SETTLEMENT_DATA = JSON.parse(localStorage.getItem('lifemoa_settlements')) || mockSettlements;
-      
-      let localVisits = JSON.parse(localStorage.getItem('lifemoa_visits') || '[]');
-      if (localVisits.length === 0) {
-        localVisits = generateHistoricalVisits();
-        localStorage.setItem('lifemoa_visits', JSON.stringify(localVisits));
-      }
-      VISIT_DATA = localVisits;
+      VISIT_DATA = JSON.parse(localStorage.getItem('lifemoa_visits') || '[]');
     }
   }
 
@@ -1401,6 +1384,36 @@ async function initAdminApp() {
     if (btnExport) {
       btnExport.addEventListener('click', () => {
         exportAnalyticsToCsv();
+      });
+    }
+
+    // Clear Test Visits Data button
+    const btnClear = document.getElementById('btn-clear-analytics');
+    if (btnClear) {
+      btnClear.addEventListener('click', async () => {
+        if (!confirm("모든 방문자 및 인입 접속 통계 데이터를 0건으로 초기화하시겠습니까?\n(실제 사이트 접속 시 다시 실시간으로 쌓이게 됩니다)")) {
+          return;
+        }
+        btnClear.disabled = true;
+        btnClear.textContent = "초기화 중...";
+        try {
+          if (convex) {
+            await convex.mutation(api.visits.clearAll, {});
+          }
+          localStorage.removeItem('lifemoa_visits');
+          VISIT_DATA = [];
+          alert("방문자 인입 통계 데이터가 완전히 초기화되었습니다.");
+          renderAnalytics();
+        } catch (err) {
+          console.error("Failed to clear visits:", err);
+          alert("초기화 중 오류가 발생했습니다: " + err.message);
+        } finally {
+          btnClear.disabled = false;
+          btnClear.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            데이터 비우기
+          `;
+        }
       });
     }
 
