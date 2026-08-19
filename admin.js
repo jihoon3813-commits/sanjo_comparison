@@ -1654,25 +1654,30 @@ async function initAdminApp() {
       const uv = item.ips.size;
       const convRate = uv > 0 ? ((item.consCount / uv) * 100).toFixed(1) : '0.0';
 
-      // Find top channel
-      let topCh = '-';
-      let topChCount = 0;
-      Object.entries(item.channels).forEach(([ch, cnt]) => {
-        if (cnt > topChCount) {
-          topChCount = cnt;
-          topCh = ch;
-        }
-      });
+      // Sort all channels descending by visit count
+      const sortedChannels = Object.entries(item.channels).sort((a, b) => b[1] - a[1]);
+
+      let channelsHtml = '';
+      if (sortedChannels.length === 0) {
+        channelsHtml = '<span class="text-muted small-text">-</span>';
+      } else {
+        channelsHtml = `<div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">` +
+          sortedChannels.map(([chName, count]) => {
+            const chObj = classifyChannel(chName, '', chName.startsWith('셀러') ? chName : undefined);
+            return `<span class="channel-badge ${chObj.badgeClass}" style="font-size: 0.76rem; padding: 2px 7px;">${chName} <strong style="margin-left: 2px;">${count}건</strong></span>`;
+          }).join('') +
+          `</div>`;
+      }
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td class="bold font-navy">${d}</td>
-        <td><strong>${item.visits.toLocaleString()}</strong>회</td>
-        <td class="bold font-indigo">${uv.toLocaleString()}명</td>
-        <td><span class="channel-badge badge-other">${topCh} <small>(${topChCount})</small></span></td>
-        <td class="bold font-green">${item.consCount}건</td>
-        <td>${item.completedCount}건</td>
-        <td><span class="bold ${parseFloat(convRate) > 0 ? 'font-green' : 'text-muted'}">${convRate}%</span></td>
+        <td class="bold font-navy" style="white-space: nowrap;">${d}</td>
+        <td style="white-space: nowrap;"><strong>${item.visits.toLocaleString()}</strong>회</td>
+        <td class="bold font-indigo" style="white-space: nowrap;">${uv.toLocaleString()}명</td>
+        <td>${channelsHtml}</td>
+        <td class="bold font-green" style="white-space: nowrap;">${item.consCount}건</td>
+        <td style="white-space: nowrap;">${item.completedCount}건</td>
+        <td style="white-space: nowrap;"><span class="bold ${parseFloat(convRate) > 0 ? 'font-green' : 'text-muted'}">${convRate}%</span></td>
       `;
       tbody.appendChild(tr);
     });
@@ -2057,20 +2062,22 @@ async function initAdminApp() {
 
     if (analyticsActiveSubtab === 'daily') {
       csvContent += `일자별 통계 내역 (${startDate} ~ ${endDate})\n`;
-      csvContent += `일자,총방문수(PV),순인입고객수(UV),상담신청건수,계약완료건수,전환율(%)\n`;
+      csvContent += `일자,총방문수(PV),순인입고객수(UV),인입채널상세(전체),상담신청건수,계약완료건수,전환율(%)\n`;
 
       const dailyMap = {};
       filteredVisits.forEach(v => {
         const d = v.date || (v.timestamp ? v.timestamp.split('T')[0] : '');
         if (!d) return;
-        if (!dailyMap[d]) dailyMap[d] = { visits: 0, ips: new Set(), cons: 0, completed: 0 };
+        if (!dailyMap[d]) dailyMap[d] = { visits: 0, ips: new Set(), channels: {}, cons: 0, completed: 0 };
         dailyMap[d].visits++;
         dailyMap[d].ips.add(v.ip);
+        const chName = classifyChannel(v.referrer, v.referrerUrl, v.sellerId).name;
+        dailyMap[d].channels[chName] = (dailyMap[d].channels[chName] || 0) + 1;
       });
       filteredCons.forEach(c => {
         const d = c.registerDate ? c.registerDate.split('T')[0] : '';
         if (!d) return;
-        if (!dailyMap[d]) dailyMap[d] = { visits: 0, ips: new Set(), cons: 0, completed: 0 };
+        if (!dailyMap[d]) dailyMap[d] = { visits: 0, ips: new Set(), channels: {}, cons: 0, completed: 0 };
         dailyMap[d].cons++;
         if (c.status === '계약 완료') dailyMap[d].completed++;
       });
@@ -2079,7 +2086,11 @@ async function initAdminApp() {
         const item = dailyMap[d];
         const uv = item.ips.size;
         const rate = uv > 0 ? ((item.cons / uv) * 100).toFixed(1) : '0.0';
-        csvContent += `"${d}",${item.visits},${uv},${item.cons},${item.completed},${rate}%\n`;
+        const chSummary = Object.entries(item.channels || {})
+          .sort((a, b) => b[1] - a[1])
+          .map(([ch, cnt]) => `${ch}(${cnt}건)`)
+          .join(' / ');
+        csvContent += `"${d}",${item.visits},${uv},"${chSummary}",${item.cons},${item.completed},${rate}%\n`;
       });
 
     } else if (analyticsActiveSubtab === 'channel') {
