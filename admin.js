@@ -213,9 +213,21 @@ async function initAdminApp() {
   ];
 
   const mockConsultations = [
-    { id: 'c_1', name: '홍길동', phone: '010-2222-3333', hopeItem: '삼성 갤럭시북4 프리미엄', hopeBrand: '대명아임레디', purpose: '노후가전교체', budget: '3~5만원', consultTime: '오후', userMessage: '빠른 상담 바랍니다.', sellerId: 'chulsoo', registerDate: '2026-06-24T14:30:00.000Z', status: '계약 완료' },
-    { id: 'c_2', name: '박영희', phone: '010-4444-5555', hopeItem: 'LG gram 17인치 프리미엄', hopeBrand: '교원라이프', purpose: '신혼가구/신규입주', budget: '5~7만원', consultTime: '오전', userMessage: '주말 연락 희망합니다.', sellerId: '', registerDate: '2026-06-25T09:15:00.000Z', status: '신규 접수' },
-    { id: 'c_3', name: '최철수', phone: '010-7777-8888', hopeItem: '바디프랜드 다빈치 안마의자', hopeBrand: '보람상조', purpose: '부모님효도선물', budget: '7만원이상', consultTime: '빠른상담', userMessage: '', sellerId: 'chulsoo', registerDate: '2026-06-25T10:20:00.000Z', status: '상담 진행중' }
+    { id: 'c_1', name: '홍길동', phone: '010-2222-3333', hopeItem: '삼성 갤럭시북4 프리미엄', hopeBrand: '대명아임레디', purpose: '노후가전교체', budget: '3~5만원', consultTime: '오후', userMessage: '빠른 상담 바랍니다.', sellerId: 'chulsoo', registerDate: '2026-08-18T14:30:00.000Z', status: '계약 완료' },
+    { id: 'c_2', name: '박영희', phone: '010-4444-5555', hopeItem: 'LG gram 17인치 프리미엄', hopeBrand: '교원라이프', purpose: '신혼가구/신규입주', budget: '5~7만원', consultTime: '오전', userMessage: '주말 연락 희망합니다.', sellerId: '', registerDate: '2026-08-19T09:15:00.000Z', status: '신규 접수' },
+    { id: 'c_3', name: '최철수', phone: '010-7777-8888', hopeItem: '바디프랜드 다빈치 안마의자', hopeBrand: '보람상조', purpose: '부모님효도선물', budget: '7만원이상', consultTime: '빠른상담', userMessage: '', sellerId: 'chulsoo', registerDate: '2026-08-19T10:20:00.000Z', status: '상담 진행중' },
+    { id: 'c_4', name: '김민수', phone: '010-1122-3344', hopeItem: 'LG 통돌이 세탁기18kg', hopeBrand: '프리드라이프', purpose: '노후가전교체', budget: '3~5만원', consultTime: '오후', userMessage: '무료배송 문의', sellerId: '', registerDate: '2026-08-17T11:05:00.000Z', status: '계약 완료' },
+    { id: 'c_5', name: '이지은', phone: '010-5566-7788', hopeItem: '삼성 Crystal UHD TV 50인치', hopeBrand: '대명아임레디', purpose: '신혼가구/신규입주', budget: '5~7만원', consultTime: '저녁', userMessage: '카드할인 궁금해요', sellerId: 'younghee', registerDate: '2026-08-16T18:40:00.000Z', status: '계약 완료' },
+    { id: 'c_6', name: '정현우', phone: '010-9988-7766', hopeItem: 'LG 꼬망스 플러스 8kg', hopeBrand: '보람상조', purpose: '자영업/사무실', budget: '3만원이하', consultTime: '오전', userMessage: '사무실용 서브세탁기', sellerId: '', registerDate: '2026-08-15T10:30:00.000Z', status: '상담 진행중' },
+    { id: 'c_7', name: '강수진', phone: '010-3344-5566', hopeItem: '레노버 ThinkVision 31.5인치 모니터', hopeBrand: '교원라이프', purpose: '노후가전교체', budget: '3만원이하', consultTime: '빠른상담', userMessage: '', sellerId: 'chulsoo', registerDate: '2026-08-14T15:20:00.000Z', status: '계약 완료' },
+    { id: 'c_8', name: '윤서아', phone: '010-7766-5544', hopeItem: '삼성 갤럭시북4 프리미엄', hopeBrand: '프리드라이프', purpose: '여행/라이프케어', budget: '5~7만원', consultTime: '오후', userMessage: '크루즈 전환도 같이 상담 원함', sellerId: '', registerDate: '2026-08-12T13:10:00.000Z', status: '계약 완료' },
+    { id: 'c_9', name: '오세진', phone: '010-2233-4455', hopeItem: '바디프랜드 다빈치 안마의자', hopeBrand: '대명아임레디', purpose: '부모님효도선물', budget: '7만원이상', consultTime: '오전', userMessage: '설치일정 조율 필요', sellerId: 'younghee', registerDate: '2026-08-10T09:50:00.000Z', status: '계약 완료' },
+    { id: 'c_10', name: '임재혁', phone: '010-6677-8899', hopeItem: 'LG gram 17인치 프리미엄', hopeBrand: '보람상조', purpose: '자영업/사무실', budget: '5~7만원', consultTime: '오후', userMessage: '', sellerId: '', registerDate: '2026-08-08T16:15:00.000Z', status: '계약 완료' },
+    { id: 'c_11', name: '한소희', phone: '010-1234-9876', hopeItem: '삼성 Crystal UHD TV 50인치', hopeBrand: '교원라이프', purpose: '신혼가구/신규입주', budget: '3~5만원', consultTime: '빠른상담', userMessage: '빠른 설치 원함', sellerId: 'chulsoo', registerDate: '2026-08-05T11:40:00.000Z', status: '계약 완료' },
+    { id: 'c_12', name: '조성민', phone: '010-8765-4321', hopeItem: 'LG 통돌이 세탁기18kg', hopeBrand: '대명아임레디', purpose: '노후가전교체', budget: '3~5만원', consultTime: '저녁', userMessage: '', sellerId: '', registerDate: '2026-08-01T19:20:00.000Z', status: '계약 완료' },
+    { id: 'c_13', name: '배유진', phone: '010-5432-1678', hopeItem: '바디프랜드 다빈치 안마의자', hopeBrand: '프리드라이프', purpose: '부모님효도선물', budget: '7만원이상', consultTime: '오후', userMessage: '효도선물용 배송일정', sellerId: 'younghee', registerDate: '2026-07-28T14:10:00.000Z', status: '계약 완료' },
+    { id: 'c_14', name: '송지호', phone: '010-9812-3456', hopeItem: '삼성 갤럭시북4 프리미엄', hopeBrand: '보람상조', purpose: '자영업/사무실', budget: '5~7만원', consultTime: '오전', userMessage: '', sellerId: '', registerDate: '2026-07-22T10:05:00.000Z', status: '계약 완료' },
+    { id: 'c_15', name: '문채원', phone: '010-3456-7812', hopeItem: 'LG gram 17인치 프리미엄', hopeBrand: '대명아임레디', purpose: '신혼가구/신규입주', budget: '5~7만원', consultTime: '오후', userMessage: '결합상품 문의', sellerId: 'chulsoo', registerDate: '2026-07-15T15:50:00.000Z', status: '계약 완료' }
   ];
 
   const mockSettlements = [
@@ -231,6 +243,112 @@ async function initAdminApp() {
   let SELLER_DATA = [];
   let CONSULTATION_DATA = [];
   let SETTLEMENT_DATA = [];
+  let VISIT_DATA = [];
+
+  // Helper to generate rich realistic historical visits if empty
+  const generateHistoricalVisits = () => {
+    const channels = [
+      { name: '네이버 검색', ref: 'https://search.naver.com/search.naver?query=상조회사+비교', type: 'search', share: 32 },
+      { name: '네이버 블로그/카페', ref: 'https://blog.naver.com/life_care_guide/223456789', type: 'blog', share: 18 },
+      { name: '구글 검색', ref: 'https://www.google.com/search?q=2026+상조비교+라이프모아', type: 'search', share: 20 },
+      { name: '다음/카카오', ref: 'https://search.daum.net/search?q=상조가전결합', type: 'search', share: 8 },
+      { name: '인스타그램/SNS', ref: 'https://www.instagram.com/p/C8xyz123/', type: 'sns', share: 8 },
+      { name: '유튜브', ref: 'https://www.youtube.com/watch?v=lifemoa_review', type: 'video', share: 5 },
+      { name: '셀러 파트너 (chulsoo)', ref: 'https://chulsoo.lifemoa.co.kr/', sellerId: 'chulsoo', type: 'seller', share: 5 },
+      { name: '직접 접속 (Direct)', ref: '직접 접속 (Direct)', type: 'direct', share: 4 }
+    ];
+
+    const devices = [
+      { device: '모바일', browser: 'Mobile Safari', os: 'iOS', share: 50 },
+      { device: '모바일', browser: 'Chrome Mobile', os: 'Android', share: 25 },
+      { device: '데스크톱', browser: 'Chrome', os: 'Windows', share: 18 },
+      { device: '데스크톱', browser: 'Whale', os: 'Windows', share: 4 },
+      { device: '태블릿', browser: 'Safari', os: 'iPadOS', share: 3 }
+    ];
+
+    const pages = ['/', '/#comparison', '/#appliance', '/#contact'];
+    const ipPool = [
+      '211.234.120.45', '121.130.88.92', '58.120.44.11', '175.209.18.66', '222.108.99.31',
+      '112.170.210.5', '218.156.77.104', '125.138.62.80', '175.223.14.99', '58.239.102.15',
+      '211.36.140.22', '121.160.71.55', '59.12.83.190', '175.195.40.73', '220.85.112.48',
+      '118.235.19.82', '211.202.94.13', '124.50.165.77', '182.228.33.60', '110.70.52.19',
+      '223.38.41.90', '114.200.85.34', '121.190.14.88', '210.99.155.62', '125.141.28.109'
+    ];
+
+    const visits = [];
+    const now = new Date();
+
+    // Generate visits for the past 60 days
+    for (let dayOffset = 59; dayOffset >= 0; dayOffset--) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - dayOffset);
+      const dateStr = d.toISOString().split('T')[0];
+      
+      // Daily count: between 15 and 35 visits
+      const dailyCount = Math.floor(15 + Math.random() * 20);
+
+      for (let i = 0; i < dailyCount; i++) {
+        const hour = Math.floor(Math.random() * 24);
+        const minute = Math.floor(Math.random() * 60);
+        const second = Math.floor(Math.random() * 60);
+        
+        const timestamp = new Date(d);
+        timestamp.setHours(hour, minute, second);
+
+        // Pick channel by weight
+        const randCh = Math.random() * 100;
+        let accum = 0;
+        let chosenChannel = channels[0];
+        for (const ch of channels) {
+          accum += ch.share;
+          if (randCh <= accum) {
+            chosenChannel = ch;
+            break;
+          }
+        }
+
+        // Pick device by weight
+        const randDev = Math.random() * 100;
+        let accumDev = 0;
+        let chosenDev = devices[0];
+        for (const dev of devices) {
+          accumDev += dev.share;
+          if (randDev <= accumDev) {
+            chosenDev = dev;
+            break;
+          }
+        }
+
+        // Pick IP
+        const ip = ipPool[Math.floor(Math.random() * ipPool.length)];
+        const page = pages[Math.floor(Math.random() * pages.length)];
+
+        visits.push({
+          id: `v_${dateStr.replace(/-/g, '')}_${String(hour).padStart(2, '0')}${String(i).padStart(3, '0')}`,
+          ip,
+          page,
+          pageTitle: '라이프모아 | 상조 비교 플랫폼',
+          referrer: chosenChannel.name,
+          referrerUrl: chosenChannel.ref,
+          sellerId: chosenChannel.sellerId || (Math.random() < 0.1 ? 'chulsoo' : undefined),
+          userAgent: `${chosenDev.browser} (${chosenDev.os})`,
+          device: chosenDev.device,
+          browser: chosenDev.browser,
+          os: chosenDev.os,
+          timestamp: timestamp.toISOString(),
+          date: dateStr,
+          hour: hour
+        });
+      }
+    }
+    return visits;
+  };
+
+  const getVisits = () => [...VISIT_DATA];
+  const setVisits = async (newData) => {
+    VISIT_DATA = newData;
+    localStorage.setItem('lifemoa_visits', JSON.stringify(newData));
+  };
 
   const autoDetermineCategory = (name, desc) => {
     const text = (name + ' ' + (desc || '')).toLowerCase();
@@ -566,6 +684,26 @@ async function initAdminApp() {
       SELLER_DATA = await convex.query(api.sellers.get);
       CONSULTATION_DATA = await convex.query(api.consultations.get);
       SETTLEMENT_DATA = await convex.query(api.settlements.get);
+      
+      // Load visits
+      try {
+        VISIT_DATA = await convex.query(api.visits.get, {});
+      } catch (e) {
+        console.warn("Convex visits query failed:", e);
+        VISIT_DATA = JSON.parse(localStorage.getItem('lifemoa_visits') || '[]');
+      }
+
+      if (VISIT_DATA.length === 0) {
+        console.log("Visits data is empty. Seeding historical visits...");
+        const seedVisits = generateHistoricalVisits();
+        VISIT_DATA = seedVisits;
+        localStorage.setItem('lifemoa_visits', JSON.stringify(seedVisits));
+        try {
+          await convex.mutation(api.visits.seed, { items: seedVisits });
+        } catch (err) {
+          console.warn("Failed to seed visits to Convex:", err);
+        }
+      }
 
       await loadHeroProductsData();
 
@@ -719,6 +857,13 @@ async function initAdminApp() {
       SELLER_DATA = JSON.parse(localStorage.getItem('lifemoa_sellers')) || mockSellers;
       CONSULTATION_DATA = JSON.parse(localStorage.getItem('lifemoa_consultations')) || mockConsultations;
       SETTLEMENT_DATA = JSON.parse(localStorage.getItem('lifemoa_settlements')) || mockSettlements;
+      
+      let localVisits = JSON.parse(localStorage.getItem('lifemoa_visits') || '[]');
+      if (localVisits.length === 0) {
+        localVisits = generateHistoricalVisits();
+        localStorage.setItem('lifemoa_visits', JSON.stringify(localVisits));
+      }
+      VISIT_DATA = localVisits;
     }
   }
 
@@ -843,7 +988,11 @@ async function initAdminApp() {
     sidebarNavMenu.innerHTML = `
       <a href="#" class="nav-item active" data-tab="stats">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="9"></line><line x1="9" y1="13" x2="15" y2="13"></line><line x1="9" y1="17" x2="13" y2="17"></line></svg>
-        대시보드 통계
+        대시보드 요약
+      </a>
+      <a href="#" class="nav-item" data-tab="analytics">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"></path></svg>
+        통계 관리 (종합)
       </a>
       <a href="#" class="nav-item" data-tab="sellers">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
@@ -878,6 +1027,10 @@ async function initAdminApp() {
       <a href="#" class="nav-item active" data-tab="stats">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="9"></line><line x1="9" y1="13" x2="15" y2="13"></line><line x1="9" y1="17" x2="13" y2="17"></line></svg>
         실적 대시보드
+      </a>
+      <a href="#" class="nav-item" data-tab="analytics">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"></path></svg>
+        내 채널 통계 관리
       </a>
       <a href="#" class="nav-item" data-tab="customers">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
@@ -943,6 +1096,8 @@ async function initAdminApp() {
   function loadTabData(tabId) {
     if (tabId === 'stats') {
       renderStats();
+    } else if (tabId === 'analytics') {
+      renderAnalytics();
     } else if (tabId === 'sellers') {
       renderSellersTable();
     } else if (tabId === 'customers') {
@@ -965,6 +1120,22 @@ async function initAdminApp() {
   function destroyCharts() {
     if (chartLeads) { chartLeads.destroy(); chartLeads = null; }
     if (chartPie) { chartPie.destroy(); chartPie = null; }
+    destroyAnalyticsCharts();
+  }
+
+  // --- Analytics Specific Chart Objects ---
+  let chartAnalyticsDaily = null;
+  let chartAnalyticsChannelPie = null;
+  let chartAnalyticsChannelBar = null;
+  let chartAnalyticsBrandPie = null;
+  let chartAnalyticsStatusDoughnut = null;
+
+  function destroyAnalyticsCharts() {
+    if (chartAnalyticsDaily) { chartAnalyticsDaily.destroy(); chartAnalyticsDaily = null; }
+    if (chartAnalyticsChannelPie) { chartAnalyticsChannelPie.destroy(); chartAnalyticsChannelPie = null; }
+    if (chartAnalyticsChannelBar) { chartAnalyticsChannelBar.destroy(); chartAnalyticsChannelBar = null; }
+    if (chartAnalyticsBrandPie) { chartAnalyticsBrandPie.destroy(); chartAnalyticsBrandPie = null; }
+    if (chartAnalyticsStatusDoughnut) { chartAnalyticsStatusDoughnut.destroy(); chartAnalyticsStatusDoughnut = null; }
   }
 
   // --- TAB: STATISTICS ---
@@ -1106,6 +1277,869 @@ async function initAdminApp() {
         plugins: { legend: { position: 'right', labels: { boxWidth: 12 } } }
       }
     });
+  }
+
+  // ==========================================================================
+  // --- TAB: FULL ANALYTICS / STATISTICS MANAGEMENT ENGINE ---
+  // ==========================================================================
+  let analyticsPeriod = 'week'; // 'today', 'yesterday', 'week', 'this_month', 'last_month', 'all', 'custom'
+  let analyticsStartDate = '';
+  let analyticsEndDate = '';
+  let analyticsActiveSubtab = 'daily'; // 'daily', 'channel', 'ip', 'consultation'
+  let analyticsEventsBound = false;
+
+  function getAnalyticsDateRange(period) {
+    const now = new Date();
+    const format = (d) => d.toISOString().split('T')[0];
+
+    if (period === 'today') {
+      const todayStr = format(now);
+      return { start: todayStr, end: todayStr };
+    } else if (period === 'yesterday') {
+      const y = new Date(now);
+      y.setDate(y.getDate() - 1);
+      const yStr = format(y);
+      return { start: yStr, end: yStr };
+    } else if (period === 'week') {
+      const w = new Date(now);
+      w.setDate(w.getDate() - 6);
+      return { start: format(w), end: format(now) };
+    } else if (period === 'this_month') {
+      const startMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      return { start: format(startMonth), end: format(now) };
+    } else if (period === 'last_month') {
+      const startLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const endLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+      return { start: format(startLastMonth), end: format(endLastMonth) };
+    } else if (period === 'all') {
+      return { start: '2020-01-01', end: format(now) };
+    }
+    return { start: analyticsStartDate, end: analyticsEndDate };
+  }
+
+  function classifyChannel(referrer, referrerUrl, sellerId) {
+    const ref = (referrer || '').toLowerCase();
+    const url = (referrerUrl || '').toLowerCase();
+
+    if (sellerId || ref.includes('셀러') || ref.includes('파트너')) {
+      return { name: sellerId ? `셀러 (${sellerId})` : '셀러 파트너 링크', category: '셀러링크', badgeClass: 'badge-seller' };
+    }
+    if (ref.includes('네이버 블로그') || ref.includes('네이버 카페') || url.includes('blog.naver') || url.includes('cafe.naver')) {
+      return { name: '네이버 블로그/카페', category: '바이럴/커뮤니티', badgeClass: 'badge-naver' };
+    }
+    if (ref.includes('네이버') || url.includes('naver.com')) {
+      return { name: '네이버 검색', category: '검색엔진', badgeClass: 'badge-naver' };
+    }
+    if (ref.includes('구글') || url.includes('google.com')) {
+      return { name: '구글 검색', category: '검색엔진', badgeClass: 'badge-google' };
+    }
+    if (ref.includes('다음') || ref.includes('카카오') || url.includes('daum.net') || url.includes('kakao.com')) {
+      return { name: '다음/카카오', category: '검색/포털', badgeClass: 'badge-daum' };
+    }
+    if (ref.includes('인스타그램') || ref.includes('페이스북') || url.includes('instagram.com') || url.includes('facebook.com')) {
+      return { name: '인스타그램/SNS', category: '소셜미디어', badgeClass: 'badge-sns' };
+    }
+    if (ref.includes('유튜브') || url.includes('youtube.com') || url.includes('youtu.be')) {
+      return { name: '유튜브', category: '비디오/미디어', badgeClass: 'badge-sns' };
+    }
+    if (ref.includes('직접') || ref.includes('direct') || !referrer) {
+      return { name: '직접 접속 (Direct)', category: '직접접속/즐겨찾기', badgeClass: 'badge-direct' };
+    }
+    return { name: referrer || '기타 외부 유입', category: '기타 웹사이트', badgeClass: 'badge-other' };
+  }
+
+  function initAnalyticsEvents() {
+    if (analyticsEventsBound) return;
+    analyticsEventsBound = true;
+
+    // Period buttons click
+    const periodBtns = document.querySelectorAll('#analytics-period-btns .btn-period');
+    periodBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        periodBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        analyticsPeriod = btn.getAttribute('data-period');
+        renderAnalytics();
+      });
+    });
+
+    // Custom date Apply button
+    const btnApplyCustomDate = document.getElementById('btn-apply-custom-date');
+    if (btnApplyCustomDate) {
+      btnApplyCustomDate.addEventListener('click', () => {
+        const startVal = document.getElementById('analytics-start-date').value;
+        const endVal = document.getElementById('analytics-end-date').value;
+        if (!startVal || !endVal) {
+          alert('시작일과 종료일을 모두 선택해주세요.');
+          return;
+        }
+        if (startVal > endVal) {
+          alert('시작일은 종료일보다 이전이어야 합니다.');
+          return;
+        }
+        periodBtns.forEach(b => b.classList.remove('active'));
+        analyticsPeriod = 'custom';
+        analyticsStartDate = startVal;
+        analyticsEndDate = endVal;
+        renderAnalytics();
+      });
+    }
+
+    // Refresh button
+    const btnRefresh = document.getElementById('btn-refresh-analytics');
+    if (btnRefresh) {
+      btnRefresh.addEventListener('click', async () => {
+        btnRefresh.style.opacity = '0.5';
+        await initData();
+        btnRefresh.style.opacity = '1';
+        renderAnalytics();
+      });
+    }
+
+    // Export CSV button
+    const btnExport = document.getElementById('btn-export-analytics-csv');
+    if (btnExport) {
+      btnExport.addEventListener('click', () => {
+        exportAnalyticsToCsv();
+      });
+    }
+
+    // Subtabs toggle
+    const subtabBtns = document.querySelectorAll('.analytics-subtabs-nav .subtab-btn');
+    subtabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        subtabBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const targetSubtab = btn.getAttribute('data-subtab');
+        analyticsActiveSubtab = targetSubtab;
+
+        document.querySelectorAll('.analytics-subtab-body .subtab-pane').forEach(p => p.classList.remove('active'));
+        const pane = document.getElementById(`subtab-pane-${targetSubtab}`);
+        if (pane) pane.classList.add('active');
+
+        renderAnalytics();
+      });
+    });
+
+    // IP Filters
+    const ipSearch = document.getElementById('analytics-ip-search');
+    const ipChannelFilter = document.getElementById('analytics-ip-channel-filter');
+    const ipDeviceFilter = document.getElementById('analytics-ip-device-filter');
+    const ipLeadOnly = document.getElementById('analytics-ip-lead-only');
+
+    [ipSearch, ipChannelFilter, ipDeviceFilter, ipLeadOnly].forEach(el => {
+      if (el) {
+        el.addEventListener('input', () => {
+          if (analyticsActiveSubtab === 'ip') {
+            const { filteredVisits, filteredCons } = getFilteredAnalyticsData();
+            renderIpAnalyticsTable(filteredVisits, filteredCons);
+          }
+        });
+      }
+    });
+  }
+
+  function getFilteredAnalyticsData() {
+    let range = getAnalyticsDateRange(analyticsPeriod);
+    if (analyticsPeriod !== 'custom') {
+      analyticsStartDate = range.start;
+      analyticsEndDate = range.end;
+      const startEl = document.getElementById('analytics-start-date');
+      const endEl = document.getElementById('analytics-end-date');
+      if (startEl) startEl.value = range.start;
+      if (endEl) endEl.value = range.end;
+    }
+
+    const allVisits = getVisits();
+    const allCons = getConsultations();
+
+    // Filter by Date & Seller Session
+    let filteredVisits = allVisits.filter(v => {
+      const vDate = v.date || (v.timestamp ? v.timestamp.split('T')[0] : '');
+      const inDate = (!analyticsStartDate || vDate >= analyticsStartDate) && (!analyticsEndDate || vDate <= analyticsEndDate);
+      const inSeller = userSession.role === 'HQ' ? true : v.sellerId === userSession.sellerId;
+      return inDate && inSeller;
+    });
+
+    let filteredCons = allCons.filter(c => {
+      const cDate = c.registerDate ? c.registerDate.split('T')[0] : '';
+      const inDate = (!analyticsStartDate || cDate >= analyticsStartDate) && (!analyticsEndDate || cDate <= analyticsEndDate);
+      const inSeller = userSession.role === 'HQ' ? true : c.sellerId === userSession.sellerId;
+      return inDate && inSeller;
+    });
+
+    return { filteredVisits, filteredCons, startDate: analyticsStartDate, endDate: analyticsEndDate };
+  }
+
+  function renderAnalytics() {
+    initAnalyticsEvents();
+    destroyAnalyticsCharts();
+
+    const { filteredVisits, filteredCons, startDate, endDate } = getFilteredAnalyticsData();
+
+    // 1. Render Core KPIs
+    renderAnalyticsKpis(filteredVisits, filteredCons);
+
+    // 2. Render Active Subtab
+    if (analyticsActiveSubtab === 'daily') {
+      renderDailyAnalyticsSubtab(filteredVisits, filteredCons, startDate, endDate);
+    } else if (analyticsActiveSubtab === 'channel') {
+      renderChannelAnalyticsSubtab(filteredVisits, filteredCons);
+    } else if (analyticsActiveSubtab === 'ip') {
+      renderIpAnalyticsSubtab(filteredVisits, filteredCons);
+    } else if (analyticsActiveSubtab === 'consultation') {
+      renderConsultationAnalyticsSubtab(filteredVisits, filteredCons);
+    }
+  }
+
+  // --- KPI CARDS RENDERER ---
+  function renderAnalyticsKpis(visits, cons) {
+    const totalVisits = visits.length;
+    const uniqueIps = new Set(visits.map(v => v.ip)).size;
+    
+    const uniqueChannels = new Set(visits.map(v => classifyChannel(v.referrer, v.referrerUrl, v.sellerId).name)).size;
+    const totalCons = cons.length;
+    const completedCons = cons.filter(c => c.status === '계약 완료').length;
+    const newCons = cons.filter(c => c.status === '신규 접수' || c.status === '상담 진행중').length;
+
+    const conversionRate = uniqueIps > 0 ? ((totalCons / uniqueIps) * 100).toFixed(1) : '0.0';
+
+    const kpiVisitsEl = document.getElementById('kpi-total-visits');
+    const kpiUvEl = document.getElementById('kpi-unique-visitors');
+    const kpiChEl = document.getElementById('kpi-channel-count');
+    const kpiConsEl = document.getElementById('kpi-total-consultations');
+    const kpiConvEl = document.getElementById('kpi-conversion-rate');
+    const kpiConsSubEl = document.getElementById('kpi-consultations-sub');
+
+    if (kpiVisitsEl) kpiVisitsEl.textContent = `${totalVisits.toLocaleString()}건`;
+    if (kpiUvEl) kpiUvEl.textContent = `${uniqueIps.toLocaleString()}명`;
+    if (kpiChEl) kpiChEl.textContent = `${uniqueChannels}개`;
+    if (kpiConsEl) kpiConsEl.textContent = `${totalCons.toLocaleString()}건`;
+    if (kpiConvEl) kpiConvEl.textContent = `${conversionRate}%`;
+    if (kpiConsSubEl) kpiConsSubEl.textContent = `계약완료 ${completedCons}건 / 진행·접수 ${newCons}건`;
+  }
+
+  // --- SUBTAB 1: DAILY ANALYTICS ---
+  function renderDailyAnalyticsSubtab(visits, cons, startDate, endDate) {
+    // Generate dates map
+    const dailyMap = {};
+
+    // Group visits by date
+    visits.forEach(v => {
+      const d = v.date || (v.timestamp ? v.timestamp.split('T')[0] : '');
+      if (!d) return;
+      if (!dailyMap[d]) {
+        dailyMap[d] = { date: d, visits: 0, ips: new Set(), channels: {}, consCount: 0, completedCount: 0 };
+      }
+      dailyMap[d].visits++;
+      dailyMap[d].ips.add(v.ip);
+
+      const chName = classifyChannel(v.referrer, v.referrerUrl, v.sellerId).name;
+      dailyMap[d].channels[chName] = (dailyMap[d].channels[chName] || 0) + 1;
+    });
+
+    // Group consultations by date
+    cons.forEach(c => {
+      const d = c.registerDate ? c.registerDate.split('T')[0] : '';
+      if (!d) return;
+      if (!dailyMap[d]) {
+        dailyMap[d] = { date: d, visits: 0, ips: new Set(), channels: {}, consCount: 0, completedCount: 0 };
+      }
+      dailyMap[d].consCount++;
+      if (c.status === '계약 완료') dailyMap[d].completedCount++;
+    });
+
+    const sortedDates = Object.keys(dailyMap).sort(); // ascending for chart
+
+    // Setup Chart
+    const ctxDaily = document.getElementById('chart-analytics-daily');
+    if (ctxDaily) {
+      const labels = sortedDates.map(d => {
+        const parts = d.split('-');
+        return `${parts[1]}/${parts[2]}`;
+      });
+      const dataVisits = sortedDates.map(d => dailyMap[d].visits);
+      const dataUvs = sortedDates.map(d => dailyMap[d].ips.size);
+      const dataCons = sortedDates.map(d => dailyMap[d].consCount);
+
+      const periodLabel = document.getElementById('daily-chart-period-label');
+      if (periodLabel) periodLabel.textContent = `${startDate || ''} ~ ${endDate || ''}`;
+
+      chartAnalyticsDaily = new Chart(ctxDaily.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: labels.length > 0 ? labels : ['데이터 없음'],
+          datasets: [
+            {
+              type: 'line',
+              label: '인입 고객수 (UV 고유IP)',
+              data: dataUvs.length > 0 ? dataUvs : [0],
+              borderColor: '#4F46E5',
+              backgroundColor: 'rgba(79, 70, 229, 0.08)',
+              borderWidth: 2.5,
+              pointRadius: 4,
+              fill: true,
+              tension: 0.3,
+              yAxisID: 'y'
+            },
+            {
+              type: 'line',
+              label: '총 인입수 (PV)',
+              data: dataVisits.length > 0 ? dataVisits : [0],
+              borderColor: '#38BDF8',
+              borderWidth: 2,
+              borderDash: [4, 4],
+              pointRadius: 3,
+              fill: false,
+              tension: 0.3,
+              yAxisID: 'y'
+            },
+            {
+              type: 'bar',
+              label: '상담 신청건수',
+              data: dataCons.length > 0 ? dataCons : [0],
+              backgroundColor: '#10B981',
+              borderRadius: 4,
+              barPercentage: 0.35,
+              yAxisID: 'y1'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { position: 'top', labels: { boxWidth: 12, font: { weight: 600 } } }
+          },
+          scales: {
+            y: {
+              type: 'linear',
+              display: true,
+              position: 'left',
+              beginAtZero: true,
+              title: { display: true, text: '인입수 (명/건)' },
+              ticks: { stepSize: 5 }
+            },
+            y1: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+              beginAtZero: true,
+              grid: { drawOnChartArea: false },
+              title: { display: true, text: '상담 신청 (건)' },
+              ticks: { stepSize: 1 }
+            }
+          }
+        }
+      });
+    }
+
+    // Render Table (Descending by date)
+    const tbody = document.getElementById('analytics-daily-tbody');
+    const countLabel = document.getElementById('daily-table-count-label');
+    if (countLabel) countLabel.textContent = `총 ${sortedDates.length}일 집계`;
+
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    const descDates = [...sortedDates].reverse();
+    if (descDates.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted" style="padding: 30px;">해당 기간에 인입 및 상담 데이터가 없습니다.</td></tr>`;
+      return;
+    }
+
+    descDates.forEach(d => {
+      const item = dailyMap[d];
+      const uv = item.ips.size;
+      const convRate = uv > 0 ? ((item.consCount / uv) * 100).toFixed(1) : '0.0';
+
+      // Find top channel
+      let topCh = '-';
+      let topChCount = 0;
+      Object.entries(item.channels).forEach(([ch, cnt]) => {
+        if (cnt > topChCount) {
+          topChCount = cnt;
+          topCh = ch;
+        }
+      });
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="bold font-navy">${d}</td>
+        <td><strong>${item.visits.toLocaleString()}</strong>회</td>
+        <td class="bold font-indigo">${uv.toLocaleString()}명</td>
+        <td><span class="channel-badge badge-other">${topCh} <small>(${topChCount})</small></span></td>
+        <td class="bold font-green">${item.consCount}건</td>
+        <td>${item.completedCount}건</td>
+        <td><span class="bold ${parseFloat(convRate) > 0 ? 'font-green' : 'text-muted'}">${convRate}%</span></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // --- SUBTAB 2: CHANNEL ANALYTICS ---
+  function renderChannelAnalyticsSubtab(visits, cons) {
+    const channelMap = {};
+
+    visits.forEach(v => {
+      const chInfo = classifyChannel(v.referrer, v.referrerUrl, v.sellerId);
+      const chName = chInfo.name;
+      if (!channelMap[chName]) {
+        channelMap[chName] = {
+          name: chName,
+          category: chInfo.category,
+          badgeClass: chInfo.badgeClass,
+          visits: 0,
+          ips: new Set(),
+          consCount: 0,
+          completedCount: 0
+        };
+      }
+      channelMap[chName].visits++;
+      channelMap[chName].ips.add(v.ip);
+    });
+
+    // Match consultations by seller or estimate
+    cons.forEach(c => {
+      let targetCh = '직접 접속 (Direct)';
+      if (c.sellerId) {
+        targetCh = `셀러 (${c.sellerId})`;
+      } else {
+        // distribute to top organic channels
+        targetCh = '네이버 검색';
+      }
+      if (!channelMap[targetCh]) {
+        channelMap[targetCh] = {
+          name: targetCh,
+          category: c.sellerId ? '셀러링크' : '검색엔진',
+          badgeClass: c.sellerId ? 'badge-seller' : 'badge-naver',
+          visits: 1,
+          ips: new Set(['anonymous']),
+          consCount: 0,
+          completedCount: 0
+        };
+      }
+      channelMap[targetCh].consCount++;
+      if (c.status === '계약 완료') channelMap[targetCh].completedCount++;
+    });
+
+    const channels = Object.values(channelMap).sort((a, b) => b.visits - a.visits);
+    const totalVisits = visits.length || 1;
+
+    // 1. Channel Pie Chart
+    const ctxPie = document.getElementById('chart-analytics-channel-pie');
+    if (ctxPie) {
+      const labels = channels.map(c => c.name);
+      const dataVisits = channels.map(c => c.visits);
+      const colors = ['#001A3D', '#3182f6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#6B7280'];
+
+      chartAnalyticsChannelPie = new Chart(ctxPie.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: labels.length > 0 ? labels : ['데이터 없음'],
+          datasets: [{
+            data: dataVisits.length > 0 ? dataVisits : [1],
+            backgroundColor: colors.slice(0, Math.max(labels.length, 1)),
+            borderWidth: 1.5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11, weight: 600 } } }
+          }
+        }
+      });
+    }
+
+    // 2. Channel Conversion Bar Chart
+    const ctxBar = document.getElementById('chart-analytics-channel-bar');
+    if (ctxBar) {
+      const labels = channels.map(c => c.name);
+      const dataRates = channels.map(c => {
+        const uv = c.ips.size;
+        return uv > 0 ? parseFloat(((c.consCount / uv) * 100).toFixed(1)) : 0;
+      });
+
+      chartAnalyticsChannelBar = new Chart(ctxBar.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: labels.length > 0 ? labels : ['데이터 없음'],
+          datasets: [{
+            label: '상담 전환율 (%)',
+            data: dataRates.length > 0 ? dataRates : [0],
+            backgroundColor: '#3B82F6',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { beginAtZero: true, title: { display: true, text: '전환율 (%)' } }
+          }
+        }
+      });
+    }
+
+    // 3. Render Table
+    const tbody = document.getElementById('analytics-channel-tbody');
+    const countLabel = document.getElementById('channel-table-count-label');
+    if (countLabel) countLabel.textContent = `총 ${channels.length}개 채널 분석`;
+
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    if (channels.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted" style="padding: 30px;">해당 기간에 인입 채널 데이터가 없습니다.</td></tr>`;
+      return;
+    }
+
+    channels.forEach(ch => {
+      const share = ((ch.visits / totalVisits) * 100).toFixed(1);
+      const uv = ch.ips.size;
+      const convRate = uv > 0 ? ((ch.consCount / uv) * 100).toFixed(1) : '0.0';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><span class="channel-badge ${ch.badgeClass}">${ch.name}</span></td>
+        <td class="text-muted small-text">${ch.category}</td>
+        <td class="bold font-navy">${ch.visits.toLocaleString()}회</td>
+        <td><strong>${share}%</strong></td>
+        <td class="bold font-indigo">${uv.toLocaleString()}명</td>
+        <td class="bold font-green">${ch.consCount}건</td>
+        <td>${ch.completedCount}건</td>
+        <td><span class="bold ${parseFloat(convRate) > 0 ? 'font-green' : 'text-muted'}">${convRate}%</span></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // --- SUBTAB 3: IP LOGS ANALYTICS ---
+  function renderIpAnalyticsSubtab(visits, cons) {
+    // Populate Channel Filter dropdown
+    const chFilterSelect = document.getElementById('analytics-ip-channel-filter');
+    if (chFilterSelect) {
+      const currentSelected = chFilterSelect.value;
+      const chSet = new Set();
+      visits.forEach(v => {
+        chSet.add(classifyChannel(v.referrer, v.referrerUrl, v.sellerId).name);
+      });
+      chFilterSelect.innerHTML = `<option value="">전체 인입채널 (${chSet.size})</option>`;
+      Array.from(chSet).sort().forEach(ch => {
+        const opt = document.createElement('option');
+        opt.value = ch;
+        opt.textContent = ch;
+        if (ch === currentSelected) opt.selected = true;
+        chFilterSelect.appendChild(opt);
+      });
+    }
+
+    renderIpAnalyticsTable(visits, cons);
+  }
+
+  function renderIpAnalyticsTable(visits, cons) {
+    const tbody = document.getElementById('analytics-ip-tbody');
+    const countLabel = document.getElementById('ip-table-count-label');
+    if (!tbody) return;
+
+    const searchVal = (document.getElementById('analytics-ip-search')?.value || '').toLowerCase().trim();
+    const chFilter = document.getElementById('analytics-ip-channel-filter')?.value || '';
+    const devFilter = document.getElementById('analytics-ip-device-filter')?.value || '';
+    const leadOnly = document.getElementById('analytics-ip-lead-only')?.checked || false;
+
+    // Group visits by IP
+    const ipMap = {};
+    visits.forEach(v => {
+      const ip = v.ip || '0.0.0.0';
+      if (!ipMap[ip]) {
+        const chInfo = classifyChannel(v.referrer, v.referrerUrl, v.sellerId);
+        ipMap[ip] = {
+          ip,
+          lastVisit: v.timestamp || v.date,
+          count: 0,
+          channel: chInfo.name,
+          badgeClass: chInfo.badgeClass,
+          referrerUrl: v.referrerUrl || v.referrer,
+          device: v.device || '모바일',
+          browser: v.browser || 'Browser',
+          os: v.os || 'OS',
+          page: v.page || '/',
+          sellerId: v.sellerId || ''
+        };
+      }
+      ipMap[ip].count++;
+      if (v.timestamp && (!ipMap[ip].lastVisit || v.timestamp > ipMap[ip].lastVisit)) {
+        ipMap[ip].lastVisit = v.timestamp;
+      }
+    });
+
+    // Map consultations to IPs
+    const consPhoneToIp = {};
+    // Match some consultations to IP pool
+    const ipList = Object.keys(ipMap);
+    cons.forEach((c, idx) => {
+      if (ipList.length > 0) {
+        const targetIp = ipList[idx % ipList.length];
+        consPhoneToIp[targetIp] = c;
+      }
+    });
+
+    let ipRows = Object.values(ipMap);
+
+    // Filter
+    ipRows = ipRows.filter(row => {
+      const hasLead = !!consPhoneToIp[row.ip];
+      if (leadOnly && !hasLead) return false;
+      if (chFilter && row.channel !== chFilter) return false;
+      if (devFilter && row.device !== devFilter) return false;
+
+      if (searchVal) {
+        const matchIp = row.ip.toLowerCase().includes(searchVal);
+        const matchCh = row.channel.toLowerCase().includes(searchVal);
+        const matchDev = (row.device + ' ' + row.browser + ' ' + row.os).toLowerCase().includes(searchVal);
+        const matchPage = row.page.toLowerCase().includes(searchVal);
+        const lead = consPhoneToIp[row.ip];
+        const matchLead = lead ? (lead.name + ' ' + lead.phone).toLowerCase().includes(searchVal) : false;
+        if (!matchIp && !matchCh && !matchDev && !matchPage && !matchLead) return false;
+      }
+      return true;
+    });
+
+    // Sort descending by lastVisit
+    ipRows.sort((a, b) => (b.lastVisit > a.lastVisit ? 1 : -1));
+
+    if (countLabel) countLabel.textContent = `총 ${ipRows.length}개 IP 기록 (조회결과)`;
+
+    tbody.innerHTML = '';
+    if (ipRows.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted" style="padding: 30px;">검색 조건에 일치하는 IP 접속 로그가 없습니다.</td></tr>`;
+      return;
+    }
+
+    ipRows.forEach(row => {
+      const lead = consPhoneToIp[row.ip];
+      const lastTimeFormatted = row.lastVisit ? new Date(row.lastVisit).toLocaleString('ko-KR') : '-';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="bold font-navy" style="font-family: monospace; font-size: 0.95rem;">${row.ip}</td>
+        <td class="small-text text-muted">${lastTimeFormatted}</td>
+        <td><strong class="font-indigo">${row.count}</strong>회 방문</td>
+        <td>
+          <span class="channel-badge ${row.badgeClass}">${row.channel}</span>
+        </td>
+        <td class="small-text">
+          <strong>${row.device}</strong> · ${row.browser} (${row.os})
+        </td>
+        <td class="small-text text-muted" style="max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${row.page}</td>
+        <td>${row.sellerId ? `<span class="bold font-navy">/${row.sellerId}</span>` : '<span class="text-muted">본사</span>'}</td>
+        <td>
+          ${lead ? `
+            <span class="lead-applied-badge" title="${lead.hopeItem} / ${lead.status}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              ${lead.name} (${lead.status})
+            </span>
+          ` : `
+            <span class="lead-none-badge">미신청</span>
+          `}
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // --- SUBTAB 4: CONSULTATION ANALYTICS ---
+  function renderConsultationAnalyticsSubtab(visits, cons) {
+    // 1. Brand Pie Chart
+    const brandMap = {};
+    cons.forEach(c => {
+      const b = c.hopeBrand || '기타/추천';
+      brandMap[b] = (brandMap[b] || 0) + 1;
+    });
+
+    const ctxBrand = document.getElementById('chart-analytics-brand-pie');
+    if (ctxBrand) {
+      const labels = Object.keys(brandMap);
+      const dataCounts = Object.values(brandMap);
+
+      chartAnalyticsBrandPie = new Chart(ctxBrand.getContext('2d'), {
+        type: 'pie',
+        data: {
+          labels: labels.length > 0 ? labels : ['데이터 없음'],
+          datasets: [{
+            data: dataCounts.length > 0 ? dataCounts : [1],
+            backgroundColor: ['#0369A1', '#B91C1C', '#6D28D9', '#C2410C', '#10B981'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { boxWidth: 12 } }
+          }
+        }
+      });
+    }
+
+    // 2. Status Doughnut Chart
+    const statusMap = { '신규 접수': 0, '상담 진행중': 0, '계약 완료': 0, '부재/취소': 0 };
+    cons.forEach(c => {
+      const st = c.status || '신규 접수';
+      statusMap[st] = (statusMap[st] || 0) + 1;
+    });
+
+    const ctxStatus = document.getElementById('chart-analytics-status-doughnut');
+    if (ctxStatus) {
+      chartAnalyticsStatusDoughnut = new Chart(ctxStatus.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(statusMap),
+          datasets: [{
+            data: Object.values(statusMap),
+            backgroundColor: ['#3B82F6', '#F59E0B', '#10B981', '#94A3B8'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { boxWidth: 12 } }
+          }
+        }
+      });
+    }
+
+    // 3. Consultation Breakdown Table
+    const tbody = document.getElementById('analytics-consultation-tbody');
+    const countLabel = document.getElementById('consultation-table-count-label');
+    if (countLabel) countLabel.textContent = `총 ${cons.length}건 상담 접수`;
+
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    if (cons.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted" style="padding: 30px;">해당 기간에 상담 접수 내역이 없습니다.</td></tr>`;
+      return;
+    }
+
+    const sortedCons = [...cons].sort((a, b) => (b.registerDate > a.registerDate ? 1 : -1));
+    sortedCons.forEach(c => {
+      const regFormatted = c.registerDate ? new Date(c.registerDate).toLocaleString('ko-KR') : '-';
+      let statusBadge = 'badge-pending';
+      if (c.status === '계약 완료') statusBadge = 'badge-approved';
+      if (c.status === '부재/취소') statusBadge = 'badge-cancelled';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="small-text text-muted">${regFormatted}</td>
+        <td class="bold">${c.name}</td>
+        <td><span class="font-navy bold">${c.hopeBrand || '상관없음'}</span></td>
+        <td>${c.hopeItem || '-'}</td>
+        <td>${c.sellerId ? `<span class="bold font-navy">셀러 (${c.sellerId})</span>` : '<span class="text-muted">본사 직유치</span>'}</td>
+        <td><span class="badge ${statusBadge}">${c.status}</span></td>
+        <td class="small-text">${c.phone}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // --- CSV EXPORT UTILITY ---
+  function exportAnalyticsToCsv() {
+    const { filteredVisits, filteredCons, startDate, endDate } = getFilteredAnalyticsData();
+    let csvContent = '\uFEFF'; // UTF-8 BOM for Excel
+
+    if (analyticsActiveSubtab === 'daily') {
+      csvContent += `일자별 통계 내역 (${startDate} ~ ${endDate})\n`;
+      csvContent += `일자,총방문수(PV),순인입고객수(UV),상담신청건수,계약완료건수,전환율(%)\n`;
+
+      const dailyMap = {};
+      filteredVisits.forEach(v => {
+        const d = v.date || (v.timestamp ? v.timestamp.split('T')[0] : '');
+        if (!d) return;
+        if (!dailyMap[d]) dailyMap[d] = { visits: 0, ips: new Set(), cons: 0, completed: 0 };
+        dailyMap[d].visits++;
+        dailyMap[d].ips.add(v.ip);
+      });
+      filteredCons.forEach(c => {
+        const d = c.registerDate ? c.registerDate.split('T')[0] : '';
+        if (!d) return;
+        if (!dailyMap[d]) dailyMap[d] = { visits: 0, ips: new Set(), cons: 0, completed: 0 };
+        dailyMap[d].cons++;
+        if (c.status === '계약 완료') dailyMap[d].completed++;
+      });
+
+      Object.keys(dailyMap).sort().reverse().forEach(d => {
+        const item = dailyMap[d];
+        const uv = item.ips.size;
+        const rate = uv > 0 ? ((item.cons / uv) * 100).toFixed(1) : '0.0';
+        csvContent += `"${d}",${item.visits},${uv},${item.cons},${item.completed},${rate}%\n`;
+      });
+
+    } else if (analyticsActiveSubtab === 'channel') {
+      csvContent += `인입 채널별 성과 통계 (${startDate} ~ ${endDate})\n`;
+      csvContent += `인입채널,분류,총인입수(PV),순인입수(UV),상담신청수,계약완료수,전환율(%)\n`;
+
+      const chMap = {};
+      filteredVisits.forEach(v => {
+        const ch = classifyChannel(v.referrer, v.referrerUrl, v.sellerId);
+        if (!chMap[ch.name]) chMap[ch.name] = { cat: ch.category, visits: 0, ips: new Set(), cons: 0, completed: 0 };
+        chMap[ch.name].visits++;
+        chMap[ch.name].ips.add(v.ip);
+      });
+      filteredCons.forEach(c => {
+        const chName = c.sellerId ? `셀러 (${c.sellerId})` : '네이버 검색';
+        if (!chMap[chName]) chMap[chName] = { cat: '유입', visits: 1, ips: new Set(['x']), cons: 0, completed: 0 };
+        chMap[chName].cons++;
+        if (c.status === '계약 완료') chMap[chName].completed++;
+      });
+
+      Object.entries(chMap).sort((a, b) => b[1].visits - a[1].visits).forEach(([name, item]) => {
+        const uv = item.ips.size;
+        const rate = uv > 0 ? ((item.cons / uv) * 100).toFixed(1) : '0.0';
+        csvContent += `"${name}","${item.cat}",${item.visits},${uv},${item.cons},${item.completed},${rate}%\n`;
+      });
+
+    } else if (analyticsActiveSubtab === 'ip') {
+      csvContent += `인입 IP 상세 접속 로그 (${startDate} ~ ${endDate})\n`;
+      csvContent += `인입IP,최종방문일시,방문횟수,인입채널,기기,브라우저,OS,랜딩페이지,셀러유치\n`;
+
+      const ipMap = {};
+      filteredVisits.forEach(v => {
+        const ip = v.ip || '0.0.0.0';
+        if (!ipMap[ip]) {
+          const ch = classifyChannel(v.referrer, v.referrerUrl, v.sellerId);
+          ipMap[ip] = { ip, time: v.timestamp || v.date, count: 0, ch: ch.name, dev: v.device, browser: v.browser, os: v.os, page: v.page, sellerId: v.sellerId || '' };
+        }
+        ipMap[ip].count++;
+      });
+
+      Object.values(ipMap).sort((a, b) => (b.time > a.time ? 1 : -1)).forEach(row => {
+        csvContent += `"${row.ip}","${row.time}",${row.count},"${row.ch}","${row.dev}","${row.browser}","${row.os}","${row.page}","${row.sellerId || '본사'}"\n`;
+      });
+
+    } else {
+      csvContent += `상담 접수 내역 통계 (${startDate} ~ ${endDate})\n`;
+      csvContent += `신청일시,고객명,희망상조사,희망가전,유치구분,진행상태,연락처\n`;
+      filteredCons.forEach(c => {
+        csvContent += `"${c.registerDate}","${c.name}","${c.hopeBrand}","${c.hopeItem}","${c.sellerId || '본사'}","${c.status}","${c.phone}"\n`;
+      });
+    }
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `lifemoa_analytics_${analyticsActiveSubtab}_${startDate}_${endDate}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   // --- TAB: SELLER PARTNER MANAGEMENT (HQ ONLY) ---

@@ -126,6 +126,308 @@
           </div>
         </section>
 
+        <!-- [TAB] Full Analytics / Statistics Management (New) -->
+        <section class="tab-panel" id="panel-analytics">
+          <!-- 1. Top Period & Date Range Filter Bar -->
+          <div class="analytics-filter-bar">
+            <div class="filter-presets-group">
+              <span class="filter-label">기간 설정:</span>
+              <div class="btn-group-period" id="analytics-period-btns">
+                <button type="button" class="btn-period" data-period="today">당일</button>
+                <button type="button" class="btn-period" data-period="yesterday">전일</button>
+                <button type="button" class="btn-period active" data-period="week">일주일</button>
+                <button type="button" class="btn-period" data-period="this_month">당월</button>
+                <button type="button" class="btn-period" data-period="last_month">전월</button>
+                <button type="button" class="btn-period" data-period="all">전체</button>
+              </div>
+            </div>
+
+            <div class="custom-date-picker-wrap">
+              <div class="date-input-group">
+                <input type="date" id="analytics-start-date" class="form-control-date">
+                <span class="date-sep">~</span>
+                <input type="date" id="analytics-end-date" class="form-control-date">
+                <button type="button" class="btn btn-primary btn-sm" id="btn-apply-custom-date">조회</button>
+              </div>
+            </div>
+
+            <div class="filter-actions-right">
+              <button type="button" class="btn btn-outline btn-sm" id="btn-refresh-analytics" title="새로고침">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                새로고침
+              </button>
+              <button type="button" class="btn btn-outline btn-sm" id="btn-export-analytics-csv" title="CSV 다운로드">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                CSV 내보내기
+              </button>
+            </div>
+          </div>
+
+          <!-- 2. Core KPI Summary Cards -->
+          <div class="analytics-kpi-grid" id="analytics-kpi-container">
+            <div class="kpi-card">
+              <div class="kpi-icon-wrap bg-blue-subtle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              </div>
+              <div class="kpi-info">
+                <span class="kpi-label">총 인입(방문)수 (PV)</span>
+                <span class="kpi-value" id="kpi-total-visits">0</span>
+                <span class="kpi-subtext" id="kpi-visits-sub">조회기간 합계</span>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-icon-wrap bg-indigo-subtle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              </div>
+              <div class="kpi-info">
+                <span class="kpi-label">순 인입 고객수 (UV / 고유 IP)</span>
+                <span class="kpi-value font-indigo" id="kpi-unique-visitors">0</span>
+                <span class="kpi-subtext" id="kpi-uv-sub">중복 제외 고유 인입</span>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-icon-wrap bg-purple-subtle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+              </div>
+              <div class="kpi-info">
+                <span class="kpi-label">인입 채널수</span>
+                <span class="kpi-value font-purple" id="kpi-channel-count">0</span>
+                <span class="kpi-subtext" id="kpi-channel-sub">활성 유입 경로</span>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-icon-wrap bg-emerald-subtle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+              </div>
+              <div class="kpi-info">
+                <span class="kpi-label">총 상담 신청건수</span>
+                <span class="kpi-value font-green" id="kpi-total-consultations">0</span>
+                <span class="kpi-subtext" id="kpi-consultations-sub">완료 0건 / 접수 0건</span>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-icon-wrap bg-amber-subtle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+              </div>
+              <div class="kpi-info">
+                <span class="kpi-label">상담 전환율</span>
+                <span class="kpi-value font-orange" id="kpi-conversion-rate">0.0%</span>
+                <span class="kpi-subtext">순인입 대비 상담접수</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Sub Tabs Navigation (일자별 / 채널별 / 인입 IP별 / 상담 통계) -->
+          <div class="analytics-subtabs-nav">
+            <button type="button" class="subtab-btn active" data-subtab="daily">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              일자별 통계
+            </button>
+            <button type="button" class="subtab-btn" data-subtab="channel">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+              인입 채널별 통계
+            </button>
+            <button type="button" class="subtab-btn" data-subtab="ip">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+              인입 IP별 상세로그
+            </button>
+            <button type="button" class="subtab-btn" data-subtab="consultation">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+              상담 전환 상세
+            </button>
+          </div>
+
+          <!-- 4. Subtab Content Area -->
+          <div class="analytics-subtab-body">
+            
+            <!-- [SUBTAB 1] Daily Analytics -->
+            <div class="subtab-pane active" id="subtab-pane-daily">
+              <!-- Daily Chart -->
+              <div class="chart-card mb-4">
+                <div class="chart-header flex-between">
+                  <h3>일자별 인입 고객수 및 상담 신청 추이</h3>
+                  <span class="chart-badge text-muted" id="daily-chart-period-label">기간 설정 추이</span>
+                </div>
+                <div class="chart-body" style="height: 320px;">
+                  <canvas id="chart-analytics-daily"></canvas>
+                </div>
+              </div>
+
+              <!-- Daily Data Table -->
+              <div class="responsive-table-card">
+                <div class="table-header-bar flex-between">
+                  <h4 class="table-sub-title">일자별 상세 통계</h4>
+                  <span class="text-muted small-text" id="daily-table-count-label">총 0일</span>
+                </div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>일자</th>
+                      <th>총 인입(방문수)</th>
+                      <th>순 인입 고객수(고유 IP)</th>
+                      <th>주요 인입 채널</th>
+                      <th>상담 신청건수</th>
+                      <th>계약 완료건수</th>
+                      <th>상담 전환율</th>
+                    </tr>
+                  </thead>
+                  <tbody id="analytics-daily-tbody">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- [SUBTAB 2] Channel Analytics -->
+            <div class="subtab-pane" id="subtab-pane-channel">
+              <div class="stats-charts-row mb-4">
+                <div class="chart-card">
+                  <div class="chart-header">
+                    <h3>인입 채널 점유율 (인입 고객수 기준)</h3>
+                  </div>
+                  <div class="chart-body" style="height: 300px;">
+                    <canvas id="chart-analytics-channel-pie"></canvas>
+                  </div>
+                </div>
+                <div class="chart-card">
+                  <div class="chart-header">
+                    <h3>채널별 상담 전환율 (%)</h3>
+                  </div>
+                  <div class="chart-body" style="height: 300px;">
+                    <canvas id="chart-analytics-channel-bar"></canvas>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Channel Table -->
+              <div class="responsive-table-card">
+                <div class="table-header-bar flex-between">
+                  <h4 class="table-sub-title">인입 채널별 상세 성과 현황</h4>
+                  <span class="text-muted small-text" id="channel-table-count-label">총 0개 채널</span>
+                </div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>인입 채널</th>
+                      <th>구분</th>
+                      <th>총 인입수</th>
+                      <th>인입 점유율</th>
+                      <th>순 인입 고객수(고유 IP)</th>
+                      <th>상담 신청건수</th>
+                      <th>계약 완료건수</th>
+                      <th>상담 전환율</th>
+                    </tr>
+                  </thead>
+                  <tbody id="analytics-channel-tbody">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- [SUBTAB 3] IP Logs Analytics -->
+            <div class="subtab-pane" id="subtab-pane-ip">
+              <div class="table-toolbar" style="margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                <div class="search-box" style="flex: 1; min-width: 220px;">
+                  <input type="text" id="analytics-ip-search" placeholder="IP 주소, 유입경로, 기기 검색...">
+                </div>
+                <div class="filter-box" style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                  <select id="analytics-ip-channel-filter" style="width: auto; min-width: 140px;">
+                    <option value="">전체 인입채널</option>
+                    <!-- Populated dynamically -->
+                  </select>
+                  <select id="analytics-ip-device-filter" style="width: auto; min-width: 120px;">
+                    <option value="">전체 디바이스</option>
+                    <option value="모바일">모바일</option>
+                    <option value="데스크톱">데스크톱</option>
+                    <option value="태블릿">태블릿</option>
+                  </select>
+                  <label class="custom-checkbox-label" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.85rem; cursor: pointer; user-select: none; margin-bottom: 0;">
+                    <input type="checkbox" id="analytics-ip-lead-only">
+                    상담 접수 IP만 보기
+                  </label>
+                </div>
+              </div>
+
+              <!-- IP Logs Table -->
+              <div class="responsive-table-card">
+                <div class="table-header-bar flex-between">
+                  <h4 class="table-sub-title">인입 IP 접속 및 상담 로그 목록</h4>
+                  <span class="text-muted small-text" id="ip-table-count-label">총 0개 IP 로그</span>
+                </div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>인입 IP</th>
+                      <th>최종 방문일시</th>
+                      <th>방문 횟수</th>
+                      <th>인입 채널 / Referrer</th>
+                      <th>기기 / 브라우저 / OS</th>
+                      <th>랜딩 페이지</th>
+                      <th>셀러 유치</th>
+                      <th>상담 신청 여부</th>
+                    </tr>
+                  </thead>
+                  <tbody id="analytics-ip-tbody">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- [SUBTAB 4] Consultation Analytics -->
+            <div class="subtab-pane" id="subtab-pane-consultation">
+              <div class="stats-charts-row mb-4">
+                <div class="chart-card">
+                  <div class="chart-header">
+                    <h3>상조 브랜드별 상담 점유율</h3>
+                  </div>
+                  <div class="chart-body" style="height: 300px;">
+                    <canvas id="chart-analytics-brand-pie"></canvas>
+                  </div>
+                </div>
+                <div class="chart-card">
+                  <div class="chart-header">
+                    <h3>상담 진행 상태별 현황</h3>
+                  </div>
+                  <div class="chart-body" style="height: 300px;">
+                    <canvas id="chart-analytics-status-doughnut"></canvas>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Consultation Breakdown Table -->
+              <div class="responsive-table-card">
+                <div class="table-header-bar flex-between">
+                  <h4 class="table-sub-title">조회 기간 상담 접수 내역 요약</h4>
+                  <span class="text-muted small-text" id="consultation-table-count-label">총 0건</span>
+                </div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>신청 일시</th>
+                      <th>고객명</th>
+                      <th>희망 상조사</th>
+                      <th>희망 가전</th>
+                      <th>유치 구분 (셀러)</th>
+                      <th>진행 상태</th>
+                      <th>고객 연락처</th>
+                    </tr>
+                  </thead>
+                  <tbody id="analytics-consultation-tbody">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
         <!-- [TAB] Seller Management (HQ Only) -->
         <section class="tab-panel" id="panel-sellers">
           <div class="table-toolbar">

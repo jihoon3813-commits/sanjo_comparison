@@ -3504,6 +3504,68 @@ tbody tr:last-child td {
   margin-bottom: 30px;
 }
 
+/* Success Modal Specific Styling */
+#success-modal .modal-content {
+  max-width: 440px;
+  padding: 44px 32px 36px;
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+
+#success-modal .modal-icon-wrapper.success {
+  width: 80px;
+  height: 80px;
+  background-color: #e8f8ee;
+  color: #10b981;
+  margin: 0 auto 20px;
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.15);
+}
+
+#success-modal .modal-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+
+#success-modal .modal-desc {
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: #4b5563;
+  margin-bottom: 28px;
+  word-break: keep-all;
+}
+
+#success-modal #success-modal-close {
+  display: block;
+  width: 100%;
+  padding: 15px 24px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  background: linear-gradient(135deg, #1B64DA 0%, #0d47a1 100%);
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(27, 100, 218, 0.35);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  margin: 0 auto;
+}
+
+#success-modal #success-modal-close:hover {
+  background: linear-gradient(135deg, #2575fc 0%, #1557bf 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(27, 100, 218, 0.45);
+}
+
+#success-modal #success-modal-close:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(27, 100, 218, 0.3);
+}
+
 .modal-scroll-body {
   max-height: 250px;
   overflow-y: auto;

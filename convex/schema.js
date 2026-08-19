@@ -96,4 +96,22 @@ export default defineSchema({
     key: v.string(),
     value: v.any(),
   }).index("by_key", ["key"]),
+
+  visits: defineTable({
+    id: v.string(), // custom id (e.g. 'v_1723456789_abc')
+    ip: v.string(),
+    page: v.string(), // e.g. '/', '/#comparison', '/#contact'
+    pageTitle: v.optional(v.string()),
+    referrer: v.string(), // parsed source e.g. '네이버', '구글', '직접 접속 (Direct)'
+    referrerUrl: v.optional(v.string()),
+    sellerId: v.optional(v.string()),
+    userAgent: v.optional(v.string()),
+    device: v.string(), // '모바일', '데스크톱', '태블릿'
+    browser: v.optional(v.string()),
+    os: v.optional(v.string()),
+    timestamp: v.string(), // ISO string
+    date: v.string(), // 'YYYY-MM-DD' for fast indexing
+    hour: v.optional(v.number()), // 0-23
+  }).index("by_custom_id", ["id"]).index("by_date", ["date"]).index("by_ip", ["ip"]),
 });
+
