@@ -3,7 +3,7 @@ import { api } from "./convex/_generated/api.js";
 
 async function initApp() {
 
-  const convexUrl = import.meta.env.VITE_CONVEX_URL;
+  const convexUrl = import.meta.env.VITE_CONVEX_URL || "https://knowing-falcon-121.convex.cloud";
   let convex = null;
   if (convexUrl) {
     try {
@@ -3525,15 +3525,10 @@ async function initApp() {
   // Record Visitor Log for Analytics
   async function recordVisitorLog() {
     try {
-      // Check if logged in current session to prevent duplicate spam within same tab visit
-      const loggedKey = 'lifemoa_session_logged_' + new Date().toISOString().split('T')[0];
-      if (sessionStorage.getItem(loggedKey)) return;
-      sessionStorage.setItem(loggedKey, 'true');
-
       let clientIp = '127.0.0.1';
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 1500);
+        const timeoutId = setTimeout(() => controller.abort(), 2500);
         const ipRes = await fetch('https://api.ipify.org?format=json', { signal: controller.signal });
         clearTimeout(timeoutId);
         if (ipRes.ok) {
@@ -3541,18 +3536,28 @@ async function initApp() {
           if (ipData.ip) clientIp = ipData.ip;
         }
       } catch (e) {
-        // Fallback random realistic Korean IP for local dev testing
-        const sampleIps = ['211.234.120.45', '121.130.88.92', '58.120.44.11', '175.209.18.66', '222.108.99.31', '112.170.210.5'];
-        clientIp = sampleIps[Math.floor(Math.random() * sampleIps.length)];
+        // Fallback client IP using localStorage persistent random identifier
+        let localClientId = localStorage.getItem('lifemoa_client_ip_hash');
+        if (!localClientId) {
+          localClientId = '121.' + Math.floor(100 + Math.random() * 90) + '.' + Math.floor(10 + Math.random() * 89) + '.' + Math.floor(10 + Math.random() * 89);
+          localStorage.setItem('lifemoa_client_ip_hash', localClientId);
+        }
+        clientIp = localClientId;
       }
 
-      // Detect Seller from URL or subdomain
+      // Detect Seller from URL query, pathname (e.g. /onp), or subdomain
       let sellerId = undefined;
       const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('seller')) sellerId = urlParams.get('seller');
-      else if (window.location.hostname.includes('.lifemoa.co.kr')) {
-        const sub = window.location.hostname.split('.')[0];
-        if (sub && sub !== 'www' && sub !== 'admin') sellerId = sub;
+      if (urlParams.get('seller')) {
+        sellerId = urlParams.get('seller');
+      } else {
+        const cleanPath = window.location.pathname.replace(/^\/+|\/+$/g, '');
+        if (cleanPath && !['index.html', 'admin', 'admin.html', 'seller-admin', 'seller-admin.html'].includes(cleanPath)) {
+          sellerId = cleanPath;
+        } else if (window.location.hostname.includes('.lifemoa.co.kr')) {
+          const sub = window.location.hostname.split('.')[0];
+          if (sub && sub !== 'www' && sub !== 'admin') sellerId = sub;
+        }
       }
 
       // Device & UA analysis
@@ -3575,7 +3580,7 @@ async function initApp() {
 
       const refUrl = document.referrer || '';
       let referrerText = '직접 접속 (Direct)';
-      if (sellerId) referrerText = `셀러 파트너 (${sellerId})`;
+      if (sellerId) referrerText = `셀러 (${sellerId})`;
       else if (refUrl.includes('naver.com')) referrerText = refUrl.includes('blog') || refUrl.includes('cafe') ? '네이버 블로그/카페' : '네이버 검색';
       else if (refUrl.includes('google.com')) referrerText = '구글 검색';
       else if (refUrl.includes('daum.net') || refUrl.includes('kakao.com')) referrerText = '다음/카카오';
@@ -3583,8 +3588,10 @@ async function initApp() {
       else if (refUrl.includes('youtube.com')) referrerText = '유튜브';
       else if (refUrl) referrerText = '기타 외부 유입';
 
+      // KST (UTC+9) Date formatting
       const now = new Date();
-      const dateStr = now.toISOString().split('T')[0];
+      const kstTime = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+      const dateStr = kstTime.toISOString().split('T')[0];
 
       const logItem = {
         id: `v_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
@@ -3600,7 +3607,7 @@ async function initApp() {
         os: os,
         timestamp: now.toISOString(),
         date: dateStr,
-        hour: now.getHours()
+        hour: kstTime.getUTCHours()
       };
 
       // Save locally
@@ -3608,16 +3615,17 @@ async function initApp() {
       localVisits.push(logItem);
       localStorage.setItem('lifemoa_visits', JSON.stringify(localVisits));
 
-      // Save to Convex
+      // Save to Convex DB
       if (convex) {
         await convex.mutation(api.visits.record, logItem);
+        console.log("Visit logged successfully:", logItem);
       }
     } catch (err) {
       console.warn("Visitor logging failed:", err);
     }
   }
 
-  // Trigger Visitor Log
+  // Trigger Visitor Log on load
   recordVisitorLog();
 }
 

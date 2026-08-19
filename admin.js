@@ -3,7 +3,7 @@ import { api } from "./convex/_generated/api.js";
 
 async function initAdminApp() {
 
-  const convexUrl = import.meta.env.VITE_CONVEX_URL;
+  const convexUrl = import.meta.env.VITE_CONVEX_URL || "https://knowing-falcon-121.convex.cloud";
   let convex = null;
   if (convexUrl) {
     try {
@@ -1271,31 +1271,37 @@ async function initAdminApp() {
   let analyticsActiveSubtab = 'daily'; // 'daily', 'channel', 'ip', 'consultation'
   let analyticsEventsBound = false;
 
+  function getKstDateStr(d = new Date()) {
+    const kst = new Date(d.getTime() + (9 * 60 * 60 * 1000));
+    return kst.toISOString().split('T')[0];
+  }
+
   function getAnalyticsDateRange(period) {
     const now = new Date();
-    const format = (d) => d.toISOString().split('T')[0];
 
     if (period === 'today') {
-      const todayStr = format(now);
+      const todayStr = getKstDateStr(now);
       return { start: todayStr, end: todayStr };
     } else if (period === 'yesterday') {
       const y = new Date(now);
       y.setDate(y.getDate() - 1);
-      const yStr = format(y);
+      const yStr = getKstDateStr(y);
       return { start: yStr, end: yStr };
     } else if (period === 'week') {
       const w = new Date(now);
       w.setDate(w.getDate() - 6);
-      return { start: format(w), end: format(now) };
+      return { start: getKstDateStr(w), end: getKstDateStr(now) };
     } else if (period === 'this_month') {
-      const startMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-      return { start: format(startMonth), end: format(now) };
+      const kstNow = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+      const startMonth = new Date(Date.UTC(kstNow.getUTCFullYear(), kstNow.getUTCMonth(), 1));
+      return { start: startMonth.toISOString().split('T')[0], end: getKstDateStr(now) };
     } else if (period === 'last_month') {
-      const startLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-      const endLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
-      return { start: format(startLastMonth), end: format(endLastMonth) };
+      const kstNow = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+      const startLastMonth = new Date(Date.UTC(kstNow.getUTCFullYear(), kstNow.getUTCMonth() - 1, 1));
+      const endLastMonth = new Date(Date.UTC(kstNow.getUTCFullYear(), kstNow.getUTCMonth(), 0));
+      return { start: startLastMonth.toISOString().split('T')[0], end: endLastMonth.toISOString().split('T')[0] };
     } else if (period === 'all') {
-      return { start: '2020-01-01', end: format(now) };
+      return { start: '2020-01-01', end: getKstDateStr(now) };
     }
     return { start: analyticsStartDate, end: analyticsEndDate };
   }
